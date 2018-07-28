@@ -1,0 +1,12 @@
+
+#ifndef __AQUA__SDL2_SRC_MACROS_AND_INCLUSIONS_H
+	#define __AQUA__SDL2_SRC_MACROS_AND_INCLUSIONS_H
+	
+	#include <SDL2/SDL.h>
+	
+	#if !defined(KOS_ORIGINAL_WIDTH) || !defined(KOS_ORIGINAL_HEIGHT)
+		#define KOS_ORIGINAL_WIDTH 800
+		#define KOS_ORIGINAL_HEIGHT 480
+	#endif
+	
+#endif
