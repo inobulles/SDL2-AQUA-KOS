@@ -10,4 +10,6 @@ void main(void) {
 		
 	}
 	
+	kos_quit(&kos);
+	
 }
