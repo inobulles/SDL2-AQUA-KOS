@@ -16,9 +16,9 @@
 		int width;
 		int height;
 		
-		SDL_Window* window;
-		
+		SDL_Window*   window;
 		SDL_GLContext context;
+		
 		GLuint shader_program;
 		
 	} kos_t;
@@ -70,9 +70,9 @@
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,  1);
 		
 		printf("OpenGL info\n");
-		printf("\tVendor: %s\n",                   glGetString(GL_VENDOR));
-		printf("\tRenderer: %s\n",                 glGetString(GL_RENDERER));
-		printf("\tVersion: %s\n",                  glGetString(GL_VERSION));
+		printf("\tVendor:                   %s\n", glGetString(GL_VENDOR));
+		printf("\tRenderer:                 %s\n", glGetString(GL_RENDERER));
+		printf("\tVersion:                  %s\n", glGetString(GL_VERSION));
 		printf("\tShading language version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 		
 		KOS_BEST_GL_VERSION
@@ -93,13 +93,17 @@
 			
 		}
 		
-		glUseProgram(this->shader_program);
+		//~ glUseProgram(this->shader_program);
 		
 		// testing stuff
 		
 		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		
+		surface_t surface;
+		surface_new(&surface, 0, 0, _UI64_MAX_MARGIN / 5, _UI64_MAX_MARGIN / 5);
+		
+		surface_draw(&surface);
 		SDL_GL_SwapWindow(this->window);
 		
 		SDL_Delay(5000);
