@@ -46,4 +46,27 @@
 		
 	}
 	
+	void get_events(event_list_t* this) { // I guess this shouldn't be here but idc tbh
+		SDL_Event event;
+		
+		this->quit = 0;
+		this->pointer_click_type = 0;
+		
+		SDL_GetMouseState((int*) &this->pointer_x, (int*) &this->pointer_y);
+		
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_QUIT) {
+				this->quit = 1;
+				return;
+				
+			} else if (event.type == SDL_MOUSEBUTTONDOWN) {
+				this->pointer_click_type = 1;
+				return;
+				
+			}
+			
+		}
+		
+	}
+	
 #endif
