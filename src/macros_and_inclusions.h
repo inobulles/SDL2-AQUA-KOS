@@ -8,6 +8,9 @@
 	#include <GL/gl.h>
 	#include <GL/glu.h>
 	
+	#include "lib/structs.h"
+	#include "lib/macros.h"
+	
 	#if !defined(KOS_ORIGINAL_WIDTH) || !defined(KOS_ORIGINAL_HEIGHT)
 		#define KOS_ORIGINAL_WIDTH 800
 		#define KOS_ORIGINAL_HEIGHT 480
@@ -33,14 +36,14 @@
 	static char kos_best_gl_version_major;
 	static char kos_best_gl_version_minor;
 	
-	static const float kos_vertex_matrix[] = {
+	static const float vertex_matrix[] = {
 		0.0f, 2.0f, 1.0f,
 		0.0f, 0.0f, 1.0f,
 		2.0f, 0.0f, 1.0f,
 		2.0f, 2.0f, 1.0f,
 	};
 	
-	static const float kos_texture_coords[] = {
+	static const float texture_coords[] = {
 		0.0f, 0.0f,
 		0.0f, 1.0f,
 		1.0f, 1.0f,
@@ -61,6 +64,12 @@
 				kos_best_gl_version_minor = KOS_HIGHEST_GL_VERSION_MINOR; \
 			} \
 		}
+	#endif
+	
+	// warnings
+	
+	#ifndef KOS_WARN_NO_GL_VERSION
+		#define KOS_WARN_NO_GL_VERSION printf("WARNING You seem to have an inexistant OpenGL version (%d.%d)\n", kos_best_gl_version_major, kos_best_gl_version_minor);
 	#endif
 	
 	void glShaderSource(GLuint shader, GLsizei count, const GLchar** string, const GLint* length);

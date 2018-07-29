@@ -13,9 +13,10 @@
 			case 2: return gl2_load_shaders(program, vertex_code, fragment_code);
 			case 3: return 1;
 			case 4: return 1;
+			case 5: return 1;
 			
 			default: {
-				printf("WARNING You seem to have an inexistant OpenGL version (%d.%d)\n", kos_best_gl_version_major, kos_best_gl_version_minor);
+				KOS_WARN_NO_GL_VERSION
 				return 1;
 				
 			}
