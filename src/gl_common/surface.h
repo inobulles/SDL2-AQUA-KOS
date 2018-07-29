@@ -69,7 +69,7 @@
 
 	static void surface_update(surface_t* this) {
 		surface_update_vertices(this);
-		surface_update_colours(this);
+		surface_update_colours( this);
 		
 	}
 
@@ -78,9 +78,9 @@
 		this->faces[1] = 1;
 		this->faces[2] = 2;
 		
-		this->faces[3] = 3;
-		this->faces[4] = 4;
-		this->faces[5] = 5;
+		this->faces[3] = 0; // 3;
+		this->faces[4] = 2; // 4;
+		this->faces[5] = 3; // 5;
 		
 	}
 
@@ -102,7 +102,7 @@
 		this->has_texture    = 0;
 		
 		surface_update(this);
-		surface_faces(this);
+		surface_faces( this);
 		
 	}
 	
