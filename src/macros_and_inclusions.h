@@ -30,6 +30,23 @@
 		#define KOS_HIGHEST_GL_VERSION_MINOR 1
 	#endif
 	
+	static char kos_best_gl_version_major;
+	static char kos_best_gl_version_minor;
+	
+	static const float kos_vertex_matrix[] = {
+		0.0f, 2.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		2.0f, 0.0f, 1.0f,
+		2.0f, 2.0f, 1.0f,
+	};
+	
+	static const float kos_texture_coords[] = {
+		0.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 1.0f,
+		1.0f, 0.0f,
+	};
+	
 	#ifndef KOS_BEST_GL_VERSION
 		#define KOS_BEST_GL_VERSION { \
 			char major = glGetString(GL_VERSION)[0] - '0'; \
@@ -40,8 +57,8 @@
 				kos_quit(this); \
 				\
 			} else { \
-				best_gl_version_major = KOS_HIGHEST_GL_VERSION_MAJOR; \
-				best_gl_version_minor = KOS_HIGHEST_GL_VERSION_MINOR; \
+				kos_best_gl_version_major = KOS_HIGHEST_GL_VERSION_MAJOR; \
+				kos_best_gl_version_minor = KOS_HIGHEST_GL_VERSION_MINOR; \
 			} \
 		}
 	#endif

@@ -4,16 +4,14 @@
 	
 	#include "macros_and_inclusions.h"
 	
-	#include "gl_versions/gl_1.h"
-	#include "gl_versions/gl_2.h"
-	#include "gl_versions/gl_3.h"
-	#include "gl_versions/gl_4.h"
+	#include "gl_common/surface.h"
+	#include "gl_common/shaders.h"
 	
 	static const char* temp_gl_2_vertex_shader   = "#version 120\n\nvoid main(void) {\n\tgl_Position  = vec4(0, 0, 0, 0);\n\t\n}\n";
 	static const char* temp_gl_2_fragment_shader = "#version 120\n\nvoid main(void) {\n\tgl_FragColor = vec4(1, 0, 0, 1);\n\t\n}\n";
 	
 	typedef struct {
-		int           warning_count;
+		int warning_count;
 		
 		int width;
 		int height;
@@ -64,12 +62,12 @@
 			
 		}
 		
-		SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   5);
-		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 6);
-		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  5);
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE,      5);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,    6);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,     5);
 		
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,   16);
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,  1);
 		
 		printf("OpenGL info\n");
 		printf("\tVendor: %s\n",                   glGetString(GL_VENDOR));
@@ -77,14 +75,11 @@
 		printf("\tVersion: %s\n",                  glGetString(GL_VERSION));
 		printf("\tShading language version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 		
-		char best_gl_version_major;
-		char best_gl_version_minor;
-		
 		KOS_BEST_GL_VERSION
-		printf("Using OpenGL version %d.%d\n", best_gl_version_major, best_gl_version_minor);
+		printf("Using OpenGL version %d.%d\n", kos_best_gl_version_major, kos_best_gl_version_minor);
 		
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, best_gl_version_major);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, best_gl_version_minor);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, kos_best_gl_version_major);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, kos_best_gl_version_minor);
 		
 		if (SDL_GL_SetSwapInterval(1) < 0) {
 			printf("WARNING Failed to enable VSync (this may cause problems down the line)\n");
@@ -92,7 +87,7 @@
 			
 		}
 		
-		if (gl2_load_shaders(&this->shader_program, (char*) temp_gl_2_vertex_shader, (char*) temp_gl_2_fragment_shader)) {
+		if (gl_load_shaders(&this->shader_program, (char*) temp_gl_2_vertex_shader, (char*) temp_gl_2_fragment_shader)) {
 			printf("ERROR Failed to create GL shader program\n");
 			KOS_ERROR
 			
