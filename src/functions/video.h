@@ -38,4 +38,12 @@
 		
 	}
 	
+	void set_video_visibility(unsigned long long state) {
+		if (state == HIDDEN) {
+			SDL_MinimizeWindow(current_kos->window);
+			
+		}
+		
+	}
+	
 #endif
