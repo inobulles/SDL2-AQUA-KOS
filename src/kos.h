@@ -10,19 +10,6 @@
 	static const char* temp_gl_2_vertex_shader   = "#version 120\n\nvoid main(void) {\n\tgl_Position  = vec4(0, 0, 0, 0);\n\t\n}\n";
 	static const char* temp_gl_2_fragment_shader = "#version 120\n\nvoid main(void) {\n\tgl_FragColor = vec4(1, 0, 0, 1);\n\t\n}\n";
 	
-	typedef struct {
-		int warning_count;
-		
-		int width;
-		int height;
-		
-		SDL_Window*   window;
-		SDL_GLContext context;
-		
-		GLuint shader_program;
-		
-	} kos_t;
-	
 	void kos_quit(kos_t* this) {
 		SDL_GL_DeleteContext(this->context);
 		SDL_DestroyWindow(this->window);
@@ -31,6 +18,7 @@
 	}
 	
 	int kos_init(kos_t* this) {
+		current_kos  = this;
 		this->window = NULL;
 		
 		this->width  = KOS_ORIGINAL_WIDTH;
@@ -111,5 +99,9 @@
 		return 0;
 		
 	}
+	
+	#include "functions/video.h"
+	#include "functions/system.h"
+	#include "functions/fs.h"
 	
 #endif

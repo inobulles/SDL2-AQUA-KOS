@@ -11,6 +11,19 @@
 	#include "lib/structs.h"
 	#include "lib/macros.h"
 	
+	typedef struct {
+		int warning_count;
+		
+		int width;
+		int height;
+		
+		SDL_Window*   window;
+		SDL_GLContext context;
+		
+		GLuint shader_program;
+		
+	} kos_t;
+	
 	#if !defined(KOS_ORIGINAL_WIDTH) || !defined(KOS_ORIGINAL_HEIGHT)
 		#define KOS_ORIGINAL_WIDTH 800
 		#define KOS_ORIGINAL_HEIGHT 480
@@ -32,6 +45,8 @@
 		#define KOS_HIGHEST_GL_VERSION_MAJOR 2
 		#define KOS_HIGHEST_GL_VERSION_MINOR 1
 	#endif
+	
+	static kos_t* current_kos;
 	
 	static char kos_best_gl_version_major;
 	static char kos_best_gl_version_minor;
