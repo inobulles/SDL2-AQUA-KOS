@@ -6,6 +6,7 @@
 	#include "../gl_versions/surface/gl_2.h"
 	#include "../gl_versions/surface/gl_3.h"
 	#include "../gl_versions/surface/gl_4.h"
+	#include "../gl_versions/surface/gl_5.h"
 	
 	static inline void surface_update_vertices(surface_t* this) {
 		float width  = (float) this->width  / _UI64_MAX_MARGIN;
@@ -16,10 +17,10 @@
 		
 		int i;
 		for (i = 0; i < 4; i++) {
-			this->vertices[i].z = (GLfloat) this->layer;
+			this->vertices[i].z =           (GLfloat) this->layer;
 			
-			this->vertices[i].x = (GLfloat) (width  * vertex_matrix[i * 3]     + x);
-			this->vertices[i].y = (GLfloat) (height * vertex_matrix[i * 3 + 1] + y);
+			this->vertices[i].x =           (GLfloat) (width  * vertex_matrix[i * 3]     + x);
+			this->vertices[i].y =           (GLfloat) (height * vertex_matrix[i * 3 + 1] + y);
 			
 			if (!this->scroll_texture) {
 				this->texture_coords[i].x = (GLfloat) texture_coords[i * 2];
