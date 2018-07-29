@@ -83,20 +83,6 @@
 		}
 		
 		//~ glUseProgram(this->shader_program);
-		
-		// testing stuff
-		
-		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-		surface_t surface;
-		surface_new(&surface, 0, 0, _UI64_MAX_MARGIN / 5, _UI64_MAX_MARGIN / 5);
-		
-		surface_draw(&surface);
-		SDL_GL_SwapWindow(this->window);
-		
-		SDL_Delay(5000);
-		
 		return 0;
 		
 	}
