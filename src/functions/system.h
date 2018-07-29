@@ -39,4 +39,14 @@
 		
 	}
 	
+	unsigned long long platform_system(const char* command) {
+		#if SYSTEM_ACCESS
+			return system(command);
+		#else
+			printf("WARNING You do not seem to have the privileges (SYSTEM_ACCESS = %d) to run the command `%s`\n", SYSTEM_ACCESS, command);
+			return 1;
+		#endif
+		
+	}
+	
 #endif
