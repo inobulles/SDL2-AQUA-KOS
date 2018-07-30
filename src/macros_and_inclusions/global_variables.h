@@ -8,10 +8,10 @@
 	static char kos_best_gl_version_minor;
 	
 	static const float vertex_matrix[] = {
-		0.0f, 2.0f, 1.0f,
+		0.0f, 1.0f, 1.0f,
 		0.0f, 0.0f, 1.0f,
-		2.0f, 0.0f, 1.0f,
-		2.0f, 2.0f, 1.0f,
+		1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
 	};
 	
 	static const float texture_coords[] = {

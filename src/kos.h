@@ -73,6 +73,20 @@
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, kos_best_gl_version_major);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, kos_best_gl_version_minor);
 		
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_DEPTH_TEST);
+		
+		//~ glHint(GL_POINT_SMOOTH, GL_NICEST);
+		//~ glHint(GL_LINE_SMOOTH, GL_NICEST);
+		//~ glHint(GL_POLYGON_SMOOTH, GL_NICEST);
+		
+		//~ glEnable(GL_POINT_SMOOTH);
+		//~ glEnable(GL_LINE_SMOOTH);
+		//~ glEnable(GL_POLYGON_SMOOTH);
+		
 		if (SDL_GL_SetSwapInterval(1) < 0) {
 			printf("WARNING Failed to enable VSync (this may cause problems down the line)\n");
 			this->warning_count++;
