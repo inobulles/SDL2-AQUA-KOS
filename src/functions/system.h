@@ -4,11 +4,6 @@
 	
 	#include "../macros_and_inclusions.h"
 	
-	void mfree(void* pointer, unsigned long long bytes) {
-		free(pointer);
-		
-	}
-	
 	unsigned long long get_platform(void) {
 		#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 			return PLATFORM_WIN32;
@@ -46,6 +41,28 @@
 			printf("WARNING You do not seem to have the privileges (SYSTEM_ACCESS = %d) to run the command `%s`\n", SYSTEM_ACCESS, command);
 			return 1;
 		#endif
+		
+	}
+	
+	void platform(void) {
+		KOS_TODO
+		
+	}
+	
+	unsigned long long is_device_supported(const char* device) {
+		KOS_TODO
+		return 0;
+		
+	}
+	
+	unsigned long long* get_device(unsigned long long device, const char* extra) {
+		KOS_TODO
+		return NULL;
+		
+	}
+	
+	void send_device(unsigned long long device, const char* extra, unsigned long long* data) {
+		KOS_TODO
 		
 	}
 	

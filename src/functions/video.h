@@ -69,4 +69,8 @@
 		
 	}
 	
+	void free_events(event_list_t* this) {
+		
+	}
+	
 #endif

@@ -26,6 +26,14 @@
 		}
 	#endif
 	
+	#ifndef KOS_TODO
+		#define KOS_TODO printf("TODO `%s` in `%s` line %d\n", __func__, __FILE__, __LINE__);
+	#endif
+	
+	#ifndef KOS_DEPRECATED
+		#define KOS_DEPRECATED printf("WARNING function `%s` is deprecated\n", __func__);
+	#endif
+	
 	#if !defined(KOS_LOWEST_GL_VERSION_MAJOR) || !defined(KOS_LOWEST_GL_VERSION_MINOR)
 		#define KOS_LOWEST_GL_VERSION_MAJOR 2
 		#define KOS_LOWEST_GL_VERSION_MINOR 1

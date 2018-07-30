@@ -16,6 +16,9 @@
 		SDL_DestroyWindow(this->window);
 		SDL_Quit();
 		
+		printf("Destroyed all SDL subsystem\n");
+		exit(0);
+		
 	}
 	
 	int kos_init(kos_t* this) {
@@ -90,5 +93,10 @@
 	#include "functions/video.h"
 	#include "functions/system.h"
 	#include "functions/fs.h"
+	#include "functions/socket.h"
+	#include "functions/font.h"
+	#include "functions/dummy.h"
+	
+	#include "functions/decoders/bmp.h"
 	
 #endif
