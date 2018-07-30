@@ -4,8 +4,6 @@
 	
 	#include "../../macros_and_inclusions.h"
 	
-	#define TEXTURE_WRAP_TYPE GL_MIRRORED_REPEAT // pushes colour to absolute edge, GL_CLAMP_TO_EDGE to wrap colour around
-	
 	texture_t gl2_texture_create(unsigned long long* data, unsigned long long bpp, unsigned long long width, unsigned long long height) {
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		

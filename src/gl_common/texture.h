@@ -2,6 +2,8 @@
 #ifndef __AQUA__SDL2_SRC_GL_COMMON_TEXTURE_H
 	#define __AQUA__SDL2_SRC_GL_COMMON_TEXTURE_H
 	
+	#define TEXTURE_WRAP_TYPE GL_MIRRORED_REPEAT // pushes colour to absolute edge, GL_CLAMP_TO_EDGE to wrap colour around
+	
 	#include "../gl_versions/texture/gl_1.h"
 	#include "../gl_versions/texture/gl_2.h"
 	#include "../gl_versions/texture/gl_3.h"

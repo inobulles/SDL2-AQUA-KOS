@@ -46,11 +46,13 @@
 		
 	}
 	
+	static unsigned char kos_is_mouse_pressed = 0;
+	
 	void get_events(event_list_t* this) { // I guess this shouldn't be here but idc tbh
 		SDL_Event event;
 		
 		this->quit = 0;
-		this->pointer_click_type = 0;
+		this->pointer_click_type = kos_is_mouse_pressed;
 		
 		SDL_GetMouseState((int*) &this->pointer_x, (int*) &this->pointer_y);
 		
@@ -60,7 +62,11 @@
 				return;
 				
 			} else if (event.type == SDL_MOUSEBUTTONDOWN) {
-				this->pointer_click_type = 1;
+				kos_is_mouse_pressed = 1;
+				return;
+				
+			} else if (event.type == SDL_MOUSEBUTTONUP) {
+				kos_is_mouse_pressed = 0;
 				return;
 				
 			}
