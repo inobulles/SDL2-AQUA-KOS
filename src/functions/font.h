@@ -4,12 +4,12 @@
 	
 	#include "../macros_and_inclusions.h"
 	
-	font_t new_font(const char* path, unsigned long long size) { KOS_TODO }
+	font_t new_font(const char* path, unsigned long long size) { KOS_TODO; return -1; }
 	void font_remove(font_t this) { KOS_TODO }
 	
-	texture_t create_texture_from_font(font_t* this, const char* text) { KOS_TODO }
+	texture_t create_texture_from_font(font_t* this, const char* text) { KOS_TODO; return -1; }
 	
-	unsigned long long get_font_width(font_t* this, const char* text) { KOS_TODO }
-	unsigned long long get_font_height(font_t* this, const char* text) { KOS_TODO }
+	unsigned long long get_font_width(font_t* this, const char* text) { KOS_TODO; return -1; }
+	unsigned long long get_font_height(font_t* this, const char* text) { KOS_TODO; return -1; }
 	
 #endif

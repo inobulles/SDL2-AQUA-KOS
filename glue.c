@@ -27,7 +27,7 @@ void main(void) {
 	#if !CODE_ROM
 		FILE* file = fopen(ROM_PATH, "rb");
 		
-		if (file == NULL) {
+		if (!file) {
 			printf("WARNING Could not open ROM file (`"ROM_PATH"`)\n");
 			kos_quit(&kos);
 			exit(1);

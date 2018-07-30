@@ -44,85 +44,73 @@
 	
 	#define BMP_MAGIC 0x4D42
 	
-	void bmp_load(bitmap_image_t* __this, unsigned long long _path) {
-		printf("%s\n", __func__);
-		unsigned long long bytes;
-		
+	void bmp_load(bitmap_image_t* this, unsigned long long _path) {
 		char* buffer;
-		char* original;
-		
 		GET_PATH((char*) _path);
 		
-		if (load_asset_bytes(path, &buffer, &bytes)) {
+		FILE* file = fopen(path, "rb");
+		
+		if (!file) {
 			printf("WARNING Image file could not be opened (probably wrong path `%s`)\n", path);
 			return;
-	
-		} else {
-			original = buffer;
-	
+			
 		}
-	
+		
 		bitmap_header_t header;
 		bitmap_info_header_t info_header;
-	
-		header = *((bitmap_header_t*) buffer);
-		buffer += sizeof(bitmap_header_t);
-	
-		if (header.magic != BMP_MAGIC) {
-			printf("WARNING File is not valid bitmap image\n");
-			mfree(original, bytes);
+		
+		fread((char*) &header, sizeof(bitmap_header_t), 1, file);
+		
+		if (header.magic != 0x4D42) {
+			printf("WARNING File is not a bitmap image\n");
+			fclose(file);
+			
 			return;
-	
+			
 		}
-	
-		info_header = *((bitmap_info_header_t*) buffer);
-		//~ buffer += sizeof(bitmap_info_header_t);
-	
-		__this->image_size = info_header.image_bytes / sizeof(unsigned long long);
-		__this->bpp = (unsigned long long) info_header.bpp;
-	
-		__this->width = (unsigned long long) info_header.width;
-		__this->height = (unsigned long long) info_header.height;
-	
+		
+		fread((char*) &info_header, sizeof(bitmap_info_header_t), 1, file);
+		
+		this->image_size = info_header.image_bytes / sizeof(unsigned long long);
+		this->width = info_header.width;
+		this->height = info_header.height;
+		
 		unsigned char* char_data = (unsigned char*) malloc(info_header.image_bytes);
 		unsigned char temp;
-	
-		buffer = original;
-		buffer += header.offset;
-	
-		memcpy(char_data, buffer, info_header.image_bytes);
-	
+		
+		fseek(file, header.offset, SEEK_SET);
+		fread(char_data, info_header.image_bytes, 1, file);
+		this->bpp = info_header.bpp;
+		
 		int i;
-		for (i = 0; i < info_header.image_bytes; i += __this->bpp / 8) {
-			if (__this->bpp == 32) {
+		for (i = 0; i < info_header.image_bytes; i += this->bpp / 8) {
+			if (this->bpp == 32) {
 				unsigned char a = char_data[i];
 				unsigned char r = char_data[i + 1];
 				unsigned char g = char_data[i + 2];
 				unsigned char b = char_data[i + 3];
-	
+				
 				char_data[i] = b;
 				char_data[i + 1] = g;
 				char_data[i + 2] = r;
 				char_data[i + 3] = a;
-	
+				
 			} else {
 				temp = char_data[i];
 				char_data[i] = char_data[i + 2];
 				char_data[i + 2] = temp;
-	
-				printf("%d %d %d\n", buffer[i], buffer[i + 1], buffer[i + 2]);
-	
+				
 			}
-	
+			
 		}
-	
-		__this->data = (unsigned long long*) char_data;
-		mfree(original, bytes);
+		
+		this->data = (unsigned long long*) char_data;
+		fclose(file);
 	
 	}
 	
-	void bmp_free(bitmap_image_t* __this) {
-		mfree(__this->data, __this->image_size * sizeof(unsigned long long));
+	void bmp_free(bitmap_image_t* this) {
+		free(this->data/*, this->image_size * sizeof(unsigned long long)*/);
 	
 	}
 	

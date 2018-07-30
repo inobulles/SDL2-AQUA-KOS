@@ -7,7 +7,7 @@ if [ ! -d "asm/" ]; then
 	mv AQUA-CW asm
 fi
 
-gcc glue.c -lSDL2 -lGL -lGLU
+gcc glue.c -Werror -Wall -Wno-unused-variable -Wno-main -lSDL2 -lGL -lGLU
 ./a.out
 
 exit 0
