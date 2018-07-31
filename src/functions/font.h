@@ -117,6 +117,14 @@
 			}
 			
 			SDL_LockSurface(this->surface);
+			uint64_t* pixels = (uint64_t*) this->surface->pixels;
+			
+			unsigned long long i;
+			for (i = 0; i < (this->surface->w * this->surface->h) / 2; i++) {
+				pixels[i] &= 0xFF000000FF000000;
+				pixels[i] += 0x00FFFFFF00FFFFFF;
+				
+			}
 			
 		}
 		
