@@ -8,6 +8,8 @@
 	#include "gl_common/shaders.h"
 	#include "gl_common/texture.h"
 	
+	#include "functions/font.h"
+	
 	static const char* temp_gl_2_vertex_shader   = "#version 120\n\nvoid main(void) {\n\tgl_Position  = vec4(0, 0, 0, 0);\n\t\n}\n"; /// TODO
 	static const char* temp_gl_2_fragment_shader = "#version 120\n\nvoid main(void) {\n\tgl_FragColor = vec4(1, 0, 0, 1);\n\t\n}\n";
 	
@@ -15,6 +17,8 @@
 		SDL_GL_DeleteContext(this->context);
 		SDL_DestroyWindow(this->window);
 		SDL_Quit();
+		
+		kos_destroy_fonts();
 		
 		printf("Destroyed all SDL subsystem\n");
 		exit(0);
@@ -37,13 +41,15 @@
 		this->window = SDL_CreateWindow("AQUA 3.X SDL2 KOS", \
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, \
 			this->width, this->height, \
-			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL/* | SDL_WINDOW_RESIZABLE*/);
 		
 		if (this->window == NULL) {
 			printf("ERROR SDL2 window could not be created (%s)\n", SDL_GetError());
 			KOS_ERROR
 			
 		}
+		
+		kos_init_fonts();
 		
 		this->context = SDL_GL_CreateContext(this->window);
 		const char* error_message = SDL_GetError();
@@ -108,7 +114,6 @@
 	#include "functions/system.h"
 	#include "functions/fs.h"
 	#include "functions/socket.h"
-	#include "functions/font.h"
 	#include "functions/dummy.h"
 	
 	#include "functions/decoders/bmp.h"

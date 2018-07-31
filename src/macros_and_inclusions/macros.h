@@ -11,7 +11,7 @@
 	#endif
 	
 	#ifndef SHARP_TEXTURES
-		#define SHARP_TEXTURES 0
+		#define SHARP_TEXTURES 1
 	#endif
 	
 	#if !defined(KOS_ORIGINAL_WIDTH) || !defined(KOS_ORIGINAL_HEIGHT)
@@ -19,7 +19,7 @@
 		#define KOS_ORIGINAL_HEIGHT 480
 	#endif
 	
-	#ifndef KOS_EXIT
+	#ifndef KOS_ERROR
 		#define KOS_ERROR { \
 			kos_quit(this); \
 			return 1; \
