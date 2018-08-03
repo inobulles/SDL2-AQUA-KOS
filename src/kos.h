@@ -96,6 +96,16 @@
 		//~ glEnable(GL_LINE_SMOOTH);
 		//~ glEnable(GL_POLYGON_SMOOTH);
 		
+		glMatrixMode(GL_PROJECTION);
+		
+		glViewport(0, 0, this->width, this->height);
+		glOrtho(-1.0, 1.0, -1.0, 1.0, -100.0, 100.0);
+		
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		
+		glTranslatef(0.0f, 0.0f, -3.0f);
+		
 		if (SDL_GL_SetSwapInterval(1) < 0) {
 			printf("WARNING Failed to enable VSync (this may cause problems down the line)\n");
 			this->warning_count++;
