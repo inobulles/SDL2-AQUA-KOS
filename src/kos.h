@@ -20,7 +20,7 @@
 		
 		kos_destroy_fonts();
 		
-		printf("Destroyed all SDL subsystem\n");
+		printf("Destroyed all SDL subsystems\n");
 		exit(0);
 		
 	}
@@ -84,6 +84,9 @@
 		
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_DEPTH_TEST);
+		
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.0f);
 		
 		//~ glHint(GL_POINT_SMOOTH, GL_NICEST);
 		//~ glHint(GL_LINE_SMOOTH, GL_NICEST);
