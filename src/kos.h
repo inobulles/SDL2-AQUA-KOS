@@ -112,11 +112,11 @@
 			
 		}
 		
-		if (gl_load_shaders(&this->shader_program, (char*) temp_gl_2_vertex_shader, (char*) temp_gl_2_fragment_shader)) {
-			printf("ERROR Failed to create GL shader program\n");
-			KOS_ERROR
-			
-		}
+		//~ if (gl_load_shaders(&this->shader_program, (char*) temp_gl_2_vertex_shader, (char*) temp_gl_2_fragment_shader)) {
+			//~ printf("ERROR Failed to create GL shader program\n");
+			//~ KOS_ERROR
+			//~ 
+		//~ }
 		
 		//~ glUseProgram(this->shader_program);
 		return 0;
