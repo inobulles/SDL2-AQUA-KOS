@@ -27,7 +27,9 @@
 	
 	int kos_init(kos_t* this) {
 		current_kos  = this;
+		
 		this->window = NULL;
+		this->context = NULL;
 		
 		this->width  = KOS_ORIGINAL_WIDTH;
 		this->height = KOS_ORIGINAL_HEIGHT;
@@ -50,12 +52,10 @@
 		}
 		
 		kos_init_fonts();
-		
 		this->context = SDL_GL_CreateContext(this->window);
-		const char* error_message = SDL_GetError();
 		
-		if (*error_message != '\0') {
-			printf("ERROR SDL2 GL context could not be created (%s)\n", error_message);
+		if (this->context == NULL) {
+			printf("ERROR SDL2 GL context could not be created (%s)\n", SDL_GetError());
 			KOS_ERROR
 			
 		}
