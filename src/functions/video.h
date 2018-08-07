@@ -47,6 +47,7 @@
 	}
 	
 	static unsigned char kos_is_mouse_pressed = 0;
+	static unsigned char kos_has_clicked = 0;
 	
 	void get_events(event_list_t* this) { // I guess this shouldn't be here but idc tbh
 		SDL_Event event;
@@ -62,6 +63,7 @@
 				return;
 				
 			} else if (event.type == SDL_MOUSEBUTTONDOWN) {
+				kos_has_clicked = 1;
 				kos_is_mouse_pressed = 1;
 				return;
 				

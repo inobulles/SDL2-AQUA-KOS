@@ -5,7 +5,7 @@
 static kos_t kos;
 static program_t de_program;
 
-#define ROM_PATH "ROM (temp)"
+#define ROM_PATH "yct4 rom"
 #define CODE_ROM 0
 
 #if CODE_ROM
@@ -13,6 +13,8 @@ static program_t de_program;
 #endif
 
 void main(void) {
+	click_proxy = 1;
+	
 	printf("\nControl passed to the CW\n");
 	printf("Initializing the KOS ...\n");
 	
@@ -83,7 +85,15 @@ void main(void) {
 	printf("Starting run setup phase ...\n");
 	program_run_setup_phase(&de_program);
 	
-	while (!program_run_loop_phase(&de_program));
+	while (!program_run_loop_phase(&de_program)) { // kos -> cw communication goes here
+		if (kos_has_clicked) { /// REMME
+			kos_has_clicked = 0;
+			click_proxy = 1;
+			
+		}
+		
+	}
+	
 	printf("DE return code is %d\n", de_program.error_code);
 	
 	program_free(&de_program);
