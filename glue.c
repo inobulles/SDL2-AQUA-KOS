@@ -5,7 +5,7 @@
 static kos_t kos;
 static program_t de_program;
 
-#define ROM_PATH "yct4 rom"
+#define ROM_PATH "ROM (temp)"
 #define CODE_ROM 0
 
 #if CODE_ROM

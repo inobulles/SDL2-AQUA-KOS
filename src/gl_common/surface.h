@@ -35,16 +35,18 @@
 	void surface_scroll(surface_t* this, signed long long _x, signed long long _y, unsigned long long _width, unsigned long long _height) {
 		this->scroll_texture = 1;
 		
-		float x      = (float) _x      / _SI64_MAX_MARGIN;
-		float y      = (float) _y      / _SI64_MAX_MARGIN;
+		float x      = ((float) _x      / _SI64_MAX_MARGIN / 4) + 0.5f;
+		float y      = ((float) _y      / _SI64_MAX_MARGIN / 4) + 0.5f;
 		
-		float width  = (float) _width  / _UI64_MAX_MARGIN;
-		float height = (float) _height / _UI64_MAX_MARGIN;
+		float width  =  (float) _width  / _UI64_MAX_MARGIN / 2;
+		float height =  (float) _height / _UI64_MAX_MARGIN / 2;
+		
+		y = -y - height;
 		
 		int i;
 		for (i = 0; i < 4; i++) {
-			this->texture_coords[i].x = (GLfloat) (texture_coords[i * 2] * width  + x);
-			this->texture_coords[i].y = (GLfloat) (texture_coords[i * 2] * height + y);
+			this->texture_coords[i].x = (GLfloat) (texture_coords[i * 2]     * width  + x);
+			this->texture_coords[i].y = (GLfloat) (texture_coords[i * 2 + 1] * height + y);
 			
 		}
 		

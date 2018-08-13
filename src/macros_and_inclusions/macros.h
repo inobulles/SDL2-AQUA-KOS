@@ -3,7 +3,7 @@
 	#define __AQUA__SDL2_SRC_MACROS_AND_INCLUSIONS_MACROS_H
 	
 	#ifndef SYSTEM_ACCESS
-		#define SYSTEM_ACCESS 0
+		#define SYSTEM_ACCESS 1 // 0
 	#endif
 	
 	#ifndef KOS_TEXTURE_WARNING
@@ -15,8 +15,8 @@
 	#endif
 	
 	#if !defined(KOS_ORIGINAL_WIDTH) || !defined(KOS_ORIGINAL_HEIGHT)
-		#define KOS_ORIGINAL_WIDTH 800
-		#define KOS_ORIGINAL_HEIGHT 480
+		#define KOS_ORIGINAL_WIDTH 670
+		#define KOS_ORIGINAL_HEIGHT 520
 	#endif
 	
 	#ifndef KOS_ERROR
