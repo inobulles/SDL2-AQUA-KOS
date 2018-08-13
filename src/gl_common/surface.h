@@ -41,7 +41,7 @@
 		float width  =  (float) _width  / _UI64_MAX_MARGIN / 2;
 		float height =  (float) _height / _UI64_MAX_MARGIN / 2;
 		
-		y = -y - height;
+		//~ y = -y - height;
 		
 		int i;
 		for (i = 0; i < 4; i++) {

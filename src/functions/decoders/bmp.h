@@ -44,7 +44,7 @@
 	
 	#define BMP_MAGIC 0x4D42
 	
-	void bmp_load(bitmap_image_t* this, unsigned long long _path) {
+	void bmp_load(bitmap_image_t* this, unsigned long long _path) { /// TODO flip left to right
 		char* buffer;
 		GET_PATH((char*) _path);
 		
