@@ -99,7 +99,7 @@
 		glMatrixMode(GL_PROJECTION);
 		
 		glViewport(0, 0, this->width, this->height);
-		glOrtho(-1.0, 1.0, -1.0, 1.0, -100.0, 100.0);
+		glOrtho(-1.0, 1.0, -1.0, 1.0, -100.0, 500.0);
 		
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
