@@ -119,6 +119,8 @@
 		//~ }
 		
 		//~ glUseProgram(this->shader_program);
+		
+		printf("Finished KOS initialization with %d errors\n", this->warning_count);
 		return 0;
 		
 	}
