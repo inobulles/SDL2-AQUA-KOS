@@ -72,6 +72,7 @@
 		printf("\tRenderer:                 %s\n", glGetString(GL_RENDERER));
 		printf("\tVersion:                  %s\n", glGetString(GL_VERSION));
 		printf("\tShading language version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+		//~ printf("\tExtensions:               %s\n", glGetString(GL_EXTENSIONS));
 		
 		KOS_BEST_GL_VERSION
 		printf("Using OpenGL version %d.%d\n", kos_best_gl_version_major, kos_best_gl_version_minor);
@@ -99,7 +100,7 @@
 		glMatrixMode(GL_PROJECTION);
 		
 		glViewport(0, 0, this->width, this->height);
-		glOrtho(-1.0, 1.0, -1.0, 1.0, -100.0, 500.0);
+		glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -100.0f, 500.0f);
 		
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
