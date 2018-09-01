@@ -10,6 +10,7 @@
 	}
 	
 	void fs_read(const char* path, char** data, unsigned long long* bytes) { KOS_TODO }
+	void fs_write(const char* path, const char* data, unsigned long long* bytes) { KOS_TODO }
 	void fs_free(char** data, unsigned long long bytes) { KOS_TODO }
 	
 #endif
