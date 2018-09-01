@@ -9,8 +9,31 @@
 		
 	}
 	
-	void fs_read(const char* path, char** data, unsigned long long* bytes) { KOS_TODO }
-	void fs_free(char** data, unsigned long long bytes) { KOS_TODO }
+	unsigned long long fs_read(const char* path, char** data, unsigned long long* bytes) {
+		FILE* file = fopen(path, "rb");
+		
+		if (!file) {
+			printf("WARNING File `%s` could not be opened\n", path);
+			return 1;
+			
+		}
+		
+		fseek(file, 0, SEEK_END);
+		*bytes = ftell(file);
+		rewind(file);
+		
+		*data = (char*) malloc(*bytes + 1);
+		fread(*data, *bytes, sizeof(char), file);
+		
+		fclose(file);
+		return 0;
+		
+	}
+	
+	void fs_free(char* data, unsigned long long bytes) {
+		free(data);
+		
+	}
 	
 	unsigned long long fs_write(const char* path, const char* data, unsigned long long bytes) {
 		FILE* file = fopen(path, "wb");
