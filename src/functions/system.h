@@ -50,8 +50,9 @@
 	}
 	
 	unsigned long long is_device_supported(const char* device) {
-		if (strcmp(device, "texture") == 0) return DEVICE_TEXTURE;
-		return                                     DEVICE_NULL;
+		if      (strcmp(device, "texture")  == 0) return DEVICE_TEXTURE;
+		else if (strcmp(device, "keyboard") == 0) return DEVICE_KEYBOARD;
+		return                                           DEVICE_NULL;
 		
 	}
 	
