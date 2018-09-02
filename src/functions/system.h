@@ -63,7 +63,9 @@
 		
 		switch (device) {
 			case DEVICE_KEYBOARD: {
-				result = &get_device_keyboard_key;
+				if (strcmp(extra, "get most recent key press") == 0) result = &get_device_keyboard_key;
+				else printf("WARNING The command you have passed to the keyboard device (%s) is unrecognized\n", extra);
+				
 				break;
 				
 			} default: {
@@ -81,13 +83,8 @@
 	void send_device(unsigned long long device, const char* extra, unsigned long long* data) {
 		switch (device) {
 			case DEVICE_TEXTURE: {
-				if (strcmp(extra, "sharp") == 0) {
-					SHARP_TEXTURES = *data;
-					
-				} else {
-					printf("WARNING The command you have passed to the texture device (%s) is unrecognized\n");
-					
-				}
+				if (strcmp(extra, "sharp") == 0) SHARP_TEXTURES = *data;
+				else printf("WARNING The command you have passed to the texture device (%s) is unrecognized\n", extra);
 				
 				break;
 				
