@@ -57,14 +57,22 @@
 	}
 	
 	static unsigned long long get_device_keyboard_key = 0;
+	static unsigned long long get_device_keyboard_key_packet;
 	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
 		unsigned long long* result = (void*) 0;
 		
 		switch (device) {
 			case DEVICE_KEYBOARD: {
-				if (strcmp(extra, "press scancode") == 0) result = &get_device_keyboard_key;
-				else printf("WARNING The command you have passed to the keyboard device (%s) is unrecognized\n", extra);
+				if (strcmp(extra, "press scancode") == 0) {
+					get_device_keyboard_key_packet =  get_device_keyboard_key;
+					get_device_keyboard_key        = 0;
+					result                         = &get_device_keyboard_key_packet;
+					
+				} else {
+					printf("WARNING The command you have passed to the keyboard device (%s) is unrecognized\n", extra);
+					
+				}
 				
 				break;
 				

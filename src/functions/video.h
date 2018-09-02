@@ -52,7 +52,6 @@
 	static unsigned long long get_device_keyboard_key;
 	
 	void get_events(event_list_t* this) { // I guess this shouldn't be here but idc tbh
-		get_device_keyboard_key = 0;
 		SDL_Event event;
 		
 		this->quit = 0;
