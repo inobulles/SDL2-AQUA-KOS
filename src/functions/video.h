@@ -49,7 +49,10 @@
 	static unsigned char kos_is_mouse_pressed = 0;
 	static unsigned char kos_has_clicked = 0;
 	
+	static unsigned long long get_device_keyboard_key;
+	
 	void get_events(event_list_t* this) { // I guess this shouldn't be here but idc tbh
+		get_device_keyboard_key = 0;
 		SDL_Event event;
 		
 		this->quit = 0;
@@ -60,16 +63,20 @@
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				this->quit = 1;
-				return;
+				break;
 				
 			} else if (event.type == SDL_MOUSEBUTTONDOWN) {
 				kos_has_clicked = 1;
 				kos_is_mouse_pressed = 1;
-				return;
+				break;
 				
 			} else if (event.type == SDL_MOUSEBUTTONUP) {
 				kos_is_mouse_pressed = 0;
-				return;
+				break;
+				
+			} else if (event.type == SDL_KEYDOWN) {
+				get_device_keyboard_key = event.key.keysym.scancode;
+				break;
 				
 			}
 			

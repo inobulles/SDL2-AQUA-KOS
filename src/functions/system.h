@@ -63,7 +63,7 @@
 		
 		switch (device) {
 			case DEVICE_KEYBOARD: {
-				if (strcmp(extra, "get most recent key press") == 0) result = &get_device_keyboard_key;
+				if (strcmp(extra, "press scancode") == 0) result = &get_device_keyboard_key;
 				else printf("WARNING The command you have passed to the keyboard device (%s) is unrecognized\n", extra);
 				
 				break;
