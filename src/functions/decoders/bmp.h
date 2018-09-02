@@ -104,7 +104,17 @@
 			
 		}
 		
-		this->data = (unsigned long long*) char_data;
+		this->data           = (unsigned long long*) malloc(info_header.image_bytes);
+		unsigned char* data8 = (unsigned char*)      this->data;
+		unsigned long long pitch = info_header.width * (info_header.bpp / 8);
+		
+		int y;
+		for (y = 0; y < info_header.height; y++) {
+			memcpy(data8 + (info_header.height - y - 1) * pitch, char_data + y * pitch, pitch);
+			
+		}
+		
+		free(char_data);
 		fclose(file);
 	
 	}
