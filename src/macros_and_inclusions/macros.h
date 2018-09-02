@@ -10,8 +10,11 @@
 		#define KOS_TEXTURE_WARNING 0
 	#endif
 	
-	#ifndef SHARP_TEXTURES
-		#define SHARP_TEXTURES 1
+	#ifndef KOS_SHARP_TEXTURES
+		//~ #define SHARP_TEXTURES 1
+		unsigned long long SHARP_TEXTURES = 0;
+	#else
+		unsigned long long SHARP_TEXTURES = KOS_SHARP_TEXTURES;
 	#endif
 	
 	#if !defined(KOS_ORIGINAL_WIDTH) || !defined(KOS_ORIGINAL_HEIGHT)

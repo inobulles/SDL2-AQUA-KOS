@@ -62,7 +62,29 @@
 	}
 	
 	void send_device(unsigned long long device, const char* extra, unsigned long long* data) {
-		KOS_TODO
+		switch (device) {
+			case DEVICE_TEXTURE: {
+				if (strcmp(extra, "sharp") == 0) {
+					SHARP_TEXTURES = *data;
+					
+				} else {
+					printf("WARNING The command you have passed to the texture device (%s) is unrecognized\n");
+					
+				}
+				
+				break;
+				
+			} case DEVICE_NULL: {
+				printf("WARNING The device you have selected is DEVICE_NULL\n");
+				break;
+				
+			} default: {
+				printf("WARNING Device %lld does not seem to exist\n", device);
+				break;
+				
+			}
+			
+		}
 		
 	}
 	
