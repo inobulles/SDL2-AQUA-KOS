@@ -80,7 +80,7 @@
 				break;
 				
 			} default: {
-				printf("WARNING Device %lld does not seem to exist\n", device);
+				printf("WARNING Device %lld does not seem to exist or doesn't seem to accept sent commands\n", device);
 				break;
 				
 			}
