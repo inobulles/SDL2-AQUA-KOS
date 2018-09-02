@@ -56,9 +56,25 @@
 		
 	}
 	
+	static unsigned long long get_device_keyboard_key = 0;
+	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
-		KOS_TODO
-		return NULL;
+		unsigned long long* result = (void*) 0;
+		
+		switch (device) {
+			case DEVICE_KEYBOARD: {
+				result = &get_device_keyboard_key;
+				break;
+				
+			} default: {
+				printf("WARNING Device %lld does not seem to exist or doesn't seem to accept `get` commands\n", device);
+				break;
+				
+			}
+			
+		}
+		
+		return result;
 		
 	}
 	
@@ -80,7 +96,7 @@
 				break;
 				
 			} default: {
-				printf("WARNING Device %lld does not seem to exist or doesn't seem to accept sent commands\n", device);
+				printf("WARNING Device %lld does not seem to exist or doesn't seem to accept `send` commands\n", device);
 				break;
 				
 			}
