@@ -8,7 +8,6 @@ void mfree(void* ptr, unsigned long long bytes) { // for some reason, this was n
 }
 
 static kos_t kos;
-static program_t de_program;
 
 #define ROM_PATH "ROM.zed"
 #define OLD_ROM_FORMAT 0
@@ -24,30 +23,17 @@ static program_t de_program;
 #endif
 
 signed long long load_rom(const char* path) {
-	KOS_TODO
+	void*                 __pointer_current_program_previous = __pointer_current_program;
+	__pointer__program_t* __pointer___this_previous          = __pointer___this;
 	
-}
-
-void main(void) {
-	//~ click_proxy = 1;
-	
-	printf("\nControl passed to the CW\n");
-	printf("Initializing the KOS ...\n");
-	
-	if (kos_init(&kos)) {
-		printf("WARNING Failed to initialize KOS. Exitting ...\n");
-		exit(1);
-		
-	}
-	
-	printf("Entering the DE ...\n");
+	program_t de_program;
 	
 	#if OLD_ROM_FORMAT
 		#if !CODE_ROM
-			FILE* file = fopen(ROM_PATH, "rb");
+			FILE* file = fopen(path, "rb");
 			
 			if (!file) {
-				printf("WARNING Could not open ROM file (`"ROM_PATH"`)\n");
+				printf("WARNING Could not open ROM file (%s)\n", path);
 				kos_quit(&kos);
 				exit(1);
 				
@@ -99,7 +85,7 @@ void main(void) {
 			}
 		#endif
 	#else
-		FILE* fp = fopen(ROM_PATH, "rb");
+		FILE* fp = fopen(path, "rb");
 		fseek(fp, 0, SEEK_END);
 		
 		unsigned long long bytes = ftell(fp);
@@ -123,12 +109,35 @@ void main(void) {
 		
 	}
 	
-	printf("DE return code is %d\n", de_program.error_code);
 	program_free(&de_program);
 	
 	#if !OLD_ROM_FORMAT
 		mfree(rom, bytes);
 	#endif
+	
+	__pointer_current_program = __pointer_current_program_previous;
+	__pointer___this          = __pointer___this_previous;
+	
+	return de_program.error_code;
+	
+}
+
+void main(void) {
+	//~ click_proxy = 1;
+	
+	printf("\nControl passed to the CW\n");
+	printf("Initializing the KOS ...\n");
+	
+	if (kos_init(&kos)) {
+		printf("WARNING Failed to initialize KOS. Exitting ...\n");
+		exit(1);
+		
+	}
+	
+	printf("Entering the DE ...\n");
+	
+	int error_code = load_rom(ROM_PATH);
+	printf("DE return code is %d\n", error_code);
 	
 	printf("Quitting KOS ...\n");
 	kos_quit(&kos);
