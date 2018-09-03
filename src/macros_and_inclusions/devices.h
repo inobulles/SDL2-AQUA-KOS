@@ -5,5 +5,6 @@
 	#define DEVICE_NULL     0
 	#define DEVICE_TEXTURE  1
 	#define DEVICE_KEYBOARD 2
+	#define DEVICE_WM       3
 	
 #endif

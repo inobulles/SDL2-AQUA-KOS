@@ -52,12 +52,15 @@
 	unsigned long long is_device_supported(const char* device) {
 		if      (strcmp(device, "texture")  == 0) return DEVICE_TEXTURE;
 		else if (strcmp(device, "keyboard") == 0) return DEVICE_KEYBOARD;
+		else if (strcmp(device, "wm")       == 0) return DEVICE_WM;
 		return                                           DEVICE_NULL;
 		
 	}
 	
 	static unsigned long long get_device_keyboard_key = 0;
 	static unsigned long long get_device_keyboard_key_packet;
+	
+	#define KOS_DEVICE_COMMAND_WARNING(device_name) printf("WARNING The command you have passed to the "device_name" device (%s) is unrecognized\n", extra);
 	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
 		unsigned long long* result = (void*) 0;
@@ -70,14 +73,18 @@
 					result                         = &get_device_keyboard_key_packet;
 					
 				} else {
-					printf("WARNING The command you have passed to the keyboard device (%s) is unrecognized\n", extra);
+					KOS_DEVICE_COMMAND_WARNING("keyboard")
 					
 				}
 				
 				break;
 				
+			} case DEVICE_NULL: {
+				printf("WARNING The device you have selected is DEVICE_NULL\n");
+				break;
+				
 			} default: {
-				printf("WARNING Device %lld does not seem to exist or doesn't seem to accept `get` commands\n", device);
+				printf("WARNING Device %lld does not seem to exist or doesn't accept `get` commands\n", device);
 				break;
 				
 			}
@@ -92,7 +99,13 @@
 		switch (device) {
 			case DEVICE_TEXTURE: {
 				if (strcmp(extra, "sharp") == 0) SHARP_TEXTURES = *data;
-				else printf("WARNING The command you have passed to the texture device (%s) is unrecognized\n", extra);
+				else KOS_DEVICE_COMMAND_WARNING("texture")
+				
+				break;
+				
+			} case DEVICE_WM: {
+				if (strcmp(extra, "visible") == 0 && *data == HIDDEN) SDL_MinimizeWindow(current_kos->window);
+				else KOS_DEVICE_COMMAND_WARNING("wm")
 				
 				break;
 				
@@ -101,7 +114,7 @@
 				break;
 				
 			} default: {
-				printf("WARNING Device %lld does not seem to exist or doesn't seem to accept `send` commands\n", device);
+				printf("WARNING Device %lld does not seem to exist or doesn't accept `send` commands\n", device);
 				break;
 				
 			}

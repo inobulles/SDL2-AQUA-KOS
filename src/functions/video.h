@@ -39,6 +39,8 @@
 	}
 	
 	void set_video_visibility(unsigned long long state) {
+		KOS_DEPRECATED
+		
 		if (state == HIDDEN) {
 			SDL_MinimizeWindow(current_kos->window);
 			
