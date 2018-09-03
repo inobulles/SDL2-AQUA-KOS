@@ -23,7 +23,7 @@ static program_t de_program;
 	#endif
 #endif
 
-void load_rom(const char* path) {
+signed long long load_rom(const char* path) {
 	KOS_TODO
 	
 }
