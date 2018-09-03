@@ -23,6 +23,11 @@ static program_t de_program;
 	#endif
 #endif
 
+void load_rom(const char* path) {
+	KOS_TODO
+	
+}
+
 void main(void) {
 	//~ click_proxy = 1;
 	
