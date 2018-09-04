@@ -124,10 +124,15 @@
 		int warning = 0;
 		bitmap_image_t temp_bmp;
 		
-		bmp_load(&temp_bmp, (unsigned long long) "root/wallpapers/wallpaper.h");
+		bmp_load(&temp_bmp, (unsigned long long) "wallpaper/wallpaper.bmp");
 		predefined_background_texture = texture_create(temp_bmp.data, temp_bmp.bpp, temp_bmp.width, temp_bmp.height);
 		bmp_free(&temp_bmp);
 		warning += predefined_background_texture == -1;
+		
+		bmp_load(&temp_bmp, (unsigned long long) "wallpaper/frost.bmp");
+		predefined_frost_background_texture = texture_create(temp_bmp.data, temp_bmp.bpp, temp_bmp.width, temp_bmp.height);
+		bmp_free(&temp_bmp);
+		warning += predefined_frost_background_texture == -1;
 		
 		return warning;
 		
