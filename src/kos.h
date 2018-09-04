@@ -13,6 +13,8 @@
 	static const char* temp_gl_2_vertex_shader   = "#version 120\n\nvoid main(void) {\n\tgl_Position  = vec4(0, 0, 0, 0);\n\t\n}\n"; /// TODO
 	static const char* temp_gl_2_fragment_shader = "#version 120\n\nvoid main(void) {\n\tgl_FragColor = vec4(1, 0, 0, 1);\n\t\n}\n";
 	
+	static int kos_setup_predefined_textures(kos_t* this);
+	
 	void kos_quit(kos_t* this) {
 		SDL_GL_DeleteContext(this->context);
 		SDL_DestroyWindow(this->window);
@@ -109,6 +111,14 @@
 		
 		if (SDL_GL_SetSwapInterval(1) < 0) {
 			printf("WARNING Failed to enable VSync (this may cause problems down the line)\n");
+			this->warning_count++;
+			
+		}
+		
+		printf("Setting up predefined textures ...\n");
+		
+		if (kos_setup_predefined_textures(this)) {
+			printf("WARNING Failed to setup predefined textures\n");
 			this->warning_count++;
 			
 		}
