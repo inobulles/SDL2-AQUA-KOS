@@ -24,7 +24,7 @@
 		
 	}
 	
-	unsigned long long video_width(void) { return current_kos->width; }
+	unsigned long long video_width (void) { return current_kos->width;  }
 	unsigned long long video_height(void) { return current_kos->height; }
 	
 	static unsigned long long kos_last_time;
@@ -52,6 +52,7 @@
 	static unsigned char kos_has_clicked = 0;
 	
 	static unsigned long long get_device_keyboard_key;
+	static unsigned long long resize_count;
 	
 	void get_events(event_list_t* this) { // I guess this shouldn't be here but idc tbh
 		SDL_Event event;
@@ -66,8 +67,26 @@
 				this->quit = 1;
 				break;
 				
-			} else if (event.type == SDL_RESIZE) {
-				this->resize = 1;
+			} else if (event.type == SDL_WINDOWEVENT) {
+				switch (event.window.event) {
+					case SDL_WINDOWEVENT_SIZE_CHANGED: {
+						resize_count++;
+						this->resize = 1;
+						
+						current_kos->width  = event.window.data1;
+						current_kos->height = event.window.data2;
+						
+						glViewport(0, 0, current_kos->width, current_kos->height);
+						
+						break;
+						
+					} default: {
+						break;
+						
+					}
+					
+				}
+				
 				break;
 				
 			} else if (event.type == SDL_MOUSEBUTTONDOWN) {

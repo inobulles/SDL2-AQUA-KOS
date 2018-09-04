@@ -49,7 +49,8 @@
 		signed long long layer;
 		unsigned long long alpha;
 		
-		unsigned long long has_texture;
+		uint32_t has_texture;
+		uint32_t resize_count;
 		texture_t texture;
 		
 		unsigned long long scroll_texture;
