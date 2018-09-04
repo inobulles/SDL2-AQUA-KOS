@@ -106,7 +106,6 @@
 		
 		this->scroll_texture = 0;
 		this->has_texture    = 0;
-		this->resize_count   = resize_count;
 		
 		surface_update(this);
 		surface_faces( this);
@@ -119,13 +118,6 @@
 	}
 	
 	int surface_draw(surface_t* this) {
-		//~ if (this->resize_count != resize_count) {
-			//~ this->resize_count =  resize_count;
-			//~ printf("WO\n");
-			//~ surface_update_vertices(this);
-			
-		//~ }
-		
 		switch (kos_best_gl_version_major) {
 			case 1: return 1;
 			case 2: return gl2_surface_draw(this);
