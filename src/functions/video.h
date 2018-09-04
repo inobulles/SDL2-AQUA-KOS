@@ -66,6 +66,10 @@
 				this->quit = 1;
 				break;
 				
+			} else if (event.type == SDL_RESIZE) {
+				this->resize = 1;
+				break;
+				
 			} else if (event.type == SDL_MOUSEBUTTONDOWN) {
 				kos_has_clicked = 1;
 				kos_is_mouse_pressed = 1;

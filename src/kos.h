@@ -43,7 +43,7 @@
 		this->window = SDL_CreateWindow("AQUA 3.X SDL2 KOS", \
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, \
 			this->width, this->height, \
-			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL /* | SDL_WINDOW_RESIZABLE*/);
+			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL/* | SDL_WINDOW_RESIZABLE*/);
 		
 		if (this->window == NULL) {
 			printf("ERROR SDL2 window could not be created (%s)\n", SDL_GetError());
