@@ -138,7 +138,7 @@
 		
 	}
 	
-	void kos_free_predefined_textures(kos_t* this) {
+	static void kos_free_predefined_textures(kos_t* this) {
 		if (predefined_background_texture       != -1) texture_remove(predefined_background_texture);
 		if (predefined_frost_background_texture != -1) texture_remove(predefined_frost_background_texture);
 		

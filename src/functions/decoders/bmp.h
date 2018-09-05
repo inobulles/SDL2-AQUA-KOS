@@ -72,7 +72,7 @@
 		fread((char*) &info_header, sizeof(bitmap_info_header_t), 1, file);
 		
 		this->image_size = info_header.image_bytes / sizeof(unsigned long long);
-		this->width = info_header.width;
+		this->width  = info_header.width;
 		this->height = info_header.height;
 		
 		unsigned char* char_data = (unsigned char*) malloc(info_header.image_bytes);
@@ -90,23 +90,23 @@
 				unsigned char g = char_data[i + 2];
 				unsigned char b = char_data[i + 3];
 				
-				char_data[i] = b;
+				char_data[i]     = b;
 				char_data[i + 1] = g;
 				char_data[i + 2] = r;
 				char_data[i + 3] = a;
 				
 			} else {
-				temp = char_data[i];
-				char_data[i] = char_data[i + 2];
+				temp             = char_data[i];
+				char_data[i]     = char_data[i + 2];
 				char_data[i + 2] = temp;
 				
 			}
 			
 		}
 		
-		this->data           = (unsigned long long*) malloc(info_header.image_bytes);
-		unsigned char* data8 = (unsigned char*)      this->data;
-		unsigned long long pitch = info_header.width * (info_header.bpp / 8);
+		this->data               = (unsigned long long*) malloc(info_header.image_bytes);
+		unsigned char* data8     = (unsigned char*)      this->data;
+		unsigned long long pitch = (unsigned long long)  info_header.width * (info_header.bpp / 8);
 		
 		int y;
 		for (y = 0; y < info_header.height; y++) {
