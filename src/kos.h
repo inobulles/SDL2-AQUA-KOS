@@ -13,13 +13,15 @@
 	static const char* temp_gl_2_vertex_shader   = "#version 120\n\nvoid main(void) {\n\tgl_Position  = vec4(0, 0, 0, 0);\n\t\n}\n"; /// TODO
 	static const char* temp_gl_2_fragment_shader = "#version 120\n\nvoid main(void) {\n\tgl_FragColor = vec4(1, 0, 0, 1);\n\t\n}\n";
 	
-	static int kos_setup_predefined_textures(kos_t* this);
+	static int  kos_setup_predefined_textures(kos_t* this);
+	static void kos_free_predefined_textures (kos_t* this);
 	
 	void kos_quit(kos_t* this) {
 		SDL_GL_DeleteContext(this->context);
 		SDL_DestroyWindow(this->window);
 		SDL_Quit();
 		
+		kos_free_predefined_textures(this);
 		kos_destroy_fonts();
 		
 		printf("Destroyed all SDL subsystems\n");
