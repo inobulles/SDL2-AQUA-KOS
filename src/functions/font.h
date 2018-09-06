@@ -31,10 +31,9 @@
 	#endif
 	
 	static void kos_unuse_font(kos_font_t* this) {
-		this->used = 0;
-		this->text = NULL;
-		
-		this->font = NULL;
+		this->used    = 0;
+		this->text    = NULL;
+		this->font    = NULL;
 		this->surface = NULL;
 		
 	}
@@ -64,6 +63,8 @@
 		
 	}
 	
+	unsigned long long video_height(void);
+	
 	font_t new_font(const char* _path, unsigned long long size) {
 		unsigned long long i;
 		for (i = 0; i < KOS_MAX_FONTS; i++) {
@@ -71,7 +72,7 @@
 				kos_fonts[i].used = 1;
 				
 				GET_PATH((char*) _path);
-				kos_fonts[i].font = TTF_OpenFont(path, size);
+				kos_fonts[i].font = TTF_OpenFont(path, ((float) size / _UI64_MAX) * (float) video_height());
 				
 				if (!kos_fonts[i].font) {
 					printf("WARNING Font could not be loaded (possibly an incorrect path? `%s`)\n", path);
