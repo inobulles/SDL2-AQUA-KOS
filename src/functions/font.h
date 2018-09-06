@@ -63,7 +63,7 @@
 		
 	}
 	
-	unsigned long long video_height(void);
+	unsigned long long video_width(void);
 	
 	font_t new_font(const char* _path, unsigned long long size) {
 		unsigned long long i;
@@ -72,7 +72,7 @@
 				kos_fonts[i].used = 1;
 				
 				GET_PATH((char*) _path);
-				kos_fonts[i].font = TTF_OpenFont(path, ((float) size / _UI64_MAX) * (float) video_height());
+				kos_fonts[i].font = TTF_OpenFont(path, ((float) size / _UI64_MAX) * (float) video_width());
 				
 				if (!kos_fonts[i].font) {
 					printf("WARNING Font could not be loaded (possibly an incorrect path? `%s`)\n", path);
