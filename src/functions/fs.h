@@ -9,14 +9,15 @@
 		
 	}
 	
+	#define FS_CHECK_FILE \
+		if (!file) { \
+			printf("WARNING File `%s` could not be opened\n", path); \
+			return 1; \
+		}
+	
 	unsigned long long fs_read(const char* path, char** data, unsigned long long* bytes) {
 		FILE* file = fopen(path, "rb");
-		
-		if (!file) {
-			printf("WARNING File `%s` could not be opened\n", path);
-			return 1;
-			
-		}
+		FS_CHECK_FILE
 		
 		fseek(file, 0, SEEK_END);
 		*bytes = ftell(file);
@@ -37,8 +38,11 @@
 	
 	unsigned long long fs_write(const char* path, const char* data, unsigned long long bytes) {
 		FILE* file = fopen(path, "wb");
+		FS_CHECK_FILE
+		
 		fwrite((const void*) data, sizeof(char), bytes, file);
 		fclose(file);
+		
 		return 0;
 		
 	}
