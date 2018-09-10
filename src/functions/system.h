@@ -63,11 +63,35 @@
 	
 	#define KOS_DEVICE_COMMAND_WARNING(device_name) printf("WARNING The command you have passed to the " device_name " device (%s) is unrecognized\n", extra);
 	
+	typedef struct {
+		char signature[sizeof(uint64_t)];
+		uint64_t x;
+		
+	} math_device_sqrt_t;
+	
+	static unsigned long long previous_math_device_sqrt_result;
+	#define FLOAT_ONE 1000000
+	
+	#include <math.h>
+	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
 		unsigned long long* result = (unsigned long long*) 0;
 		
 		switch (device) {
-			case DEVICE_KEYBOARD: {
+			case DEVICE_MATH: {
+				if (strcmp(extra, "sqrt") == 0) {
+					math_device_sqrt_t* data = (math_device_sqrt_t*) extra;
+					previous_math_device_sqrt_result = (unsigned long long) (sqrt((double) data->x / FLOAT_ONE) * FLOAT_ONE);
+					result = &previous_math_device_sqrt_result;
+					
+				} else {
+					KOS_DEVICE_COMMAND_WARNING("math")
+					
+				}
+				
+				break;
+				
+			} case DEVICE_KEYBOARD: {
 				if (strcmp(extra, "press scancode") == 0) {
 					get_device_keyboard_key_packet =  get_device_keyboard_key;
 					get_device_keyboard_key        = 0;
