@@ -6,5 +6,6 @@
 	#define DEVICE_TEXTURE  1
 	#define DEVICE_KEYBOARD 2
 	#define DEVICE_WM       3
+	#define DEVICE_MATH     4
 	
 #endif

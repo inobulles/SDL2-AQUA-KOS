@@ -53,17 +53,18 @@
 		if      (strcmp(device, "texture")  == 0) return DEVICE_TEXTURE;
 		else if (strcmp(device, "keyboard") == 0) return DEVICE_KEYBOARD;
 		else if (strcmp(device, "wm")       == 0) return DEVICE_WM;
-		return                                           DEVICE_NULL;
+		else if (strcmp(device, "math")     == 0) return DEVICE_MATH;
+		else                                      return DEVICE_NULL;
 		
 	}
 	
 	static unsigned long long get_device_keyboard_key = 0;
 	static unsigned long long get_device_keyboard_key_packet;
 	
-	#define KOS_DEVICE_COMMAND_WARNING(device_name) printf("WARNING The command you have passed to the "device_name" device (%s) is unrecognized\n", extra);
+	#define KOS_DEVICE_COMMAND_WARNING(device_name) printf("WARNING The command you have passed to the " device_name " device (%s) is unrecognized\n", extra);
 	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
-		unsigned long long* result = (void*) 0;
+		unsigned long long* result = (unsigned long long*) 0;
 		
 		switch (device) {
 			case DEVICE_KEYBOARD: {
