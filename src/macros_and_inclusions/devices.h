@@ -7,5 +7,6 @@
 	#define DEVICE_KEYBOARD 2
 	#define DEVICE_WM       3
 	#define DEVICE_MATH     4
+	#define DEVICE_CLOCK    5
 	
 #endif
