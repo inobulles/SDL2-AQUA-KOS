@@ -9,8 +9,11 @@ fi
 
 if [ ! -f "ROM.zed" ]; then
 	echo "WARNING ROM file was not found (ROM.zed), so attempting to install an extension (or run it if it already exists) so you can write C programs and compile them into ROMs ..."
-	echo "NOTE    You will have to create assembler/c/code/main.c to compile, obviously (all your headers will go in the same folder). Press enter to continue ..."
-	read a
+	
+	if [ "$0" = "" ]; then
+		echo "NOTE    You will have to create assembler/c/code/main.c to compile, obviously (all your headers will go in the same folder). Press enter to continue ..."
+		read a
+	fi
 	
 	if [ ! -d "assembler/" ]; then
 		git clone https://github.com/inobulles/AQUA-assembler
