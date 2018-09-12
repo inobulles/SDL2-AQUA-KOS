@@ -4,3 +4,7 @@ ROM.zed
 ROM (temp)
 assembler/
 quick_roms/
+
+root/theme.thm
+root/user.uda
+root/widgets.wps
