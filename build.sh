@@ -26,7 +26,9 @@ if [ ! -f "ROM.zed" ]; then
 	mv assembler/ROM.zed ROM.zed
 fi
 
-gcc glue.c -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-main -lSDL2 -lGL -lGLU -lSDL2_ttf -lm
-./a.out
+if [ "$2" = "" ]; then
+	gcc glue.c -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-main -lSDL2 -lGL -lGLU -lSDL2_ttf -lm
+	./a.out
+fi
 
 exit 0
