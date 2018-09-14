@@ -188,6 +188,8 @@
 	unsigned long long get_predefined_texture_width (unsigned long long name) { return get_predefined_texture_size(name)[0]; }
 	unsigned long long get_predefined_texture_height(unsigned long long name) { return get_predefined_texture_size(name)[1]; }
 	
+	#define GET_PREDEFINED_TEXTURE_SIZES 1
+	
 	void update_predefined_texture(unsigned long long name) {
 		switch (name) {
 			case TEXTURE_BACKGROUND: {
