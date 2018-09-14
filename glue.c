@@ -22,7 +22,9 @@ static kos_t kos;
 	#endif
 #endif
 
-signed long long load_rom(const char* path) {
+signed long long load_rom(unsigned long long __path) {
+	const char* path = (const char*) __path;
+	
 	void*                 __pointer_current_program_previous = __pointer_current_program;
 	__pointer__program_t* __pointer___this_previous          = __pointer___this;
 	
@@ -136,7 +138,7 @@ void main(void) {
 	
 	printf("Entering the DE ...\n");
 	
-	int error_code = load_rom(ROM_PATH);
+	int error_code = load_rom((unsigned long long) ROM_PATH);
 	printf("DE return code is %d\n", error_code);
 	
 	printf("Quitting KOS ...\n");
