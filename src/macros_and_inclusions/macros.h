@@ -18,7 +18,7 @@
 	#endif
 	
 	#if !defined(KOS_ORIGINAL_WIDTH) || !defined(KOS_ORIGINAL_HEIGHT)
-		#define KOS_ORIGINAL_WIDTH 800
+		#define KOS_ORIGINAL_WIDTH  800
 		#define KOS_ORIGINAL_HEIGHT 600
 	#endif
 	

@@ -208,4 +208,6 @@
 		
 	}
 	
+	#include "screenshot.h"
+	
 #endif
