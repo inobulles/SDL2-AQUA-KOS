@@ -10,11 +10,11 @@
 		
 		unsigned char* pixels = (unsigned char*) malloc(bytes);
 		glReadBuffer(GL_FRONT);
-		glReadPixels(0, 0, video_width(), video_height(), GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		glReadPixels(0, 0, (GLsizei) video_width(), (GLsizei) video_height(), GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 		
 		unsigned long long* data  = (unsigned long long*) malloc(bytes);
 		unsigned char*      data8 = (unsigned char*)      data;
-		unsigned long long  pitch = (unsigned long long)  video_width() * (bpp / 8);
+		unsigned long long  pitch = video_width() * (bpp / 8);
 		
 		int y;
 		for (y = 0; y < video_height(); y++) {

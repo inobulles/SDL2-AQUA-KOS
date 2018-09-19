@@ -88,8 +88,15 @@ signed long long load_rom(unsigned long long __path) {
 		#endif
 	#else
 		FILE* fp = fopen(path, "rb");
-		fseek(fp, 0, SEEK_END);
 		
+		if (!fp) {
+			printf("WARNING Could not open ROM file (%s)\n", path);
+			kos_quit(&kos);
+			exit(1);
+			
+		}
+		
+		fseek(fp, 0, SEEK_END);
 		unsigned long long bytes = ftell(fp);
 		rewind(fp);
 		
