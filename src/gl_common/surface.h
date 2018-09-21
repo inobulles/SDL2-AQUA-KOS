@@ -197,10 +197,10 @@
 	#define SURFACE_GRADIENT_FUNCTIONS 1
 	
 	#define KOS_SURF_SET_COLOUR_FOR_VERTEX(index) { \
-		this->colours[index].red   = red; \
-		this->colours[index].green = green; \
-		this->colours[index].blue  = blue; \
-		this->colours[index].alpha = alpha; \
+		this->colours[index].red   = (float) red   / _UI64_MAX; \
+		this->colours[index].green = (float) green / _UI64_MAX; \
+		this->colours[index].blue  = (float) blue  / _UI64_MAX; \
+		this->colours[index].alpha = (float) alpha / _UI64_MAX; \
 	}
 	
 	void surface_gradient_left(KOS_SURF_FULL_COLOUR_FUNCTION_PARAMS) {
