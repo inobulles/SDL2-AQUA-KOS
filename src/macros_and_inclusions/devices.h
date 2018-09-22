@@ -8,5 +8,6 @@
 	#define DEVICE_WM       3
 	#define DEVICE_MATH     4
 	#define DEVICE_CLOCK    5
+	#define DEVICE_ANDROID  6
 	
 #endif
