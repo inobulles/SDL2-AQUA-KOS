@@ -77,6 +77,7 @@
 						current_kos->height = event.window.data2;
 						
 						glViewport(0, 0, current_kos->width, current_kos->height);
+						update_all_font_sizes();
 						
 						break;
 						

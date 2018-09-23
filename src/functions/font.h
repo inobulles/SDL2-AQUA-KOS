@@ -7,6 +7,9 @@
 	
 	typedef struct {
 		unsigned char used;
+		
+		float size;
+		char  path[MAX_PATH_LENGTH];
 		char* text;
 		
 		TTF_Font* font;
@@ -72,7 +75,10 @@
 				kos_fonts[i].used = 1;
 				
 				GET_PATH((char*) _path);
-				kos_fonts[i].font = TTF_OpenFont(path, ((float) size / _UI64_MAX) * (float) video_width());
+				memcpy(kos_fonts[i].path, path, MAX_PATH_LENGTH * sizeof(char));
+				
+				kos_fonts[i].size = (float) size / _UI64_MAX;
+				kos_fonts[i].font = TTF_OpenFont(kos_fonts[i].path, kos_fonts[i].size * video_width());
 				
 				if (!kos_fonts[i].font) {
 					printf("WARNING Font could not be loaded (possibly an incorrect path? `%s`)\n", path);
@@ -90,6 +96,19 @@
 		
 		printf("WARNING You have surpassed the maximum font count (KOS_MAX_FONTS = %d)\n", KOS_MAX_FONTS);
 		return -1;
+		
+	}
+	
+	void update_all_font_sizes(void) {
+		unsigned long long i;
+		for (i = 0; i < KOS_MAX_FONTS; i++) {
+			if (kos_fonts[i].used) {
+				TTF_CloseFont(kos_fonts[i].font);
+				kos_fonts[i].font = TTF_OpenFont(kos_fonts[i].path, kos_fonts[i].size * video_width());
+				
+			}
+			
+		}
 		
 	}
 	
@@ -139,7 +158,7 @@
 			
 		}
 		
-		TTF_CloseFont(kos_fonts[this].font);
+		TTF_CloseFont(  kos_fonts[this].font);
 		kos_unuse_font(&kos_fonts[this]);
 		
 		return 0;
