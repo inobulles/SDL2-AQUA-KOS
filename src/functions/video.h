@@ -22,6 +22,10 @@
 	void video_flip(void) {
 		SDL_GL_SwapWindow(current_kos->window);
 		
+		#if KOS_3D_VISUALIZATION
+			glRotatef(1.0f, 0.0f, 1.0f, 0.0f);
+		#endif
+		
 	}
 	
 	unsigned long long video_width (void) { return current_kos->width;  }

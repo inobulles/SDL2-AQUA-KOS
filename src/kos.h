@@ -2,6 +2,8 @@
 #ifndef __AQUA__SDL2_SRC_KOS_H
 	#define __AQUA__SDL2_SRC_KOS_H
 	
+	#define KOS_3D_VISUALIZATION 0
+	
 	#include "macros_and_inclusions.h"
 	
 	#include "gl_common/surface.h"
@@ -102,14 +104,33 @@
 		//~ glEnable(GL_POLYGON_SMOOTH);
 		
 		glMatrixMode(GL_PROJECTION);
-		
 		glViewport(0, 0, this->width, this->height);
-		glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -100.0f, 500.0f);
+		
+		#if KOS_3D_VISUALIZATION
+			float fov   = tan(65.0f / 4);
+			float ratio = 1.0f;
+			
+			float near = 0.1f;
+			float far  = 500.0f;
+			
+			float center_x = 0.0f;
+			float center_y = 0.0f;
+			
+			glFrustum( \
+				near * (-fov * ratio + center_x), \
+				near * ( fov * ratio + center_x), \
+				near * (-fov         + center_y), \
+				near * ( fov         + center_y), \
+				near, far);
+			
+			glTranslatef(0.0f, 0.0f, -3.0f);
+		#else
+			glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -100.0f, 500.0f);
+			glTranslatef(0.0f, 0.0f, -100.0f);
+		#endif
 		
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		
-		glTranslatef(0.0f, 0.0f, -100.0f);
 		
 		if (SDL_GL_SetSwapInterval(1) < 0) {
 			printf("WARNING Failed to enable VSync (this may cause problems down the line)\n");

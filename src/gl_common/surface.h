@@ -19,7 +19,7 @@
 		
 		int i;
 		for (i = 0; i < 4; i++) {
-			this->vertices[i].z =           (GLfloat) this->layer;
+			this->vertices[i].z =           (GLfloat) this->layer / 256.0f;
 			
 			this->vertices[i].x =           (GLfloat) (width  * vertex_matrix[i * 3]     + x);
 			this->vertices[i].y =           (GLfloat) (height * vertex_matrix[i * 3 + 1] + y);
