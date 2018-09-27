@@ -60,8 +60,14 @@
 		
 	}
 	
-	void fs_list_free(char** path) {
-		KOS_TODO;
+	void fs_list_free(char** list, unsigned long long count) {
+		unsigned long long i;
+		for (i = 0; i < count; i++) {
+			free(list[i]);
+			
+		}
+		
+		free(list);
 		
 	}
 	
