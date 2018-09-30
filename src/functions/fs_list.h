@@ -7,7 +7,8 @@
 	
 	#define FS_LIST_D_NAME_VALID (strcmp(directory->d_name, "..") != 0 && strcmp(directory->d_name, ".") != 0)
 	
-	unsigned long long fs_list_count(const char* path) {
+	unsigned long long fs_list_count(unsigned long long _path) {
+		GET_PATH((char*) _path);
 		unsigned long long count = 0;
 		
 		DIR* dp = opendir(path);
@@ -30,8 +31,10 @@
 		
 	}
 	
-	char** fs_list(const char* path) {
-		unsigned long long count   = fs_list_count(path);
+	char** fs_list(unsigned long long _path) {
+		GET_PATH((char*) _path);
+		
+		unsigned long long count   = fs_list_count(_path);
 		unsigned long long current = 0;
 		char** result              = (char**) malloc(count * sizeof(char*));
 		
@@ -60,14 +63,14 @@
 		
 	}
 	
-	void fs_list_free(char** list, unsigned long long count) {
+	void fs_list_free(unsigned long long list, unsigned long long count) {
 		unsigned long long i;
 		for (i = 0; i < count; i++) {
-			free(list[i]);
+			free(((char**) list)[i]);
 			
 		}
 		
-		free(list);
+		free((char**) list);
 		
 	}
 	

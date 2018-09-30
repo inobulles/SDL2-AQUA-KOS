@@ -15,32 +15,36 @@
 			return 1; \
 		}
 	
-	unsigned long long fs_read(const char* path, char** data, unsigned long long* bytes) {
+	unsigned long long fs_read(unsigned long long _path, unsigned long long data, unsigned long long bytes) {
+		GET_PATH((char*) _path);
+		
 		FILE* file = fopen(path, "rb");
 		FS_CHECK_FILE("reading")
 		
 		fseek(file, 0, SEEK_END);
-		*bytes = ftell(file);
+		*((unsigned long long*) bytes) = ftell(file);
 		rewind(file);
 		
-		*data = (char*) malloc(*bytes + 1);
-		fread(*data, *bytes, sizeof(char), file);
+		*((char**) data) = (char*) malloc(*((unsigned long long*) bytes) + 1);
+		fread(*((char**) data), *((unsigned long long*) bytes), sizeof(char), file);
 		
 		fclose(file);
 		return 0;
 		
 	}
 	
-	void fs_free(char* data, unsigned long long bytes) {
-		free(data);
+	void fs_free(unsigned long long data, unsigned long long bytes) {
+		free((char*) data);
 		
 	}
 	
-	unsigned long long fs_write(const char* path, const char* data, unsigned long long bytes) {
+	unsigned long long fs_write(unsigned long long _path, unsigned long long data, unsigned long long bytes) {
+		GET_PATH((char*) _path);
+		
 		FILE* file = fopen(path, "wb");
 		FS_CHECK_FILE("writing")
 		
-		fwrite((const void*) data, sizeof(char), bytes, file);
+		fwrite((const void*) ((const char*) data), sizeof(char), bytes, file);
 		fclose(file);
 		
 		return 0;

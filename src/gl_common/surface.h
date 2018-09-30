@@ -112,7 +112,7 @@
 	}
 	
 	void surface_free(surface_t* this) {
-		printf("FREED SURFACE %p\n", this);
+		//~ printf("FREED SURFACE %p\n", this);
 		
 	}
 	
