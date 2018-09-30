@@ -31,6 +31,12 @@
 		
 	}
 	
+	#include <sys/stat.h>
+	
+	#define FS_LIST_ENTRY_UNKNOWN   0
+	#define FS_LIST_ENTRY_FILE      1
+	#define FS_LIST_ENTRY_DIRECTORY 2
+	
 	char** fs_list(unsigned long long _path) {
 		GET_PATH((char*) _path);
 		
@@ -45,8 +51,25 @@
 			while ((directory = readdir(dp)) != NULL) {
 				if (FS_LIST_D_NAME_VALID) {
 					unsigned long long bytes = strlen(directory->d_name) + 1;
-					result[current] = (char*) malloc(bytes * sizeof(char));
-					memcpy(result[current++], directory->d_name, bytes);
+					result[current] = (char*) malloc(bytes * sizeof(char) + sizeof(unsigned long long));
+					memcpy((result[current] + sizeof(unsigned long long)), directory->d_name, bytes);
+					
+					#define RESULT_FILE_TYPE *((unsigned long long*) result[current])
+					RESULT_FILE_TYPE = FS_LIST_ENTRY_UNKNOWN;
+					
+					if (directory->d_type == DT_UNKNOWN) {
+						struct stat path_stat;
+						stat(directory->d_name, &path_stat);
+						
+						if      (S_ISDIR(path_stat.st_mode)) RESULT_FILE_TYPE = FS_LIST_ENTRY_DIRECTORY;
+						else if (S_ISREG(path_stat.st_mode)) RESULT_FILE_TYPE = FS_LIST_ENTRY_FILE;
+						
+					}
+					
+					else if (directory->d_type == DT_DIR)    RESULT_FILE_TYPE = FS_LIST_ENTRY_DIRECTORY;
+					else if (directory->d_type == DT_REG)    RESULT_FILE_TYPE = FS_LIST_ENTRY_FILE;
+					
+					current++;
 					
 				}
 				
