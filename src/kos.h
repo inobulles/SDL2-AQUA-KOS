@@ -95,6 +95,10 @@
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.0f);
 		
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CCW);
+		
 		//~ glHint(GL_POINT_SMOOTH, GL_NICEST);
 		//~ glHint(GL_LINE_SMOOTH, GL_NICEST);
 		//~ glHint(GL_POLYGON_SMOOTH, GL_NICEST);
