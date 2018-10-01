@@ -55,7 +55,13 @@
 		else if (strcmp(device, "wm")       == 0) return DEVICE_WM;
 		else if (strcmp(device, "math")     == 0) return DEVICE_MATH;
 		else if (strcmp(device, "clock")    == 0) return DEVICE_CLOCK;
-		else                                      return DEVICE_NULL;
+		
+		// compute
+		
+		else if (!system("command -v nvcc") && strcmp(device, "nvcc") == 0) return DEVICE_COMPUTE_CUDA_COMPILER;
+		else if (                              strcmp(device, "cuda") == 0) return DEVICE_COMPUTE_CUDA_EXECUTOR;
+		
+		else return DEVICE_NULL;
 		
 	}
 	
@@ -93,6 +99,8 @@
 	
 	#include <math.h>
 	#include <time.h>
+	
+	#include "compute/cuda.h"
 	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
 		unsigned long long* result = (unsigned long long*) 0;
@@ -149,7 +157,12 @@
 				
 				break;
 				
-			} case DEVICE_NULL: {
+			}
+			
+			case DEVICE_COMPUTE_CUDA_COMPILER: cuda_compile_bytecode(&result, extra); break;
+			case DEVICE_COMPUTE_CUDA_EXECUTOR: cuda_execute_bytecode(&result, extra); break;
+			
+			case DEVICE_NULL: {
 				printf("WARNING The device you have selected is DEVICE_NULL\n");
 				break;
 				

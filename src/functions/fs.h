@@ -15,21 +15,26 @@
 			return 1; \
 		}
 	
-	unsigned long long fs_read(unsigned long long _path, unsigned long long data, unsigned long long bytes) {
+	static unsigned long long __fs_read(unsigned long long _path, unsigned long long data, unsigned long long bytes, unsigned long long offset) {
 		GET_PATH((char*) _path);
 		
 		FILE* file = fopen(path, "rb");
 		FS_CHECK_FILE("reading")
 		
 		fseek(file, 0, SEEK_END);
-		*((unsigned long long*) bytes) = ftell(file);
+		*((unsigned long long*) bytes) = ftell(file) + offset;
 		rewind(file);
 		
 		*((char**) data) = (char*) malloc(*((unsigned long long*) bytes) + 1);
-		fread(*((char**) data), *((unsigned long long*) bytes), sizeof(char), file);
+		fread(*((char**) data) + offset,  *((unsigned long long*) bytes) - offset, sizeof(char), file);
 		
 		fclose(file);
 		return 0;
+		
+	}
+	
+	unsigned long long fs_read(unsigned long long _path, unsigned long long data, unsigned long long bytes) {
+		return       __fs_read(                   _path,                    data,                    bytes, 0);
 		
 	}
 	
