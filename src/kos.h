@@ -21,7 +21,7 @@
 	
 	void kos_quit(kos_t* this) {
 		SDL_GL_DeleteContext(this->context);
-		SDL_DestroyWindow(this->window);
+		SDL_DestroyWindow   (this->window);
 		SDL_Quit();
 		
 		kos_free_predefined_textures(this);
@@ -150,6 +150,8 @@
 			this->warning_count++;
 			
 		}
+		
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &this->fbo);
 		
 		//~ if (gl_load_shaders(&this->shader_program, (char*) temp_gl_2_vertex_shader, (char*) temp_gl_2_fragment_shader)) {
 			//~ printf("ERROR Failed to create GL shader program\n");

@@ -14,6 +14,7 @@
 		SDL_GLContext context;
 		
 		GLuint shader_program;
+		GLint  fbo;
 		
 	} kos_t;
 	
