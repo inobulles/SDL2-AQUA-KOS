@@ -30,6 +30,7 @@
 	
 	unsigned long long video_width (void) { return current_kos->width;  }
 	unsigned long long video_height(void) { return current_kos->height; }
+	unsigned long long video_bpp   (void) { return current_kos->bpp;    }
 	
 	static unsigned long long kos_last_time;
 	

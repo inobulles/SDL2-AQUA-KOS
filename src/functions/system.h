@@ -55,6 +55,7 @@
 		else if (strcmp(device, "wm")       == 0) return DEVICE_WM;
 		else if (strcmp(device, "math")     == 0) return DEVICE_MATH;
 		else if (strcmp(device, "clock")    == 0) return DEVICE_CLOCK;
+		else if (strcmp(device, "fbo")      == 0) return DEVICE_FBO;
 		
 		// compute
 		
@@ -93,6 +94,8 @@
 		uint64_t x;
 		
 	} math_device_sqrt_t;
+	
+	static unsigned long long previous_fbo_device_create_result;
 	
 	static unsigned long long previous_math_device_sqrt_result;
 	#define FLOAT_ONE 1000000
@@ -162,7 +165,29 @@
 			case DEVICE_COMPUTE_CUDA_COMPILER: cuda_compile_bytecode(&result, extra); break;
 			case DEVICE_COMPUTE_CUDA_EXECUTOR: cuda_execute_bytecode(&result, extra); break;
 			
-			case DEVICE_NULL: {
+			case DEVICE_FBO: {
+				const unsigned long long* fbo_command = (const unsigned long long*) extra;
+				
+				if (fbo_command[0] == 'c') { // create
+					previous_fbo_device_create_result = framebuffer_create(fbo_command[1]);
+					result = (unsigned long long*) &previous_fbo_device_create_result;
+					
+				} else if (fbo_command[0] == 'b') {
+					framebuffer_bind(fbo_command[1]);
+					result = (unsigned long long*) 0;
+					
+				} else if (fbo_command[0] == 'r') { // remove
+					framebuffer_remove(fbo_command[1]);
+					result = (unsigned long long*) 0;
+					
+				} else {
+					KOS_DEVICE_COMMAND_WARNING("fbo");
+					
+				}
+				
+				break;
+				
+			} case DEVICE_NULL: {
 				printf("WARNING The device you have selected is DEVICE_NULL\n");
 				break;
 				

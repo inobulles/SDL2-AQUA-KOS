@@ -9,6 +9,7 @@
 	#define DEVICE_MATH     4
 	#define DEVICE_CLOCK    5
 	#define DEVICE_ANDROID  6
+	#define DEVICE_FBO      7
 	
 	// compute devices
 	

@@ -9,6 +9,7 @@
 	#include "gl_common/surface.h"
 	#include "gl_common/shaders.h"
 	#include "gl_common/texture.h"
+	#include "gl_common/framebuffer.h"
 	
 	#include "functions/font.h"
 	

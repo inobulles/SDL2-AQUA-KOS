@@ -18,7 +18,9 @@
 		} else {
 			unsigned long long bytes;
 			
-			fs_write((unsigned long long) "__temp_cuda.cu", (unsigned long long) extra, strlen(extra));
+			((char*) extra)[strlen(extra) - 1] = 0;
+			fs_write((unsigned long long) "__temp_cuda.cu", (unsigned long long) extra + 1, strlen(extra));
+			
 			system("nvcc root/__temp_cuda.cu -o root/__temp_cuda_executable.o");
 			
 			__fs_read( \

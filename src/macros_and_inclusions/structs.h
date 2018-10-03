@@ -8,6 +8,8 @@
 		int width;
 		int height;
 		
+		int bpp;
+		
 		SDL_Window*   window;
 		SDL_GLContext context;
 		
