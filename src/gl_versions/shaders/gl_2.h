@@ -5,7 +5,7 @@
 	#include "../../macros_and_inclusions.h"
 	
 	static int gl2_create_shader(GLuint shader, char* code) {
-		glShaderSource(shader, 1, (const GLchar**) &code, NULL);
+		glShaderSource (shader, 1, (const GLchar**) &code, NULL);
 		glCompileShader(shader);
 		
 		GLint error;

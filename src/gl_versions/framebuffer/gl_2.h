@@ -5,6 +5,17 @@
 	#include "../../macros_and_inclusions.h"
 	#include "../../gl_common/texture.h"
 	
+	int glDeleteFramebuffers();
+	int glCheckFramebufferStatus();
+	int glDrawBuffers();
+	int glFramebufferTexture();
+	int glFramebufferRenderbuffer();
+	int glRenderbufferStorage();
+	int glBindRenderbuffer();
+	int glGenRenderbuffers();
+	int glBindFramebuffer();
+	int glGenFramebuffers();
+	
 	framebuffer_t gl2_framebuffer_create(texture_t texture) {
 		GLint                                 old_framebuffer;
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_framebuffer);
@@ -30,11 +41,11 @@
 		
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 			printf("WARNING Failed to create framebuffer\n");
-			return (framebuffer_t*) 0;
+			return 0;
 			
 		}
 		
-		return (framebuffer_t*) framebuffer_id;
+		return framebuffer_id;
 		
 	}
 	
