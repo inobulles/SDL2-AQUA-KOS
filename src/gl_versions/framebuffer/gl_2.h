@@ -6,6 +6,9 @@
 	#include "../../gl_common/texture.h"
 	
 	framebuffer_t gl2_framebuffer_create(texture_t texture) {
+		GLint                                 old_framebuffer;
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_framebuffer);
+		
 		GLuint framebuffer_id = 0;
 		glGenFramebuffers(1, &framebuffer_id);
 		
@@ -23,6 +26,8 @@
 		GLenum draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
 		glDrawBuffers(1, draw_buffers);
 		
+		glBindFramebuffer(GL_FRAMEBUFFER, old_framebuffer);
+		
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 			printf("WARNING Failed to create framebuffer\n");
 			return (framebuffer_t*) 0;
@@ -34,7 +39,7 @@
 	}
 	
 	void gl2_framebuffer_bind(framebuffer_t this) {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, this);
 		
 	}
 	

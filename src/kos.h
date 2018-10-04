@@ -96,10 +96,6 @@
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.0f);
 		
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glFrontFace(GL_CCW);
-		
 		//~ glHint(GL_POINT_SMOOTH, GL_NICEST);
 		//~ glHint(GL_LINE_SMOOTH, GL_NICEST);
 		//~ glHint(GL_POLYGON_SMOOTH, GL_NICEST);
@@ -130,6 +126,10 @@
 			
 			glTranslatef(0.0f, 0.0f, -3.0f);
 		#else
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+			glFrontFace(GL_CCW);
+			
 			glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -100.0f, 500.0f);
 			glTranslatef(0.0f, 0.0f, -100.0f);
 		#endif
@@ -151,8 +151,6 @@
 			
 		}
 		
-		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &this->fbo);
-		
 		//~ if (gl_load_shaders(&this->shader_program, (char*) temp_gl_2_vertex_shader, (char*) temp_gl_2_fragment_shader)) {
 			//~ printf("ERROR Failed to create GL shader program\n");
 			//~ KOS_ERROR
@@ -160,6 +158,10 @@
 		//~ }
 		
 		//~ glUseProgram(this->shader_program);
+		
+		GLint                                   default_fbo;
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING,  &default_fbo);
+		printf("INFO Default OpenGL FBO: %d\n", default_fbo);
 		
 		printf("Finished KOS initialization with %d errors\n", this->warning_count);
 		return 0;
