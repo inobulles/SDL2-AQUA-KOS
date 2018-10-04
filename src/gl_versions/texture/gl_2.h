@@ -7,11 +7,11 @@
 	texture_t gl2_texture_create(unsigned long long* data, unsigned long long bpp, unsigned long long width, unsigned long long height) {
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		
-		texture_t texture_id;
+		GLuint texture_id;
 		glGenTextures(1, (GLuint*) &texture_id);
 		
 		glBindTexture(GL_TEXTURE_2D, (GLuint) texture_id);
-		glTexImage2D( GL_TEXTURE_2D, 0, bpp == 24 ? GL_RGB8 : GL_RGBA8, (GLuint) width, (GLuint) height, 0, bpp == 24 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTexImage2D (GL_TEXTURE_2D, 0, bpp == 24 ? GL_RGB8 : GL_RGBA8, (GLuint) width, (GLuint) height, 0, bpp == 24 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, data);
 		
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TEXTURE_WRAP_TYPE); // x axis
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TEXTURE_WRAP_TYPE); // y axis
