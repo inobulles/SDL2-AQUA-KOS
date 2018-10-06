@@ -25,4 +25,22 @@
 		
 	}
 	
+	void gl_use_shader_program(GLuint* program) {
+		switch (kos_best_gl_version_major) {
+			case 1: break;
+			case 2: gl2_use_shader_program(program); break;
+			case 3: break;
+			case 4: break;
+			case 5: break;
+			
+			default: {
+				KOS_WARN_NO_GL_VERSION
+				break;
+				
+			}
+			
+		}
+		
+	}
+	
 #endif

@@ -196,6 +196,9 @@
 					previous_shader_device_create_result = gl_load_shaders((GLuint*) shader_command[1], (char*) shader_command[3], (char*) shader_command[4]);
 					result = (unsigned long long*) &previous_shader_device_create_result;
 					
+				} else if (shader_command[0] == 'u') { // use
+					gl_use_shader_program((GLuint*) shader_command[1]);
+					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("shader");
 					

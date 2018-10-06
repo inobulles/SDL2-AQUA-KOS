@@ -68,4 +68,9 @@
 		
 	}
 	
+	void gl2_use_shader_program(GLuint* program) {
+		glUseProgram(*program);
+		
+	}
+	
 #endif
