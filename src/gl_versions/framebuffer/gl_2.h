@@ -17,27 +17,16 @@
 	int glGenFramebuffers();
 	
 	framebuffer_t gl2_framebuffer_create(texture_t texture) {
-		GLint                                  old_framebuffer;
-		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_framebuffer);
+		//~ GLint                                  old_framebuffer;
+		//~ glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_framebuffer);
 		
 		GLuint framebuffer_id = 0;
 		glGenFramebuffers(1, &framebuffer_id);
-		
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_id);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0);
 		
-		GLuint depth_renderbuffer;
-		glGenRenderbuffers(1, &depth_renderbuffer);
-		
-		glBindRenderbuffer   (GL_RENDERBUFFER, depth_renderbuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, video_width(), video_height());
-		
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,  GL_RENDERBUFFER, depth_renderbuffer);
-		glFramebufferTexture     (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0);
-		
-		GLenum draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
-		glDrawBuffers(1, draw_buffers);
-		
-		glBindFramebuffer(GL_FRAMEBUFFER, old_framebuffer);
+		//~ glBindFramebuffer   (GL_FRAMEBUFFER, old_framebuffer);
 		
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 			printf("WARNING Failed to create framebuffer\n");
@@ -49,8 +38,9 @@
 		
 	}
 	
-	void gl2_framebuffer_bind(framebuffer_t this) {
+	void gl2_framebuffer_bind(framebuffer_t this, unsigned long long width, unsigned long long height) {
 		glBindFramebuffer(GL_FRAMEBUFFER, this);
+		glViewport(0, 0, width, height);
 		
 	}
 	

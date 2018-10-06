@@ -175,7 +175,7 @@
 					result = (unsigned long long*) &previous_fbo_device_create_result;
 					
 				} else if (fbo_command[0] == 'b') {
-					framebuffer_bind(fbo_command[1]);
+					framebuffer_bind(fbo_command[1], fbo_command[2], fbo_command[3]);
 					result = (unsigned long long*) 0;
 					
 				} else if (fbo_command[0] == 'r') { // remove

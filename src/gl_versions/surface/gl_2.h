@@ -14,14 +14,14 @@
 		}
 		
 		glVertexPointer(3, GL_FLOAT, 0, this->vertices);
-		glColorPointer( 4, GL_FLOAT, 0, this->colours);
+		glColorPointer (4, GL_FLOAT, 0, this->colours);
 		
 		if (this->has_texture) {
 			glTexCoordPointer(2, GL_FLOAT, 0, this->texture_coords);
 			
 		}
 		
-		glBindTexture( GL_TEXTURE_2D, (GLuint) this->texture);
+		glBindTexture (GL_TEXTURE_2D, (GLuint) this->texture);
 		glDrawElements(GL_TRIANGLES, SURFACE_VERTEX_COUNT, GL_UNSIGNED_BYTE, this->faces);
 		
 		glDisableClientState(GL_VERTEX_ARRAY);
