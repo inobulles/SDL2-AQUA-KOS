@@ -17,7 +17,7 @@
 	int glGenFramebuffers();
 	
 	framebuffer_t gl2_framebuffer_create(texture_t texture) {
-		GLint                                 old_framebuffer;
+		GLint                                  old_framebuffer;
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_framebuffer);
 		
 		GLuint framebuffer_id = 0;

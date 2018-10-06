@@ -56,6 +56,7 @@
 		else if (strcmp(device, "math")     == 0) return DEVICE_MATH;
 		else if (strcmp(device, "clock")    == 0) return DEVICE_CLOCK;
 		else if (strcmp(device, "fbo")      == 0) return DEVICE_FBO;
+		else if (strcmp(device, "shader")   == 0) return DEVICE_SHADER;
 		
 		// compute
 		
@@ -96,6 +97,7 @@
 	} math_device_sqrt_t;
 	
 	static unsigned long long previous_fbo_device_create_result;
+	static unsigned long long previous_shader_device_create_result;
 	
 	static unsigned long long previous_math_device_sqrt_result;
 	#define FLOAT_ONE 1000000
@@ -182,6 +184,20 @@
 					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("fbo");
+					
+				}
+				
+				break;
+				
+			} case DEVICE_SHADER: {
+				const unsigned long long* shader_command = (const unsigned long long*) extra;
+				
+				if (shader_command[0] == 'c') { // create
+					previous_shader_device_create_result = gl_load_shaders((GLuint*) shader_command[1], (char*) shader_command[3], (char*) shader_command[4]);
+					result = (unsigned long long*) &previous_shader_device_create_result;
+					
+				} else {
+					KOS_DEVICE_COMMAND_WARNING("shader");
 					
 				}
 				

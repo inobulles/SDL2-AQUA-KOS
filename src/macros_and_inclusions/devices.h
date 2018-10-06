@@ -10,6 +10,7 @@
 	#define DEVICE_CLOCK    5
 	#define DEVICE_ANDROID  6
 	#define DEVICE_FBO      7
+	#define DEVICE_SHADER   8
 	
 	// compute devices
 	
