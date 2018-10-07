@@ -32,10 +32,10 @@
 		
 	}
 	
-	void framebuffer_bind(framebuffer_t this, unsigned long long width, unsigned long long height) {
+	void framebuffer_bind(framebuffer_t this, unsigned long long x, unsigned long long y, unsigned long long width, unsigned long long height) {
 		switch (kos_best_gl_version_major) {
 			case 1: break;
-			case 2: gl2_framebuffer_bind(this, width, height); break;
+			case 2: gl2_framebuffer_bind(this, x, y, width, height); break;
 			case 3: break;
 			case 4: break;
 			case 5: break;

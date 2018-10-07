@@ -36,9 +36,9 @@
 		
 	}
 	
-	void gl2_framebuffer_bind(framebuffer_t this, unsigned long long width, unsigned long long height) {
+	void gl2_framebuffer_bind(framebuffer_t this, unsigned long long x, unsigned long long y, unsigned long long width, unsigned long long height) {
 		glBindFramebuffer(GL_FRAMEBUFFER, this);
-		glViewport(0, 0, width, height);
+		glViewport(x, y, width, height);
 		
 	}
 	
