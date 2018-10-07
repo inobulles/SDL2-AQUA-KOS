@@ -70,6 +70,9 @@
 	static unsigned long long get_device_keyboard_key = 0;
 	static unsigned long long get_device_keyboard_key_packet;
 	
+	static unsigned long long get_device_keyboard_keycode = 0;
+	static unsigned long long get_device_keyboard_keycode_packet;
+	
 	#define KOS_DEVICE_COMMAND_WARNING(device_name) printf("WARNING The command you have passed to the " device_name " device (%s) is unrecognized\n", extra);
 	
 	typedef struct {
@@ -129,6 +132,11 @@
 					get_device_keyboard_key_packet =  get_device_keyboard_key;
 					get_device_keyboard_key        = 0;
 					result                         = &get_device_keyboard_key_packet;
+					
+				} else if (strcmp(extra, "press key") == 0) {
+					get_device_keyboard_keycode_packet =  get_device_keyboard_keycode;
+					get_device_keyboard_keycode        = 0;
+					result                             = &get_device_keyboard_keycode_packet;
 					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("keyboard")

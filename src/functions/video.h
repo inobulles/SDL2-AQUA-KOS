@@ -57,6 +57,8 @@
 	static unsigned char kos_has_clicked = 0;
 	
 	static unsigned long long get_device_keyboard_key;
+	static unsigned long long get_device_keyboard_keycode;
+	
 	static unsigned long long resize_count;
 	
 	void get_events(event_list_t* this) { // I guess this shouldn't be here but idc tbh
@@ -106,6 +108,10 @@
 				
 			} else if (event.type == SDL_KEYDOWN) {
 				get_device_keyboard_key = event.key.keysym.scancode;
+				break;
+				
+			} else if (event.type == SDL_TEXTINPUT) {
+				get_device_keyboard_keycode = *event.text.text;
 				break;
 				
 			}
