@@ -4,8 +4,9 @@
 	
 	static unsigned char shader_has_set_locations = 0;
 	
-	static GLint shader_has_texture_location;
+	static GLint shader_time_location;
 	static GLint shader_sampler_location;
+	static GLint shader_has_texture_location;
 	
 	#include "../gl_versions/surface/gl_1.h"
 	#include "../gl_versions/surface/gl_2.h"

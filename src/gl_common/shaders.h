@@ -27,14 +27,16 @@
 	
 	static unsigned char shader_has_set_locations;
 	
-	static GLint shader_has_texture_location;
+	static GLint shader_time_location;
 	static GLint shader_sampler_location;
+	static GLint shader_has_texture_location;
 	
 	int glGetUniformLocation();
 	
 	void gl_use_shader_program(GLuint* program) {
 		shader_has_set_locations = 1;
 		
+		shader_time_location        = glGetUniformLocation(*program, "time");
 		shader_sampler_location     = glGetUniformLocation(*program, "sampler_texture");
 		shader_has_texture_location = glGetUniformLocation(*program, "has_texture");
 		

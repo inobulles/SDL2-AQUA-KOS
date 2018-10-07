@@ -3,11 +3,14 @@
 	#define __AQUA__SDL2_SRC_KOS_GL_VERSIONS_SURFACE_GL_2_H
 	
 	#include "../../macros_and_inclusions.h"
+	#include <time.h>
 	
 	int glUniform1i();
+	int glUniform1f();
 	
 	int gl2_surface_draw(surface_t* this) {
 		if (shader_has_set_locations) {
+			glUniform1i(shader_time_location, clock());
 			glUniform1i(shader_has_texture_location, (GLint) this->has_texture);
 			
 		}
