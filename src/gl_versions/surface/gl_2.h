@@ -5,6 +5,11 @@
 	#include "../../macros_and_inclusions.h"
 	
 	int gl2_surface_draw(surface_t* this) {
+		if (shader_has_set_locations) {
+			glUniform1i(shader_has_texture_location, (GLint) this->has_texture);
+			
+		}
+		
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 		
@@ -19,9 +24,16 @@
 		if (this->has_texture) {
 			glTexCoordPointer(2, GL_FLOAT, 0, this->texture_coords);
 			
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture  (GL_TEXTURE_2D, (GLuint) this->texture);
+			
+			if (shader_has_set_locations) {
+				glUniform1i(shader_sampler_location, 0);
+				
+			}
+			
 		}
 		
-		glBindTexture (GL_TEXTURE_2D, (GLuint) this->texture);
 		glDrawElements(GL_TRIANGLES, SURFACE_VERTEX_COUNT, GL_UNSIGNED_BYTE, this->faces);
 		
 		glDisableClientState(GL_VERTEX_ARRAY);

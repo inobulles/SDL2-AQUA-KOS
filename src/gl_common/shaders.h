@@ -25,7 +25,17 @@
 		
 	}
 	
+	static unsigned char shader_has_set_locations;
+	
+	static GLint shader_has_texture_location;
+	static GLint shader_sampler_location;
+	
 	void gl_use_shader_program(GLuint* program) {
+		shader_has_set_locations = 1;
+		
+		shader_sampler_location     = glGetUniformLocation(*program, "sampler_texture");
+		shader_has_texture_location = glGetUniformLocation(*program, "has_texture");
+		
 		switch (kos_best_gl_version_major) {
 			case 1: break;
 			case 2: gl2_use_shader_program(program); break;
@@ -42,5 +52,7 @@
 		}
 		
 	}
+	
+	/// TODO gl_delete_shader_program
 	
 #endif
