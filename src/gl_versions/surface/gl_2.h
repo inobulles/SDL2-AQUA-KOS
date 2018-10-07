@@ -4,6 +4,8 @@
 	
 	#include "../../macros_and_inclusions.h"
 	
+	int glUniform1i();
+	
 	int gl2_surface_draw(surface_t* this) {
 		if (shader_has_set_locations) {
 			glUniform1i(shader_has_texture_location, (GLint) this->has_texture);

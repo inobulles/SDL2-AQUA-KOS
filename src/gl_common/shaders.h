@@ -30,6 +30,8 @@
 	static GLint shader_has_texture_location;
 	static GLint shader_sampler_location;
 	
+	int glGetUniformLocation();
+	
 	void gl_use_shader_program(GLuint* program) {
 		shader_has_set_locations = 1;
 		
