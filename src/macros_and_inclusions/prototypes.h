@@ -9,6 +9,7 @@
 	
 	GLuint glCreateShader(GLenum shaderType);
 	GLuint glCreateProgram(void);
+	void glDeleteProgram(GLuint program);
 	
 	void glAttachShader(GLuint program, GLuint shader);
 	void glLinkProgram(GLuint program);

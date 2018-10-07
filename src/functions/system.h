@@ -199,6 +199,9 @@
 				} else if (shader_command[0] == 'u') { // use
 					gl_use_shader_program((GLuint*) shader_command[1]);
 					
+				} else if (shader_command[0] == 'd') { // dispose
+					gl_delete_shader_program((GLuint*) shader_command[1]);
+					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("shader");
 					

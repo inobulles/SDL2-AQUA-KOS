@@ -73,4 +73,9 @@
 		
 	}
 	
+	void gl2_delete_shader_program(GLuint* program) {
+		glDeleteProgram(*program);
+		
+	}
+	
 #endif
