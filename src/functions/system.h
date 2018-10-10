@@ -235,6 +235,12 @@
 		
 	}
 	
+	typedef struct {
+		unsigned long long pointer_to_request_response;
+		unsigned long long pointer_to_const_url;
+		
+	} request_device_struct_t;
+	
 	void send_device(unsigned long long device, const char* extra, unsigned long long* data) {
 		switch (device) {
 			case DEVICE_TEXTURE: {
@@ -246,6 +252,15 @@
 			} case DEVICE_WM: {
 				if (strcmp(extra, "visible") == 0 && *data == HIDDEN) SDL_MinimizeWindow(current_kos->window);
 				else KOS_DEVICE_COMMAND_WARNING("wm")
+				
+				break;
+				
+			} case DEVICE_REQUESTS: {
+				request_device_struct_t* request_device_struct = (request_device_struct_t*) data;
+				
+				if      (strcmp(extra, "get")  == 0) kos_requests_get ((kos_request_response_t*) request_device_struct->pointer_to_request_response, (const char*) request_device_struct->pointer_to_const_url);
+				else if (strcmp(extra, "free") == 0) kos_requests_free((kos_request_response_t*) request_device_struct->pointer_to_request_response);
+				else KOS_DEVICE_COMMAND_WARNING("requests")
 				
 				break;
 				

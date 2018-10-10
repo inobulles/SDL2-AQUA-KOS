@@ -17,8 +17,8 @@
 		#define                MAX_URL_LENGTH_BYTES 4096
 		unsigned long long url[MAX_URL_LENGTH_BYTES / sizeof(unsigned long long)];
 		
-		signed long long text_bytes;
-		char*            text;
+		unsigned long long text_bytes;
+		unsigned long long text;
 		
 	} kos_request_response_t;
 	
@@ -27,7 +27,7 @@
 		
 	}
 	
-	void request_get(kos_request_response_t* this, const char* url) {
+	void kos_requests_get(kos_request_response_t* this, const char* url) {
 		if (!kos_requests_init) {
 			kos_requests_init++;
 			request_global_init();
@@ -48,15 +48,15 @@
 		}
 		
 		this->text_bytes = strlen(kos_current_request.text) + 1;
-		this->text       = (char*) malloc(this->text_bytes);
+		this->text       = (unsigned long long) malloc(this->text_bytes);
 		
-		strcpy(this->text, kos_current_request.text);
+		strcpy((char*) this->text, kos_current_request.text);
 		requests_close(&kos_current_request);
 		
 	}
 	
-	void request_free(kos_request_response_t* this) {
-		free(this->text /* this->text_bytes */);
+	void kos_requests_free(kos_request_response_t* this) {
+		free((void*) this->text /* this->text_bytes */);
 		
 	}
 	
