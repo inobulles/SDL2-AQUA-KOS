@@ -60,8 +60,8 @@
 		
 		// compute
 		
-		else if (!system("command -v nvcc") && strcmp(device, "nvcc") == 0) return DEVICE_COMPUTE_CUDA_COMPILER;
-		else if (                              strcmp(device, "cuda") == 0) return DEVICE_COMPUTE_CUDA_EXECUTOR;
+		else if (strcmp(device, "nvcc") == 0 && !system("command -v nvcc")) return DEVICE_COMPUTE_CUDA_COMPILER;
+		else if (strcmp(device, "cuda") == 0)                               return DEVICE_COMPUTE_CUDA_EXECUTOR;
 		
 		else return DEVICE_NULL;
 		
