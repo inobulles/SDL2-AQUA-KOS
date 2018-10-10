@@ -11,6 +11,7 @@
 	#define DEVICE_ANDROID  6
 	#define DEVICE_FBO      7
 	#define DEVICE_SHADER   8
+	#define DEVICE_REQUESTS 9
 	
 	// compute devices
 	

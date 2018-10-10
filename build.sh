@@ -27,7 +27,7 @@ if [ ! -f "ROM.zed" ]; then
 fi
 
 if [ "$2" = "" ]; then
-	gcc glue.c -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-main -lSDL2 -lGL -lGLU -lSDL2_ttf -lm
+	gcc glue.c -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-main -lSDL2 -lGL -lGLU -lSDL2_ttf -lm -lcurl
 	./a.out
 fi
 

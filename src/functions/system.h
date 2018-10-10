@@ -57,6 +57,7 @@
 		else if (strcmp(device, "clock")    == 0) return DEVICE_CLOCK;
 		else if (strcmp(device, "fbo")      == 0) return DEVICE_FBO;
 		else if (strcmp(device, "shader")   == 0) return DEVICE_SHADER;
+		else if (strcmp(device, "requests") == 0) return DEVICE_REQUESTS;
 		
 		// compute
 		
@@ -109,6 +110,7 @@
 	#include <time.h>
 	
 	#include "compute/cuda.h"
+	#include "requests.h"
 	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
 		unsigned long long* result = (unsigned long long*) 0;

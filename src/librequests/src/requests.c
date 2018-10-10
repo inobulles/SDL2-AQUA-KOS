@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-#include "requests.h"
+//~ #include "requests.h" /// MODIFIED LINE
 
 static int IS_FIRST = 1;
 
