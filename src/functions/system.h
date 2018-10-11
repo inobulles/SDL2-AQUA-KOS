@@ -57,7 +57,10 @@
 		else if (strcmp(device, "clock")    == 0) return DEVICE_CLOCK;
 		else if (strcmp(device, "fbo")      == 0) return DEVICE_FBO;
 		else if (strcmp(device, "shader")   == 0) return DEVICE_SHADER;
-		else if (strcmp(device, "requests") == 0) return DEVICE_REQUESTS;
+		
+		#ifdef __HAS_CURL
+			else if (strcmp(device, "requests") == 0) return DEVICE_REQUESTS;
+		#endif
 		
 		// compute
 		
@@ -110,7 +113,10 @@
 	#include <time.h>
 	
 	#include "compute/cuda.h"
-	#include "requests.h"
+	
+	#ifdef __HAS_CURL
+		#include "requests.h"
+	#endif
 	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
 		unsigned long long* result = (unsigned long long*) 0;
@@ -235,11 +241,13 @@
 		
 	}
 	
-	typedef struct {
-		kos_request_response_t request_response;
-		unsigned long long     pointer_to_const_url;
-		
-	} request_device_struct_t;
+	#ifdef __HAS_CURL
+		typedef struct {
+			kos_request_response_t request_response;
+			unsigned long long     pointer_to_const_url;
+			
+		} request_device_struct_t;
+	#endif
 	
 	void send_device(unsigned long long device, const char* extra, unsigned long long* data) {
 		switch (device) {
@@ -255,16 +263,20 @@
 				
 				break;
 				
-			} case DEVICE_REQUESTS: {
-				request_device_struct_t* request_device_struct = (request_device_struct_t*) data;
-				
-				if      (strcmp(extra, "get")  == 0) kos_requests_get (&request_device_struct->request_response, (const char*) request_device_struct->pointer_to_const_url);
-				else if (strcmp(extra, "free") == 0) kos_requests_free(&request_device_struct->request_response);
-				else KOS_DEVICE_COMMAND_WARNING("requests")
-				
-				break;
-				
-			} case DEVICE_NULL: {
+			}
+			#ifdef __HAS_CURL
+				case DEVICE_REQUESTS: {
+					request_device_struct_t* request_device_struct = (request_device_struct_t*) data;
+					
+					if      (strcmp(extra, "get")  == 0) kos_requests_get (&request_device_struct->request_response, (const char*) request_device_struct->pointer_to_const_url);
+					else if (strcmp(extra, "free") == 0) kos_requests_free(&request_device_struct->request_response);
+					else KOS_DEVICE_COMMAND_WARNING("requests")
+					
+					break;
+					
+				}
+			#endif
+			case DEVICE_NULL: {
 				printf("WARNING The device you have selected is DEVICE_NULL\n");
 				break;
 				

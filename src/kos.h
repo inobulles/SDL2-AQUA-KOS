@@ -33,9 +33,16 @@
 	}
 	
 	int kos_init(kos_t* this) {
-		current_kos  = this;
+		#ifdef __HAS_CURL
+			printf("INFO KOS has CURL, the `requests` device will thus be enabled\n");
+		#endif
+		#ifdef __HAS_DISCORD
+			printf("INFO KOS has Discord, the `discord` device will thus be enabled\n");
+		#endif
 		
-		this->window = NULL;
+		current_kos = this;
+		
+		this->window  = NULL;
 		this->context = NULL;
 		
 		this->width  = KOS_ORIGINAL_WIDTH;

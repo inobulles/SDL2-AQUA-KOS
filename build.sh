@@ -26,8 +26,18 @@ if [ ! -f "ROM.zed" ]; then
 	mv assembler/ROM.zed ROM.zed
 fi
 
+has_curl_args=""
+has_discord_args=""
+
+has_curl_args="-D__HAS_CURL -lcurl"
+#~ has_discord_args="-D__HAS_DISCORD -lTODO"
+
 if [ "$2" = "" ]; then
-	gcc glue.c -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-main -lSDL2 -lGL -lGLU -lSDL2_ttf -lm -lcurl
+	gcc glue.c -Wall \
+		-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
+		-lSDL2 -lGL -lGLU -lSDL2_ttf -lm \
+		$has_curl_args $has_discord_args
+	
 	./a.out
 fi
 
