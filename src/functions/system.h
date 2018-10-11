@@ -118,6 +118,10 @@
 		#include "requests.h"
 	#endif
 	
+	#ifdef __HAS_DISCORD
+		#include "discord.h"
+	#endif
+	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
 		unsigned long long* result = (unsigned long long*) 0;
 		
