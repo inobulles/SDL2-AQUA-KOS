@@ -7,32 +7,60 @@
 	
 	#include "../discord/discord_rpc.h"
 	
+	typedef struct {
+		unsigned long long state;
+		unsigned long long details;
+		
+		unsigned long long large_image_text;
+		unsigned long long small_image_text;
+		
+		unsigned long long large_image;
+		unsigned long long small_image;
+		
+		unsigned long long party;
+		
+		unsigned long long party_size;
+		unsigned long long party_max;
+		
+	} kos_discord_rpc_t;
+	
 	static const char*          kos_discord_rpc_application_id = "499960380949397507";
 	static int64_t              kos_discord_rpc_start_time;
 	static DiscordEventHandlers kos_discord_rpc_handlers;
 	
 	static void discord_rpc_generic_handler() {
-		printf("============================================================================================================= TODO\n");
+		printf("TODO\n");
 		
 	}
 	
 	static void discord_rpc_ready_handler(const DiscordUser* user) {
-		printf("============================================================================================================= INFO Discord RPC connected to user %s#%s - %s\n", user->username, user->discriminator, user->userId);
+		printf("INFO Discord RPC connected to user %s#%s - %s\n", user->username, user->discriminator, user->userId);
 		
 	}
 	
 	#include <time.h>
 	
-	void update_discord_rpc(void) {
+	void update_discord_rpc(kos_discord_rpc_t* this) {
 		DiscordRichPresence discord_presence;
 		memset(&discord_presence, 0, sizeof(DiscordRichPresence));
 		
-		discord_presence.state          = "Using AQUA";
-		discord_presence.details        = "Navigating AQUA desktop";
 		discord_presence.startTimestamp = kos_discord_rpc_start_time;
 		discord_presence.endTimestamp   = time(0);
-		discord_presence.instance       = 0;
 		
+		discord_presence.state          = (const char*) this->state;
+		discord_presence.details        = (const char*) this->details;
+		
+		discord_presence.largeImageText = (const char*) this->large_image_text;
+		discord_presence.smallImageText = (const char*) this->small_image_text;
+		
+		discord_presence.largeImageKey  = (const char*) this->large_image;
+		discord_presence.smallImageKey  = (const char*) this->small_image;
+		
+		discord_presence.partyId        = (const char*) this->party;
+		discord_presence.partySize      = (int)         this->party_size;
+		discord_presence.partyMax       = (int)         this->party_max;
+		
+		discord_presence.instance = 0;
 		Discord_UpdatePresence(&discord_presence);
 		
 	}
@@ -58,7 +86,7 @@
 		kos_discord_rpc_handlers.joinRequest  = discord_rpc_generic_handler;
 		
 		Discord_Initialize(kos_discord_rpc_application_id, &kos_discord_rpc_handlers, 1, NULL);
-		update_discord_rpc();
+		loop_discord_rpc();
 		
 	}
 	

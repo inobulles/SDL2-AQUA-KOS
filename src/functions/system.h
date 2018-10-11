@@ -58,14 +58,19 @@
 		else if (strcmp(device, "fbo")      == 0) return DEVICE_FBO;
 		else if (strcmp(device, "shader")   == 0) return DEVICE_SHADER;
 		
-		#ifdef __HAS_CURL
-			else if (strcmp(device, "requests") == 0) return DEVICE_REQUESTS;
-		#endif
-		
 		// compute
 		
 		else if (strcmp(device, "nvcc") == 0 && !system("command -v nvcc")) return DEVICE_COMPUTE_CUDA_COMPILER;
 		else if (strcmp(device, "cuda") == 0)                               return DEVICE_COMPUTE_CUDA_EXECUTOR;
+		
+		// extensions
+		
+		#ifdef __HAS_CURL
+			else if (strcmp(device, "requests") == 0) return DEVICE_REQUESTS;
+		#endif
+		#ifdef __HAS_DISCORD
+			else if (strcmp(device, "discord") == 0) return DEVICE_DISCORD;
+		#endif
 		
 		else return DEVICE_NULL;
 		
@@ -117,7 +122,6 @@
 	#ifdef __HAS_CURL
 		#include "requests.h"
 	#endif
-	
 	#ifdef __HAS_DISCORD
 		#include "discord.h"
 	#endif
@@ -252,6 +256,12 @@
 			
 		} request_device_struct_t;
 	#endif
+	#ifdef __HAS_DISCORD
+		typedef struct {
+			kos_discord_rpc_t discord_rpc;
+			
+		} discord_device_struct_t;
+	#endif
 	
 	void send_device(unsigned long long device, const char* extra, unsigned long long* data) {
 		switch (device) {
@@ -274,6 +284,20 @@
 					
 					if      (strcmp(extra, "get")  == 0) kos_requests_get (&request_device_struct->request_response, (const char*) request_device_struct->pointer_to_const_url);
 					else if (strcmp(extra, "free") == 0) kos_requests_free(&request_device_struct->request_response);
+					else KOS_DEVICE_COMMAND_WARNING("requests")
+					
+					break;
+					
+				}
+			#endif
+			#ifdef __HAS_DISCORD
+				case DEVICE_DISCORD: {
+					discord_device_struct_t* discord_device_struct = (discord_device_struct_t*) data;
+					
+					if      (strcmp(extra, "rpc init")    == 0) init_discord_rpc();
+					else if (strcmp(extra, "rpc loop")    == 0) loop_discord_rpc();
+					else if (strcmp(extra, "rpc update")  == 0) update_discord_rpc(&discord_device_struct->discord_rpc);
+					else if (strcmp(extra, "rpc dispose") == 0) dispose_discord_rpc();
 					else KOS_DEVICE_COMMAND_WARNING("requests")
 					
 					break;

@@ -12,6 +12,7 @@
 	#define DEVICE_FBO      7
 	#define DEVICE_SHADER   8
 	#define DEVICE_REQUESTS 9
+	#define DEVICE_DISCORD  10
 	
 	// compute devices
 	
