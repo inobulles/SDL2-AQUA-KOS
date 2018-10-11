@@ -8,6 +8,8 @@
 	#include "../discord/discord_rpc.h"
 	
 	typedef struct {
+		// input
+		
 		unsigned long long state;
 		unsigned long long details;
 		
@@ -22,19 +24,31 @@
 		unsigned long long party_size;
 		unsigned long long party_max;
 		
+		// output
+		
+		unsigned long long has_connection;
+		
+		char username     [sizeof(unsigned long long) * 128];
+		char discriminator[sizeof(unsigned long long) * 4];
+		
 	} kos_discord_rpc_t;
 	
-	static const char*          kos_discord_rpc_application_id = "499960380949397507";
+	static char*                kos_discord_rpc_application_id;
 	static int64_t              kos_discord_rpc_start_time;
 	static DiscordEventHandlers kos_discord_rpc_handlers;
+	static kos_discord_rpc_t*   kos_latest_rpc;
 	
 	static void discord_rpc_generic_handler() {
-		printf("TODO\n");
+		printf("TODO `%s`\n", __func__);
 		
 	}
 	
 	static void discord_rpc_ready_handler(const DiscordUser* user) {
 		printf("INFO Discord RPC connected to user %s#%s - %s\n", user->username, user->discriminator, user->userId);
+		kos_latest_rpc->has_connection = 1;
+		
+		strcpy(kos_latest_rpc->username,      user->username);
+		strcpy(kos_latest_rpc->discriminator, user->discriminator);
 		
 	}
 	
@@ -65,16 +79,19 @@
 		
 	}
 	
-	void loop_discord_rpc(void) {
+	void loop_discord_rpc(kos_discord_rpc_t* this) {
 		#ifdef DISCORD_DISABLE_IO_THREAD
 			Discord_UpdateConnection();
 		#endif
 		
+		kos_latest_rpc = this;
 		Discord_RunCallbacks();
 		
 	}
 	
-	void init_discord_rpc(void) {
+	void init_discord_rpc(unsigned long long     app_key) {
+		kos_discord_rpc_application_id = (char*) app_key;
+		
 		kos_discord_rpc_start_time = time(0);
 		memset(&kos_discord_rpc_handlers, 0, sizeof(DiscordEventHandlers));
 		
@@ -86,7 +103,6 @@
 		kos_discord_rpc_handlers.joinRequest  = discord_rpc_generic_handler;
 		
 		Discord_Initialize(kos_discord_rpc_application_id, &kos_discord_rpc_handlers, 1, NULL);
-		loop_discord_rpc();
 		
 	}
 	

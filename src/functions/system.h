@@ -294,8 +294,8 @@
 				case DEVICE_DISCORD: {
 					discord_device_struct_t* discord_device_struct = (discord_device_struct_t*) data;
 					
-					if      (strcmp(extra, "rpc init")    == 0) init_discord_rpc();
-					else if (strcmp(extra, "rpc loop")    == 0) loop_discord_rpc();
+					if      (strcmp(extra, "rpc init")    == 0) init_discord_rpc  ((unsigned long long) data);
+					else if (strcmp(extra, "rpc loop")    == 0) loop_discord_rpc  (&discord_device_struct->discord_rpc);
 					else if (strcmp(extra, "rpc update")  == 0) update_discord_rpc(&discord_device_struct->discord_rpc);
 					else if (strcmp(extra, "rpc dispose") == 0) dispose_discord_rpc();
 					else KOS_DEVICE_COMMAND_WARNING("requests")
