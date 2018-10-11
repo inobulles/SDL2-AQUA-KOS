@@ -1,5 +1,15 @@
 
 #!/bin/bash
+
+has_curl_args=""
+has_discord_args=""
+
+curl_link="-lcurl"
+discord_link="-L. -l:dynamic/libdiscord-rpc.so"
+
+ld $curl_link    && has_curl_args="-D__HAS_CURL $curl_link";
+ld $discord_link && has_discord_args="-D__HAS_DISCORD $discord_link"
+
 set -e
 
 if [ ! -d "asm/" ]; then
@@ -25,12 +35,6 @@ if [ ! -f "ROM.zed" ]; then
 	cd ../
 	mv assembler/ROM.zed ROM.zed
 fi
-
-has_curl_args=""
-has_discord_args=""
-
-has_curl_args="-D__HAS_CURL -lcurl"
-#~ has_discord_args="-D__HAS_DISCORD -lTODO"
 
 if [ "$2" = "" ]; then
 	gcc glue.c -Wall \
