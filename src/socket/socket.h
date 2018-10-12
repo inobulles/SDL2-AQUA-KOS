@@ -114,8 +114,8 @@
 	
 	char* socket_receive(socket_t* this, unsigned long long bytes) {
 		__internal_socket_t* sock = (__internal_socket_t*) this->__internal_pointer;
-		read(sock->socket, sock->buffer, bytes);
-		
+		memset(sock->buffer, '\0',         bytes);
+		read  (sock->socket, sock->buffer, bytes);
 		return sock->buffer;
 		
 	}
