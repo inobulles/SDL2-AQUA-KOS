@@ -178,7 +178,7 @@
 	#include "functions/video.h"
 	#include "functions/system.h"
 	#include "functions/fs.h"
-	#include "functions/socket.h"
+	#include "socket/socket.h"
 	#include "functions/dummy.h"
 	
 	#include "functions/decoders/bmp.h"
