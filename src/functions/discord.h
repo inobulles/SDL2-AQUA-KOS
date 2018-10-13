@@ -58,8 +58,8 @@
 		DiscordRichPresence discord_presence;
 		memset(&discord_presence, 0, sizeof(DiscordRichPresence));
 		
-		discord_presence.startTimestamp = kos_discord_rpc_start_time;
-		discord_presence.endTimestamp   = time(0);
+		//~ discord_presence.startTimestamp = kos_discord_rpc_start_time;
+		//~ discord_presence.endTimestamp   = time(0);
 		
 		discord_presence.state          = (const char*) this->state;
 		discord_presence.details        = (const char*) this->details;
