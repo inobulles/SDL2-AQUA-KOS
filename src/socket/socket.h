@@ -28,11 +28,6 @@
 		
 	}
 	
-	ip_address_t get_external_ip_address(void) {
-		return (ip_address_t) "0.0.0.0";
-		
-	}
-	
 	static void socket_socket(socket_t* this) {
 		this->__internal_pointer =                   (__internal_socket_t*) malloc(sizeof(__internal_socket_t));
 		((__internal_socket_t*) this->__internal_pointer)->buffer = (char*) malloc(SOCKET_DEFAULT_BUFFER_SIZE);
