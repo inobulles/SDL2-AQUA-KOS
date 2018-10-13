@@ -4,6 +4,7 @@
 	
 	#include <sys/socket.h>
 	#include <netinet/in.h>
+	#include <arpa/inet.h>
 	
 	#include "../lib/macros.h"
 	#include "../lib/structs.h"
@@ -39,6 +40,52 @@
 		
 	}
 	
+	void socket_client(socket_t* this, ip_address_t host_ip, unsigned long long port) {
+		this->port = port;
+		
+		socket_socket(this);
+		__internal_socket_t* sock = (__internal_socket_t*) this->__internal_pointer;
+		
+		this->type = SOCKET_CLIENT;
+		sock->type = SOCKET_CLIENT;
+		
+		sock->address_length = sizeof(sock->address);
+		sock->socket         = socket(AF_INET, SOCK_STREAM, 0);
+		
+		if (sock->socket < 0) {
+			printf("WARNING Failed to open socket (%d)\n", (int) sock->socket);
+			goto error;
+			
+		}
+		
+		bzero(&sock->address, sizeof(sock->address));
+		
+		sock->address.sin_family = AF_INET;
+		sock->address.sin_port   = htons(port);
+		
+		if (inet_aton((const char*) host_ip, (struct in_addr*) &sock->address.sin_addr.s_addr) == 0) {
+			printf("WARNING Failed to convert host IP address\n");
+			goto error;
+			
+		}
+		
+		int temp_error = connect(sock->socket, (struct sockaddr*) &sock->address, sizeof(sock->address));
+		if (temp_error != 0) {
+			printf("WARNING Failed to connect (%d)\n", temp_error);
+			goto error;
+			
+		}
+		
+		return;
+		
+		error: {
+			this->error = 1;
+			return;
+			
+		}
+		
+	}
+	
 	void socket_server(socket_t* this, ip_address_t host_ip, unsigned long long port) {
 		this->port = port;
 		
@@ -51,8 +98,8 @@
 		sock->address_length = sizeof(sock->address);
 		sock->socket         = socket(AF_INET, SOCK_STREAM, 0);
 		
-		if (sock->socket == 0) {
-			printf("WARNING Failed to open socket\n");
+		if (sock->socket < 0) {
+			printf("WARNING Failed to open socket (%d)\n", (int) sock->socket);
 			goto error;
 			
 		}
