@@ -35,6 +35,26 @@
 		
 	}
 	
+	static int socket_actor(socket_t* this, int type) {
+		__internal_socket_t* sock = (__internal_socket_t*) this->__internal_pointer;
+		
+		this->type = type;
+		sock->type = type;
+		
+		sock->address_length = sizeof(sock->address);
+		sock->socket         = socket(AF_INET, SOCK_STREAM, 0);
+		
+		if (sock->socket < 0) {
+			printf("WARNING Failed to open socket (%d)\n", (int) sock->socket);
+			return 1;
+			
+		} else {
+			return 0;
+			
+		}
+		
+	}
+	
 	void socket_close(socket_t* this) {
 		free(this->__internal_pointer                                  /* sizeof(__internal_socket_t) */);
 		free(((__internal_socket_t*) this->__internal_pointer)->buffer /* SOCKET_DEFAULT_BUFFER_SIZE  */);
@@ -47,14 +67,7 @@
 		socket_socket(this);
 		__internal_socket_t* sock = (__internal_socket_t*) this->__internal_pointer;
 		
-		this->type = SOCKET_CLIENT;
-		sock->type = SOCKET_CLIENT;
-		
-		sock->address_length = sizeof(sock->address);
-		sock->socket         = socket(AF_INET, SOCK_STREAM, 0);
-		
-		if (sock->socket < 0) {
-			printf("WARNING Failed to open socket (%d)\n", (int) sock->socket);
+		if (socket_actor(this, SOCKET_CLIENT)) {
 			goto error;
 			
 		}
@@ -95,14 +108,7 @@
 		socket_socket(this);
 		__internal_socket_t* sock = (__internal_socket_t*) this->__internal_pointer;
 		
-		this->type = SOCKET_SERVER;
-		sock->type = SOCKET_SERVER;
-		
-		sock->address_length = sizeof(sock->address);
-		sock->socket         = socket(AF_INET, SOCK_STREAM, 0);
-		
-		if (sock->socket < 0) {
-			printf("WARNING Failed to open socket (%d)\n", (int) sock->socket);
+		if (socket_actor(this, SOCKET_SERVER)) {
 			goto error;
 			
 		}
