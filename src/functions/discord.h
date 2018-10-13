@@ -37,6 +37,7 @@
 	static int64_t              kos_discord_rpc_start_time;
 	static DiscordEventHandlers kos_discord_rpc_handlers;
 	static kos_discord_rpc_t*   kos_latest_rpc;
+	static unsigned char        kos_discord_rpc_session_active = 0;
 	
 	static void discord_rpc_generic_handler() {
 		printf("TODO `%s`\n", __func__);
@@ -89,7 +90,15 @@
 		
 	}
 	
-	void init_discord_rpc(unsigned long long     app_key) {
+	void dispose_discord_rpc(void);
+	
+	void init_discord_rpc(unsigned long long app_key) {
+		if (kos_discord_rpc_session_active) {
+			dispose_discord_rpc();
+			
+		}
+		
+		kos_discord_rpc_session_active = 1;
 		kos_discord_rpc_application_id = (char*) app_key;
 		
 		kos_discord_rpc_start_time = time(0);
@@ -107,7 +116,11 @@
 	}
 	
 	void dispose_discord_rpc(void) {
-		Discord_Shutdown();
+		if (kos_discord_rpc_session_active) {
+			kos_discord_rpc_session_active = 0;
+			Discord_Shutdown();
+			
+		}
 		
 	}
 	
