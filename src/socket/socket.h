@@ -35,6 +35,12 @@
 		
 	}
 	
+	void socket_close(socket_t* this) {
+		free(this->__internal_pointer                                  /* sizeof(__internal_socket_t) */);
+		free(((__internal_socket_t*) this->__internal_pointer)->buffer /* SOCKET_DEFAULT_BUFFER_SIZE  */);
+		
+	}
+	
 	void socket_client(socket_t* this, ip_address_t host_ip, unsigned long long port) {
 		this->port = port;
 		
@@ -74,6 +80,8 @@
 		return;
 		
 		error: {
+			socket_close(this);
+			
 			this->error = 1;
 			return;
 			
@@ -136,16 +144,12 @@
 		return;
 		
 		error: {
+			socket_close(this);
+			
 			this->error = 1;
 			return;
 			
 		}
-		
-	}
-	
-	void socket_close(socket_t* this) {
-		free(this->__internal_pointer                                  /* sizeof(__internal_socket_t) */);
-		free(((__internal_socket_t*) this->__internal_pointer)->buffer /* SOCKET_DEFAULT_BUFFER_SIZE  */);
 		
 	}
 	
