@@ -22,8 +22,21 @@ static kos_t kos;
 	#endif
 #endif
 
+static unsigned long long kos_roms_loaded = 0;
+
 signed long long load_rom(unsigned long long __path) {
-	const char* path = (const char*) __path;
+	const char* ____path;
+	
+	if (kos_roms_loaded++) {
+		GET_PATH((char*) __path);
+		____path = path;
+		
+	} else {
+		____path = (const char*) __path;
+		
+	}
+	
+	const char* path = ____path;
 	
 	void*                 __pointer_current_program_previous = __pointer_current_program;
 	__pointer__program_t* __pointer___this_previous          = __pointer___this;
