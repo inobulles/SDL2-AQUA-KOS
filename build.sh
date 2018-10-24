@@ -37,7 +37,7 @@ if [ ! -f "ROM.zed" ]; then
 fi
 
 if [ "$2" = "" ]; then
-	gcc glue.c -Wall \
+	gcc glue.c -std=gnu99 -Wall \
 		-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
 		-lSDL2 -lGL -lGLU -lSDL2_ttf -lm \
 		$has_curl_args $has_discord_args
