@@ -12,6 +12,12 @@ ld $discord_link && has_discord_args="-D__HAS_DISCORD $discord_link"
 
 set -e
 
+if [ -d "assembler/c/.hidden/lib" ]; then
+	cd assembler/c/.hidden/lib
+	git pull origin master
+	cd ../../../../
+fi
+
 if [ ! -d "asm/" ]; then
 	git clone https://github.com/inobulles/AQUA-CW
 	mv AQUA-CW asm
