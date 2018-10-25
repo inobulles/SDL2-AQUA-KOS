@@ -106,12 +106,14 @@
 		char signature[sizeof(uint64_t)];
 		uint64_t x;
 		
-	} math_device_sqrt_t;
+	} math_device_generic_t;
 	
 	static unsigned long long previous_fbo_device_create_result;
 	static unsigned long long previous_shader_device_create_result;
 	
 	static unsigned long long previous_math_device_sqrt_result;
+	static unsigned long long previous_math_device_sin_result;
+	
 	#define FLOAT_ONE 1000000
 	
 	#include <math.h>
@@ -132,9 +134,14 @@
 		switch (device) {
 			case DEVICE_MATH: {
 				if (strcmp(extra, "sqrt") == 0) {
-					math_device_sqrt_t* data = (math_device_sqrt_t*) extra;
+					math_device_generic_t* data = (math_device_generic_t*) extra;
 					previous_math_device_sqrt_result = (unsigned long long) (sqrt((double) data->x / FLOAT_ONE) * FLOAT_ONE);
 					result = &previous_math_device_sqrt_result;
+					
+				} else if (strcmp(extra, "sin") == 0) {
+					math_device_generic_t* data = (math_device_generic_t*) extra;
+					previous_math_device_sin_result = (unsigned long long) (sin((double) data->x / FLOAT_ONE) * FLOAT_ONE);
+					result = &previous_math_device_sin_result;
 					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("math")
