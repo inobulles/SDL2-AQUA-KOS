@@ -21,6 +21,10 @@ fi
 if [ ! -d "asm/" ]; then
 	git clone https://github.com/inobulles/AQUA-CW
 	mv AQUA-CW asm
+else
+	cd asm/
+	git pull origin master
+	cd ../
 fi
 
 if [ ! -f "ROM.zed" ]; then
