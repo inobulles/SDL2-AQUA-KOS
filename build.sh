@@ -17,7 +17,7 @@ if [ -d "assembler/c/.hidden/lib" ]; then
 fi
 
 if [ ! -d "asm/" ]; then
-    set -e
+	set -e
 	git clone https://github.com/inobulles/AQUA-CW
 	mv AQUA-CW asm
 else
