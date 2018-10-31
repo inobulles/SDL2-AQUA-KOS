@@ -10,8 +10,6 @@ discord_link="-L. -l:dynamic/libdiscord-rpc.so"
 ld $curl_link    && has_curl_args="-D__HAS_CURL $curl_link";
 ld $discord_link && has_discord_args="-D__HAS_DISCORD $discord_link"
 
-set -e
-
 if [ -d "assembler/c/.hidden/lib" ]; then
 	cd assembler/c/.hidden/lib
 	git pull origin master
@@ -19,12 +17,14 @@ if [ -d "assembler/c/.hidden/lib" ]; then
 fi
 
 if [ ! -d "asm/" ]; then
+    set -e
 	git clone https://github.com/inobulles/AQUA-CW
 	mv AQUA-CW asm
 else
 	cd asm/
 	git pull origin master
 	cd ../
+	set -e
 fi
 
 if [ ! -f "ROM.zed" ]; then
