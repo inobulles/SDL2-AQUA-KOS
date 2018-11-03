@@ -1,14 +1,16 @@
 
 #!/bin/bash
 
-has_curl_args=""
-has_discord_args=""
-
-curl_link="-lcurl"
-discord_link="-L. -l:dynamic/libdiscord-rpc.so"
-
-ld $curl_link    && has_curl_args="-D__HAS_CURL $curl_link";
-ld $discord_link && has_discord_args="-D__HAS_DISCORD $discord_link"
+if [ "$2" = "" ]; then
+    has_curl_args=""
+    has_discord_args=""
+    
+    curl_link="-lcurl"
+    discord_link="-L. -l:dynamic/libdiscord-rpc.so"
+    
+    ld $curl_link    && has_curl_args="-D__HAS_CURL $curl_link";
+    ld $discord_link && has_discord_args="-D__HAS_DISCORD $discord_link"
+fi
 
 if [ -d "assembler/c/.hidden/lib" ]; then
 	cd assembler/c/.hidden/lib
