@@ -63,13 +63,10 @@
 	
 	void get_events(event_list_t* this) { // I guess this shouldn't be here but idc tbh
 		SDL_Event event;
+		SDL_PumpEvents();
 		
 		this->quit = 0;
 		this->pointer_click_type = kos_is_mouse_pressed;
-		
-		SDL_PumpEvents();
-		SDL_GetMouseState((int*) &this->pointer_x, (int*) &this->pointer_y);
-		printf("AHJAGUYASTDAD %lld %lld\n", this->pointer_x, this->pointer_y);
 		
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
@@ -99,12 +96,23 @@
 				
 				break;
 				
+			} else if (event.type == SDL_MOUSEMOTION) {
+				this->pointer_x = event.motion.x;
+				this->pointer_y = event.motion.y;
+				
 			} else if (event.type == SDL_MOUSEBUTTONDOWN) {
+				this->pointer_x = event.button.x;
+				this->pointer_y = event.button.y;
+				
 				kos_has_clicked = 1;
 				kos_is_mouse_pressed = 1;
+				
 				break;
 				
 			} else if (event.type == SDL_MOUSEBUTTONUP) {
+				this->pointer_x = event.button.x;
+				this->pointer_y = event.button.y;
+				
 				kos_is_mouse_pressed = 0;
 				break;
 				
@@ -119,6 +127,8 @@
 			}
 			
 		}
+		
+		printf("OKS %lld %lld\n", this->pointer_x, this->pointer_y);
 		
 	}
 	
