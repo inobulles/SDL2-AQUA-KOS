@@ -19,7 +19,7 @@ while test $# -gt 0; do
 	shift
 done
 
-if [ no-compile = "" ]; then
+if [ "$no_compile" = "" ]; then
 	echo "INFO    Testing for libraries ..."
 	
     has_curl_args=""
@@ -32,7 +32,7 @@ if [ no-compile = "" ]; then
     ld $discord_link && has_discord_args="-D__HAS_DISCORD $discord_link"
 fi
 
-if [ -d "assembler/c/.hidden/lib" ] && [ no-update = "" ]; then
+if [ -d "assembler/c/.hidden/lib" ] && [ $no-update = "" ]; then
 	echo "INFO    Updating the standard library ..."
 	
 	cd assembler/c/.hidden/lib
@@ -46,7 +46,7 @@ if [ ! -d "asm/" ]; then
 	
 	git clone https://github.com/inobulles/AQUA-CW
 	mv AQUA-CW asm
-elif [ no_update = "" ]; then
+elif [ "$no_update" = "" ]; then
 	echo "INFO    Updating the CW ..."
 	
 	cd asm/
@@ -58,7 +58,7 @@ fi
 if [ ! -f "ROM.zed" ]; then
 	echo "WARNING ROM file was not found (ROM.zed), so attempting to install an extension (or run it if it already exists) so you can write C programs and compile them into ROMs ..."
 	
-	if [ no_note = "" ]; then
+	if [ "$no_note" = "" ]; then
 		echo "NOTE    You will have to create assembler/c/code/main.c to compile, obviously (all your headers will go in the same folder). Press enter to continue ..."
 		read a
 	fi
@@ -68,7 +68,7 @@ if [ ! -f "ROM.zed" ]; then
 		
 		git clone https://github.com/inobulles/AQUA-assembler
 		mv AQUA-assembler assembler
-	elif [ no_update = "" ]; then
+	elif [ "$no_update" = "" ]; then
 		echo "INFO    Updating the assembler ..."
 		
 		cd assembler/
@@ -84,7 +84,7 @@ if [ ! -f "ROM.zed" ]; then
 	mv assembler/ROM.zed ROM.zed
 fi
 
-if [ ! -f "a.out" ] || [ no_compile = "" ]; then
+if [ ! -f "a.out" ] || [ "$no_compile" = "" ]; then
 	echo "INFO    Compiling KOS ..."
 	
 	gcc glue.c -std=gnu99 -Wall \
@@ -95,7 +95,7 @@ if [ ! -f "a.out" ] || [ no_compile = "" ]; then
 	execute="true"
 fi
 
-if [ execute != "" ]; then
+if [ "$execute" != "" ]; then
 	echo "INFO    Executing KOS ..."
 	./a.out
 fi
