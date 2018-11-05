@@ -32,6 +32,17 @@ if [ "$remote" != "" ]; then
 	echo "WARNING This argument (remote) is extremely dangerous and should NEVER be used. That said, if your high, feel free to press enter to continue ..."
 	read a
 	
+	echo "INFO    Compiling client ..."
+	cd remote/
+	gcc main.c -std=gnu99 -Wall
+	
+	echo "WARNING Ok now this is your last chance to bail out ... No? Press enter to continue then ..."
+	read a
+	
+	echo "INFO    Executing client ..."
+	./a.out
+	rm a.out
+	
 else
 	if [ "$no_compile" = "" ]; then
 		echo "INFO    Testing for libraries ..."
