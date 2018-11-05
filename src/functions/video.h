@@ -128,8 +128,6 @@
 			
 		}
 		
-		printf("OKS %lld %lld\n", this->pointer_x, this->pointer_y);
-		
 	}
 	
 	void free_events(event_list_t* this) {
