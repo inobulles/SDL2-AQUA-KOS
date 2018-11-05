@@ -68,6 +68,7 @@
 		this->pointer_click_type = kos_is_mouse_pressed;
 		
 		SDL_GetMouseState((int*) &this->pointer_x, (int*) &this->pointer_y);
+		printf("AHJAGUYASTDAD %lld %lld\n", this->pointer_x, this->pointer_y);
 		
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {

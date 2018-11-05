@@ -79,6 +79,8 @@ int main(void) {
 			unsigned long long bytes = ftell(file);
 			rewind(file);
 			
+			printf("Sending %llu bytes of command output ...\n", bytes);
+			
 			fread(command_output, sizeof(char), bytes, file);
 			printf("%s", command_output);
 			
