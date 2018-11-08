@@ -119,7 +119,7 @@
 	} kos_bda_extension_t;
 
 	#define KOS_BDA_EXTENSION
-	kos_bda_extension_t kos_bda_extension;
+	kos_bda_extension_t kos_bda_implementation;
 
 	#define FLOAT_ONE 1000000
 	
@@ -142,13 +142,13 @@
 			case DEVICE_MATH: {
 				if (strcmp(extra, "sqrt") == 0) {
 					math_device_generic_t* data = (math_device_generic_t*) extra;
-					kos_bda_extension.previous_math_device_sqrt_result = (unsigned long long) (sqrt((double) data->x / FLOAT_ONE) * FLOAT_ONE);
-					result = &kos_bda_extension.previous_math_device_sqrt_result;
+					kos_bda_implementation.previous_math_device_sqrt_result = (unsigned long long) (sqrt((double) data->x / FLOAT_ONE) * FLOAT_ONE);
+					result = &kos_bda_implementation.previous_math_device_sqrt_result;
 					
 				} else if (strcmp(extra, "sin") == 0) {
 					math_device_generic_t* data = (math_device_generic_t*) extra;
-					kos_bda_extension.previous_math_device_sin_result = (unsigned long long) (sin((double) data->x / FLOAT_ONE) * FLOAT_ONE);
-					result = &kos_bda_extension.previous_math_device_sin_result;
+					kos_bda_implementation.previous_math_device_sin_result = (unsigned long long) (sin((double) data->x / FLOAT_ONE) * FLOAT_ONE);
+					result = &kos_bda_implementation.previous_math_device_sin_result;
 					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("math")
@@ -159,14 +159,14 @@
 				
 			} case DEVICE_KEYBOARD: {
 				if (strcmp(extra, "press scancode") == 0) {
-					kos_bda_extension.get_device_keyboard_key_packet =                    get_device_keyboard_key;
+					kos_bda_implementation.get_device_keyboard_key_packet =                    get_device_keyboard_key;
 					get_device_keyboard_key                          = 0;
-					result                                           = &kos_bda_extension.get_device_keyboard_key_packet;
+					result                                           = &kos_bda_implementation.get_device_keyboard_key_packet;
 					
 				} else if (strcmp(extra, "press key") == 0) {
-					kos_bda_extension.get_device_keyboard_keycode_packet =                    get_device_keyboard_keycode;
+					kos_bda_implementation.get_device_keyboard_keycode_packet =                    get_device_keyboard_keycode;
 					get_device_keyboard_keycode                          = 0;
-					result                                               = &kos_bda_extension.get_device_keyboard_keycode_packet;
+					result                                               = &kos_bda_implementation.get_device_keyboard_keycode_packet;
 					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("keyboard")
@@ -180,18 +180,18 @@
 				kos_tm_struct = localtime(&kos_time);
 				
 				if (strcmp(extra, "current") == 0) {
-					kos_bda_extension.previous_time_device.hour     = (uint64_t) kos_tm_struct->tm_hour;
-					kos_bda_extension.previous_time_device.minute   = (uint64_t) kos_tm_struct->tm_min;
-					kos_bda_extension.previous_time_device.second   = (uint64_t) kos_tm_struct->tm_sec;
+					kos_bda_implementation.previous_time_device.hour     = (uint64_t) kos_tm_struct->tm_hour;
+					kos_bda_implementation.previous_time_device.minute   = (uint64_t) kos_tm_struct->tm_min;
+					kos_bda_implementation.previous_time_device.second   = (uint64_t) kos_tm_struct->tm_sec;
 					
-					kos_bda_extension.previous_time_device.day      = (uint64_t) kos_tm_struct->tm_mday;
-					kos_bda_extension.previous_time_device.month    = (uint64_t) kos_tm_struct->tm_mon;
-					kos_bda_extension.previous_time_device.year     = (uint64_t) kos_tm_struct->tm_year;
+					kos_bda_implementation.previous_time_device.day      = (uint64_t) kos_tm_struct->tm_mday;
+					kos_bda_implementation.previous_time_device.month    = (uint64_t) kos_tm_struct->tm_mon;
+					kos_bda_implementation.previous_time_device.year     = (uint64_t) kos_tm_struct->tm_year;
 					
-					kos_bda_extension.previous_time_device.week_day = (uint64_t) kos_tm_struct->tm_wday;
-					kos_bda_extension.previous_time_device.year_day = (uint64_t) kos_tm_struct->tm_yday;
+					kos_bda_implementation.previous_time_device.week_day = (uint64_t) kos_tm_struct->tm_wday;
+					kos_bda_implementation.previous_time_device.year_day = (uint64_t) kos_tm_struct->tm_yday;
 					
-					result = (unsigned long long*) &kos_bda_extension.previous_time_device;
+					result = (unsigned long long*) &kos_bda_implementation.previous_time_device;
 					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("clock")
@@ -209,8 +209,8 @@
 				const unsigned long long* fbo_command = (const unsigned long long*) extra;
 				
 				if (fbo_command[0] == 'c') { // create
-					kos_bda_extension.previous_fbo_device_create_result = framebuffer_create(fbo_command[1]);
-					result = (unsigned long long*) &kos_bda_extension.previous_fbo_device_create_result;
+					kos_bda_implementation.previous_fbo_device_create_result = framebuffer_create(fbo_command[1]);
+					result = (unsigned long long*) &kos_bda_implementation.previous_fbo_device_create_result;
 					
 				} else if (fbo_command[0] == 'b') {
 					framebuffer_bind(fbo_command[1], fbo_command[4], fbo_command[5], fbo_command[2], fbo_command[3]);
@@ -231,8 +231,8 @@
 				const unsigned long long* shader_command = (const unsigned long long*) extra;
 				
 				if (shader_command[0] == 'c') { // create
-					kos_bda_extension.previous_shader_device_create_result = gl_load_shaders((GLuint*) shader_command[1], (char*) shader_command[3], (char*) shader_command[4]);
-					result = (unsigned long long*) &kos_bda_extension.previous_shader_device_create_result;
+					kos_bda_implementation.previous_shader_device_create_result = gl_load_shaders((GLuint*) shader_command[1], (char*) shader_command[3], (char*) shader_command[4]);
+					result = (unsigned long long*) &kos_bda_implementation.previous_shader_device_create_result;
 					
 				} else if (shader_command[0] == 'u') { // use
 					gl_use_shader_program((GLuint*) shader_command[1]);
