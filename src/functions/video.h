@@ -60,8 +60,21 @@
 	static unsigned long long get_device_keyboard_keycode;
 	
 	static unsigned long long resize_count;
+	static unsigned char      first_event_flush = 1;
 	
 	void get_events(event_list_t* this) { // I guess this shouldn't be here but idc tbh
+		unsigned long long half_width  = current_kos->width  >> 1;
+		unsigned long long half_height = current_kos->height >> 1;
+		
+		if (first_event_flush) {
+			first_event_flush = 0;
+			memset(this, 0, sizeof(event_list_t));
+			
+			this->pointer_x = half_width;
+			this->pointer_y = half_height;
+			
+		}
+		
 		SDL_Event event;
 		SDL_PumpEvents();
 		
@@ -127,6 +140,9 @@
 			}
 			
 		}
+		
+		this->pointer_x = this->pointer_x < 0 && this->pointer_x >= video_width()  ? half_width  : this->pointer_x;
+		this->pointer_y = this->pointer_y < 0 && this->pointer_y >= video_height() ? half_height : this->pointer_y;
 		
 	}
 	
