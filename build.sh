@@ -57,7 +57,7 @@ else
 		ld $discord_link && has_discord_args="-D__HAS_DISCORD $discord_link"
 	fi
 
-	if [ -d "assembler/c/.hidden/lib" ] && [ $no-update = "" ]; then
+	if [ -d "assembler/c/.hidden/lib" ] && [ "$no_update" = "" ]; then
 		echo "INFO    Updating the standard library ..."
 		
 		cd assembler/c/.hidden/lib
