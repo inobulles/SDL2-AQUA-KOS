@@ -16,6 +16,7 @@ no_compile=""
 no_update=""
 remote=""
 execute=""
+xephyr=""
 
 while test $# -gt 0; do
 	if [ "$1" = "no-note"    ]; then no_note="true";    fi
@@ -23,6 +24,7 @@ while test $# -gt 0; do
 	if [ "$1" = "no-update"  ]; then no_update="true";  fi
 	if [ "$1" = "remote"     ]; then remote="true";     fi
 	if [ "$1" = "execute"    ]; then execute="true";    fi
+	if [ "$1" = "xephyr"     ]; then xephyr="true";     fi
 	
 	shift
 done
@@ -111,7 +113,7 @@ else
 		cd ../
 		mv assembler/ROM.zed ROM.zed
 	fi
-
+	
 	if [ ! -f "a.out" ] && [ "$execute" != "" ] || [ "$no_compile" = "" ]; then
 		echo "INFO    Compiling KOS ..."
 		
@@ -121,6 +123,20 @@ else
 			$has_curl_args $has_discord_args $has_x11_args
 		
 		execute="true"
+	fi
+
+	if [ "$xephyr" != "" ]; then
+		xephyr_bin=$(command -v Xephyr)
+		if [ "$xephyr_bin" != "" ]; then
+			echo "INFO    Opening Xephyr ..."
+			execute=""
+			
+			cp src/xwm/env/xinitrc xinitrc
+			xinit        ./xinitrc -- "$xephyr_bin" :1024 -ac -screen 800x600 -host-cursor
+			rm             xinitrc
+		else
+			echo "WARNING Xephyr was not found"
+		fi
 	fi
 
 	if [ "$execute" != "" ]; then

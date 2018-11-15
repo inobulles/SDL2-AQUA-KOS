@@ -23,7 +23,16 @@
 	static int  kos_setup_predefined_textures(kos_t* this);
 	static void kos_free_predefined_textures (kos_t* this);
 	
+	static unsigned char has_to_close_xwm = 0;
+	
 	void kos_quit(kos_t* this) {
+		#ifdef __HAS_X11
+			if (has_to_close_xwm) {
+				close_xwm();
+				
+			}
+		#endif
+		
 		SDL_GL_DeleteContext(this->context);
 		SDL_DestroyWindow   (this->window);
 		SDL_Quit();
@@ -37,9 +46,18 @@
 	}
 	
 	int kos_init(kos_t* this) {
+		has_to_close_xwm = 0;
+		
 		#ifdef __HAS_X11
 			printf("INFO KOS has X11, will now try to open a new XWM ...\n");
-			printf("%d\n", open_xwm());
+			
+			if (1/*open_xwm()*/) {
+				printf("WARNING Failed to launch XWM\n");
+				
+			} else {
+				has_to_close_xwm = 1;
+				
+			}
 		#endif
 		
 		#ifdef __HAS_CURL

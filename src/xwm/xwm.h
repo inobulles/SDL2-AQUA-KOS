@@ -5,6 +5,7 @@
 	#include <X11/Xlib.h>
 	
 	static unsigned char xwm_detected = 0;
+	static Display*      xwm_display  = NULL;
 	
 	static int on_xwm_detected(Display* display, XErrorEvent* event) {
 		xwm_detected = 1;
@@ -24,19 +25,20 @@
 	}
 	
 	unsigned char open_xwm(void) {
-		Display* display = XOpenDisplay(0);
+		xwm_display = NULL;
+		xwm_display = XOpenDisplay(0);
 		
-		if (!display) {
+		if (!xwm_display) {
 			printf("WARNING Could not open X display\n");
 			return 1;
 			
 		}
 		
-		Window root = DefaultRootWindow(display);
+		Window root = DefaultRootWindow(xwm_display);
 		XSetErrorHandler(on_xwm_detected);
 		
-		XSelectInput(display, root, SubstructureRedirectMask | SubstructureNotifyMask);
-		XSync(display, 0);
+		XSelectInput(xwm_display, root, SubstructureRedirectMask | SubstructureNotifyMask);
+		XSync       (xwm_display, 0);
 		
 		if (xwm_detected) {
 			printf("WARNING Detected another WM on display\n");
@@ -45,8 +47,12 @@
 		}
 		
 		XSetErrorHandler(on_xwm_error);
-		
 		return 0;
+		
+	}
+	
+	void close_xwm(void) {
+		XCloseDisplay(xwm_display);
 		
 	}
 	
