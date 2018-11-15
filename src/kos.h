@@ -81,6 +81,30 @@
 			
 		}
 		
+		#ifdef __HAS_X11
+			printf("INFO Getting X11 display size ...\n");
+			Display* display = XOpenDisplay(NULL);
+			
+			if (!display) {
+				printf("WARNING Could not open X11 display\n");
+				
+			} else {
+				Screen* screen = XScreenOfDisplay(display, 0);
+				
+				if (!screen) {
+					printf("WARNING Could not get X11 default screen of display\n");
+					
+				} else {
+					this->width  = WidthOfScreen (screen);
+					this->height = HeightOfScreen(screen);
+					
+				}
+				
+				XCloseDisplay(display);
+				
+			}
+		#endif
+		
 		this->window = SDL_CreateWindow("AQUA 3.X SDL2 KOS", \
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, \
 			this->width, this->height, \
