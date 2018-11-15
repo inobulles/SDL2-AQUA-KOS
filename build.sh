@@ -8,6 +8,7 @@
 	# remote:     DO NOT USE Connects to an external server that can freely modify your AQUA installation
 	# execute:    Forces the execution of the KOS, even if "no-compile" set and will ALWAYS compile the KOS if "a.out" is not found
 	# xephyr:     Launch KOS in Xephyr
+	# xwm:        Launch KOS with its own WM
 
 echo "INFO    Parsing arguments ..."
 
@@ -17,6 +18,7 @@ no_update=""
 remote=""
 execute=""
 xephyr=""
+xwm=""
 
 while test $# -gt 0; do
 	if [ "$1" = "no-note"    ]; then no_note="true";    fi
@@ -25,6 +27,7 @@ while test $# -gt 0; do
 	if [ "$1" = "remote"     ]; then remote="true";     fi
 	if [ "$1" = "execute"    ]; then execute="true";    fi
 	if [ "$1" = "xephyr"     ]; then xephyr="true";     fi
+	if [ "$1" = "xwm"        ]; then xwm="true";        fi
 	
 	shift
 done
@@ -124,21 +127,31 @@ else
 		
 		execute="true"
 	fi
-
+	
+	xephyr_args=""
+	
 	if [ "$xephyr" != "" ]; then
 		xephyr_bin=$(command -v Xephyr)
 		if [ "$xephyr_bin" != "" ]; then
 			echo "INFO    Opening Xephyr ..."
 			execute=""
+			xwm="true"
+			xephyr_args="-- $xephyr_bin :1024 -ac -screen 800x600 -host-cursor"
 			
-			cp src/xwm/env/xinitrc xinitrc
-			xinit        ./xinitrc -- "$xephyr_bin" :1024 -ac -screen 800x600 -host-cursor
-			rm             xinitrc
 		else
 			echo "WARNING Xephyr was not found"
 		fi
 	fi
-
+	
+	if [ "$xwm" != "" ]; then
+		echo "INFO    Opening xinit ..."
+		execute=""
+		
+		cp src/xwm/env/xinitrc xinitrc
+		xinit        ./xinitrc $xephyr_args
+		rm             xinitrc
+	fi
+	
 	if [ "$execute" != "" ]; then
 		echo "INFO    Executing KOS ..."
 		./a.out
