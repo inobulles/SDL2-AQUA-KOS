@@ -60,7 +60,10 @@ else
 		curl_link="-lcurl"
 		discord_link="-L. -l:dynamic/libdiscord-rpc.so"
 		
-		ld $x11_link     && has_x11_args="-D__HAS_X11 $x11_link"
+		if [ xwm != "" ] || [ xephyr != "" ]; then
+			ld $x11_link && has_x11_args="-D__HAS_X11 $x11_link"
+		fi
+		
 		ld $curl_link    && has_curl_args="-D__HAS_CURL $curl_link";
 		ld $discord_link && has_discord_args="-D__HAS_DISCORD $discord_link"
 	fi
