@@ -86,6 +86,10 @@
 			this->width, this->height, \
 			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 		
+		printf("INFO Creating cursor ...\n");
+		SDL_Cursor*   cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+		SDL_SetCursor(cursor);
+		
 		if (this->window == NULL) {
 			printf("ERROR SDL2 window could not be created (%s)\n", SDL_GetError());
 			KOS_ERROR
