@@ -13,6 +13,10 @@
 	
 	#include "functions/font.h"
 	
+	#ifdef __HAS_X11
+		#include "xwm/xwm.h"
+	#endif
+	
 	static const char* temp_gl_2_vertex_shader   = "#version 120\n\nvoid main(void) {\n\tgl_Position  = vec4(0, 0, 0, 0);\n\t\n}\n"; /// TODO
 	static const char* temp_gl_2_fragment_shader = "#version 120\n\nvoid main(void) {\n\tgl_FragColor = vec4(1, 0, 0, 1);\n\t\n}\n";
 	
@@ -33,6 +37,11 @@
 	}
 	
 	int kos_init(kos_t* this) {
+		#ifdef __HAS_X11
+			printf("INFO KOS has X11, will now try to open a new XWM ...\n");
+			printf("%d\n", open_xwm());
+		#endif
+		
 		#ifdef __HAS_CURL
 			printf("INFO KOS has CURL, the `requests` device will thus be enabled\n");
 		#endif

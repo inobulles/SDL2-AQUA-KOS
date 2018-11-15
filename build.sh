@@ -7,6 +7,7 @@
 	# no-update:  Prevents the updation of any of the components (CW, KOS and assembler)
 	# remote:     DO NOT USE Connects to an external server that can freely modify your AQUA installation
 	# execute:    Forces the execution of the KOS, even if "no-compile" set and will ALWAYS compile the KOS if "a.out" is not found
+	# xephyr:     Launch KOS in Xephyr
 
 echo "INFO    Parsing arguments ..."
 
@@ -50,9 +51,11 @@ else
 		has_curl_args=""
 		has_discord_args=""
 		
+		x11_link="-lX11"
 		curl_link="-lcurl"
 		discord_link="-L. -l:dynamic/libdiscord-rpc.so"
 		
+		ld $x11_link     && has_x11_args="-D__HAS_X11 $x11_link"
 		ld $curl_link    && has_curl_args="-D__HAS_CURL $curl_link";
 		ld $discord_link && has_discord_args="-D__HAS_DISCORD $discord_link"
 	fi
@@ -115,7 +118,7 @@ else
 		gcc glue.c -std=gnu99 -Wall \
 			-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
 			-lSDL2 -lGL -lGLU -lSDL2_ttf -lm \
-			$has_curl_args $has_discord_args
+			$has_curl_args $has_discord_args $has_x11_args
 		
 		execute="true"
 	fi
