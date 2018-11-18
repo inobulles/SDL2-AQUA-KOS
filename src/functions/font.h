@@ -120,10 +120,11 @@
 				
 			}
 			
-			this->text = text;
+			this->text = (char*) malloc(strlen(text));
+			strcpy(this->text,                 text);
 			
 			SDL_Surface* temp = TTF_RenderUTF8_Blended(this->font, text, kos_font_colour);
-			this->surface = SDL_CreateRGBSurface(0, temp->w, temp->h, 32, 0xFF, 0xFF << 8, 0xFF << 16, 0xFF << 24);
+			this->surface = SDL_CreateRGBSurface(0, temp->w, temp->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 			
 			SDL_BlitSurface(temp, NULL, this->surface, NULL);
 			SDL_FreeSurface(temp);
@@ -152,6 +153,11 @@
 	
 	unsigned long long font_remove(font_t this) {
 		KOS_CHECK_FONT(-1)
+		
+		if (kos_fonts[this].text != NULL) {
+			free(kos_fonts[this].text);
+			
+		}
 		
 		if (kos_fonts[this].surface) {
 			SDL_FreeSurface(kos_fonts[this].surface);
