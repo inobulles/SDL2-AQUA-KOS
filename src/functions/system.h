@@ -318,6 +318,14 @@
 					glEnd();
 					
 					
+				} else if (gl_command[0] == 'r') { // rotate
+					glRotatef( \
+						(double) gl_command[7]  / FLOAT_ONE, \
+						(double) gl_command[8]  / FLOAT_ONE, \
+						(double) gl_command[9]  / FLOAT_ONE, \
+						(double) gl_command[10] / FLOAT_ONE  \
+					);
+					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("gl");
 					
