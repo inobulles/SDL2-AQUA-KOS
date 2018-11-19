@@ -291,6 +291,33 @@
 					glMatrixMode(GL_MODELVIEW);
 					glLoadIdentity();
 					
+				} else if (gl_command[0] == 'v') { // draw vertices only
+					typedef struct {
+						signed long long x;
+						signed long long y;
+						signed long long z;
+						
+					} vertex_t;
+					
+					surface_t test;
+					surface_new(&test, -_UI64_MAX_MARGIN, -_UI64_MAX_MARGIN, 0, 0);
+					surface_set_texture(&test, 0);
+					surface_draw(&test);
+					
+					glColor3f(1.0f, 0.0f, 0.0f);
+					glPointSize(2.0f);
+					glBegin(GL_POINTS);
+					
+					unsigned long long i;
+					for (i = 0; i < gl_command[12]; i++) {
+						vertex_t* vertices = (vertex_t*) gl_command[11];
+						glVertex3f((double) vertices[i].x / FLOAT_ONE, (double) vertices[i].y / FLOAT_ONE, (double) vertices[i].z / FLOAT_ONE);
+						
+					}
+					
+					glEnd();
+					
+					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("gl");
 					
