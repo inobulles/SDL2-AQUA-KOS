@@ -13,6 +13,7 @@
 	#define DEVICE_SHADER   8
 	#define DEVICE_REQUESTS 9
 	#define DEVICE_DISCORD  10
+	#define DEVICE_GL       11
 	
 	// compute devices
 	

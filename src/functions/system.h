@@ -57,6 +57,7 @@
 		else if (strcmp(device, "clock")    == 0) return DEVICE_CLOCK;
 		else if (strcmp(device, "fbo")      == 0) return DEVICE_FBO;
 		else if (strcmp(device, "shader")   == 0) return DEVICE_SHADER;
+		else if (strcmp(device, "gl")       == 0) return DEVICE_GL;
 		
 		// compute
 		
@@ -244,6 +245,13 @@
 					KOS_DEVICE_COMMAND_WARNING("shader");
 					
 				}
+				
+				break;
+				
+			} case DEVICE_GL: {
+				const unsigned long long* gl_command = (const unsigned long long*) extra;
+				
+				KOS_DEVICE_COMMAND_WARNING("gl");
 				
 				break;
 				
