@@ -249,9 +249,12 @@
 				break;
 				
 			} case DEVICE_GL: {
-				const unsigned long long* gl_command = (const unsigned long long*) extra;
+				const signed long long* gl_command = (const signed long long*) extra;
 				
 				if (gl_command[0] == 'f') { // glFrustum
+					glMatrixMode(GL_PROJECTION);
+					glLoadIdentity();
+					
 					glFrustum( \
 						(double) gl_command[1] / FLOAT_ONE, \
 						(double) gl_command[2] / FLOAT_ONE, \
@@ -260,6 +263,33 @@
 						(double) gl_command[5] / FLOAT_ONE, \
 						(double) gl_command[6] / FLOAT_ONE  \
 					);
+					
+					glTranslatef(0.0f, 0.0f, -3.0f);
+					
+					glMatrixMode(GL_MODELVIEW);
+					glLoadIdentity();
+					
+				} else if (gl_command[0] == 'o') { // glOrtho
+					glMatrixMode(GL_PROJECTION);
+					glLoadIdentity();
+					
+					glEnable(GL_CULL_FACE);
+					glCullFace(GL_BACK);
+					glFrontFace(GL_CCW);
+					
+					glOrtho( \
+						(double) gl_command[1] / FLOAT_ONE, \
+						(double) gl_command[2] / FLOAT_ONE, \
+						(double) gl_command[3] / FLOAT_ONE, \
+						(double) gl_command[4] / FLOAT_ONE, \
+						(double) gl_command[5] / FLOAT_ONE, \
+						(double) gl_command[6] / FLOAT_ONE  \
+					);
+					
+					glTranslatef(0.0f, 0.0f, -100.0f);
+					
+					glMatrixMode(GL_MODELVIEW);
+					glLoadIdentity();
 					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("gl");

@@ -168,6 +168,7 @@
 		
 		glMatrixMode(GL_PROJECTION);
 		glViewport(0, 0, this->width, this->height);
+		glLoadIdentity();
 		
 		#if KOS_3D_VISUALIZATION
 			float fov   = tan(65.0f / 4);
