@@ -251,7 +251,20 @@
 			} case DEVICE_GL: {
 				const unsigned long long* gl_command = (const unsigned long long*) extra;
 				
-				KOS_DEVICE_COMMAND_WARNING("gl");
+				if (gl_command[0] == 'f') { // glFrustum
+					glFrustum( \
+						(double) gl_command[1] / FLOAT_ONE, \
+						(double) gl_command[2] / FLOAT_ONE, \
+						(double) gl_command[3] / FLOAT_ONE, \
+						(double) gl_command[4] / FLOAT_ONE, \
+						(double) gl_command[5] / FLOAT_ONE, \
+						(double) gl_command[6] / FLOAT_ONE  \
+					);
+					
+				} else {
+					KOS_DEVICE_COMMAND_WARNING("gl");
+					
+				}
 				
 				break;
 				
