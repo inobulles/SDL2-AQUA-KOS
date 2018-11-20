@@ -333,21 +333,24 @@
 					}
 					
 					glEnd();
-					
 					glBegin(GL_LINES);
 					
 					for (i = 0; i < gl_command[18]; i++) {
 						glVertex3f((double) vertices[faces[i].pair1[0]].x / FLOAT_ONE, -(double) vertices[faces[i].pair1[0]].y / FLOAT_ONE, (double) vertices[faces[i].pair1[0]].z / FLOAT_ONE);
-						glVertex3f((double) vertices[faces[i].pair1[1]].x / FLOAT_ONE, -(double) vertices[faces[i].pair1[1]].y / FLOAT_ONE, (double) vertices[faces[i].pair1[1]].z / FLOAT_ONE);
+						glVertex3f((double) vertices[faces[i].pair2[0]].x / FLOAT_ONE, -(double) vertices[faces[i].pair2[0]].y / FLOAT_ONE, (double) vertices[faces[i].pair2[0]].z / FLOAT_ONE);
 						
 						glVertex3f((double) vertices[faces[i].pair2[0]].x / FLOAT_ONE, -(double) vertices[faces[i].pair2[0]].y / FLOAT_ONE, (double) vertices[faces[i].pair2[0]].z / FLOAT_ONE);
-						glVertex3f((double) vertices[faces[i].pair2[1]].x / FLOAT_ONE, -(double) vertices[faces[i].pair2[1]].y / FLOAT_ONE, (double) vertices[faces[i].pair2[1]].z / FLOAT_ONE);
+						glVertex3f((double) vertices[faces[i].pair3[0]].x / FLOAT_ONE, -(double) vertices[faces[i].pair3[0]].y / FLOAT_ONE, (double) vertices[faces[i].pair3[0]].z / FLOAT_ONE);
 						
 						glVertex3f((double) vertices[faces[i].pair3[0]].x / FLOAT_ONE, -(double) vertices[faces[i].pair3[0]].y / FLOAT_ONE, (double) vertices[faces[i].pair3[0]].z / FLOAT_ONE);
-						glVertex3f((double) vertices[faces[i].pair3[1]].x / FLOAT_ONE, -(double) vertices[faces[i].pair3[1]].y / FLOAT_ONE, (double) vertices[faces[i].pair3[1]].z / FLOAT_ONE);
 						
-						glVertex3f((double) vertices[faces[i].pair4[0]].x / FLOAT_ONE, -(double) vertices[faces[i].pair4[0]].y / FLOAT_ONE, (double) vertices[faces[i].pair4[0]].z / FLOAT_ONE);
-						glVertex3f((double) vertices[faces[i].pair4[1]].x / FLOAT_ONE, -(double) vertices[faces[i].pair4[1]].y / FLOAT_ONE, (double) vertices[faces[i].pair4[1]].z / FLOAT_ONE);
+						if (faces[i].pair4[0]) {
+							glVertex3f((double) vertices[faces[i].pair4[0]].x / FLOAT_ONE, -(double) vertices[faces[i].pair4[0]].y / FLOAT_ONE, (double) vertices[faces[i].pair4[0]].z / FLOAT_ONE);
+							glVertex3f((double) vertices[faces[i].pair4[0]].x / FLOAT_ONE, -(double) vertices[faces[i].pair4[0]].y / FLOAT_ONE, (double) vertices[faces[i].pair4[0]].z / FLOAT_ONE);
+							
+						}
+						
+						glVertex3f((double) vertices[faces[i].pair1[0]].x / FLOAT_ONE, -(double) vertices[faces[i].pair1[0]].y / FLOAT_ONE, (double) vertices[faces[i].pair1[0]].z / FLOAT_ONE);
 						
 					}
 					
