@@ -305,13 +305,13 @@
 					surface_draw(&test);
 					
 					glColor3f(1.0f, 0.0f, 0.0f);
-					glPointSize(2.0f);
-					glBegin(GL_POINTS);
+					//~ glPointSize(2.0f);
+					glBegin(GL_LINES);
 					
 					unsigned long long i;
 					for (i = 0; i < gl_command[12]; i++) {
 						vertex_t* vertices = (vertex_t*) gl_command[11];
-						glVertex3f((double) vertices[i].x / FLOAT_ONE, (double) vertices[i].y / FLOAT_ONE, (double) vertices[i].z / FLOAT_ONE);
+						glVertex3f((double) vertices[i].x / FLOAT_ONE, -(double) vertices[i].y / FLOAT_ONE, (double) vertices[i].z / FLOAT_ONE);
 						
 					}
 					
