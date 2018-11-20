@@ -251,7 +251,7 @@
 			} case DEVICE_GL: {
 				const signed long long* gl_command = (const signed long long*) extra;
 				
-				if (gl_command[0] == 'f') { // glFrustum
+				if (gl_command[0] == 'f') { // frustum
 					glMatrixMode(GL_PROJECTION);
 					glLoadIdentity();
 					
@@ -269,7 +269,7 @@
 					glMatrixMode(GL_MODELVIEW);
 					glLoadIdentity();
 					
-				} else if (gl_command[0] == 'o') { // glOrtho
+				} else if (gl_command[0] == 'o') { // ortho
 					glMatrixMode(GL_PROJECTION);
 					glLoadIdentity();
 					
@@ -291,6 +291,14 @@
 					glMatrixMode(GL_MODELVIEW);
 					glLoadIdentity();
 					
+				} else if (gl_command[0] == 'c') { // colour
+					glColor4f( \
+						(double) gl_command[13] / FLOAT_ONE, \
+						(double) gl_command[14] / FLOAT_ONE, \
+						(double) gl_command[15] / FLOAT_ONE, \
+						(double) gl_command[16] / FLOAT_ONE  \
+					);
+					
 				} else if (gl_command[0] == 'v') { // draw vertices only
 					typedef struct {
 						signed long long x;
@@ -304,9 +312,8 @@
 					surface_set_texture(&test, 0);
 					surface_draw(&test);
 					
-					glColor3f(1.0f, 0.0f, 0.0f);
-					//~ glPointSize(2.0f);
-					glBegin(GL_LINES);
+					glPointSize(2.0f);
+					glBegin(GL_POINTS);
 					
 					unsigned long long i;
 					for (i = 0; i < gl_command[12]; i++) {
