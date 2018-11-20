@@ -312,7 +312,7 @@
 					surface_set_texture(&test, 0);
 					surface_draw(&test);
 					
-					glPointSize(2.0f);
+					glPointSize(4.0f);
 					glBegin(GL_POINTS);
 					
 					unsigned long long i;
