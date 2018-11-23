@@ -120,8 +120,8 @@
 				
 			}
 			
-			this->text = (char*) malloc(strlen(text));
-			strcpy(this->text,                 text);
+			this->text = /*(char*) malloc(strlen(text));
+			strcpy(this->text,                 text);*/ text;
 			
 			SDL_Surface* temp = TTF_RenderUTF8_Blended(this->font, text, kos_font_colour);
 			this->surface = SDL_CreateRGBSurface(0, temp->w, temp->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
