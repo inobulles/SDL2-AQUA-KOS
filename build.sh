@@ -7,6 +7,7 @@
 	# no-update:  Prevents the updation of any of the components (CW, KOS and assembler)
 	# remote:     DO NOT USE Connects to an external server that can freely modify your AQUA installation
 	# execute:    Forces the execution of the KOS, even if "no-compile" set and will ALWAYS compile the KOS if "a.out" is not found
+	# app:        Download and run a ROM file, the second argument being the identifier in the official AQUA Store ROM repository (sh build.sh app lasagna)
 	# xephyr:     Launch KOS in Xephyr
 	# xwm:        Launch KOS with its own WM
 
@@ -19,6 +20,7 @@ remote=""
 execute=""
 xephyr=""
 xwm=""
+rom=""
 
 while test $# -gt 0; do
 	if [ "$1" = "no-note"    ]; then no_note="true";    fi
@@ -28,6 +30,7 @@ while test $# -gt 0; do
 	if [ "$1" = "execute"    ]; then execute="true";    fi
 	if [ "$1" = "xephyr"     ]; then xephyr="true";     fi
 	if [ "$1" = "xwm"        ]; then xwm="true";        fi
+	if [ "$1" = "app"        ]; then rom="$2";          fi
 	
 	shift
 done
@@ -90,7 +93,16 @@ else
 		cd ../
 		set -e
 	fi
-
+	
+	if [ "$rom" != "" ]; then
+		echo "INFO    Downloading ROM file \"$rom\" ..."
+		wget "https://raw.githubusercontent.com/inobulles/AQUA-Store/master/roms/$rom/rom.zed"
+		mv rom.zed ROM.zed
+		
+		no_compile=""
+		execute="true"
+	fi
+	
 	if [ ! -f "ROM.zed" ]; then
 		echo "WARNING ROM file was not found (ROM.zed), so attempting to install an extension (or run it if it already exists) so you can write C programs and compile them into ROMs ..."
 		
