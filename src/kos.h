@@ -25,6 +25,8 @@
 	
 	static unsigned char has_to_close_xwm = 0;
 	
+	void request_global_free(void);
+	
 	void kos_quit(kos_t* this) {
 		#ifdef __HAS_X11
 			if (has_to_close_xwm) {
@@ -41,6 +43,10 @@
 		kos_destroy_fonts();
 		
 		printf("Destroyed all SDL subsystems\n");
+		
+		printf("Freeing requests and CURL ...\n");
+		request_global_free();
+		
 		exit(0);
 		
 	}

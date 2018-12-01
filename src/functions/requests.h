@@ -22,17 +22,13 @@
 		
 	} kos_request_response_t;
 	
-	static void request_global_init(void) {
-		kos_curl = requests_init(&kos_current_request);
+	void request_global_free(void) {
+		requests_close(&kos_current_request);
 		
 	}
 	
 	void kos_requests_get(kos_request_response_t* this, const char* url) {
-		if (!kos_requests_init) {
-			kos_requests_init++;
-			request_global_init();
-			
-		}
+		kos_curl = requests_init(&kos_current_request);
 		
 		requests_get(kos_curl, &kos_current_request, (char*) url);
 		this->code = kos_current_request.code;
@@ -51,7 +47,6 @@
 		this->text       = (unsigned long long) malloc(this->text_bytes);
 		
 		strcpy((char*) this->text, kos_current_request.text);
-		requests_close(&kos_current_request);
 		
 	}
 	
