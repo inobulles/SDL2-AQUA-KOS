@@ -43,7 +43,7 @@
 			
 		}
 		
-		this->text_bytes = strlen(kos_current_request.text) + 1;
+		this->text_bytes = kos_current_request.size;
 		this->text       = (unsigned long long) malloc(this->text_bytes);
 		
 		strcpy((char*) this->text, kos_current_request.text);
