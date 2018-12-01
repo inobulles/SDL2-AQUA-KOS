@@ -56,7 +56,10 @@
 	}
 	
 	void kos_requests_free(kos_request_response_t* this) {
-		free((void*) this->text /* this->text_bytes */);
+		if (this->text) {
+			free((void*) this->text /* this->text_bytes */);
+			
+		}
 		
 	}
 	
