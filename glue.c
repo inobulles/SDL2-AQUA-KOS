@@ -1,4 +1,6 @@
 
+#include <unistd.h>
+
 #include "src/kos.h"
 #include "asm/asm.h"
 
@@ -24,7 +26,7 @@ static kos_t kos;
 
 static unsigned long long kos_roms_loaded = 0;
 
-signed long long load_rom(unsigned long long __path) {
+static signed long long __load_rom(unsigned long long __path) {
 	const char* ____path;
 	
 	if (kos_roms_loaded++) {
@@ -144,9 +146,16 @@ signed long long load_rom(unsigned long long __path) {
 	
 }
 
-void main(void) {
-	//~ click_proxy = 1;
+static char* a_out_execution_command = "./a.out";
+
+signed long long load_rom(unsigned long long path) {
+	char command_buffer[4096];
+	sprintf(command_buffer, "%s root/%s", a_out_execution_command, (const char*) path);
+	return system(command_buffer);
 	
+}
+
+int main(int argc, char** argv) {
 	printf("\nControl passed to the CW\n");
 	printf("Initializing the KOS ...\n");
 	
@@ -157,11 +166,21 @@ void main(void) {
 	}
 	
 	printf("Entering the DE ...\n");
+	char* path;
 	
-	int error_code = load_rom((unsigned long long) ROM_PATH);
+	a_out_execution_command = argv[0];
+	
+	if (argc <= 1) path = ROM_PATH;
+	else           path = argv[1];
+	
+	printf("%s\n", path);
+	
+	int error_code = __load_rom((unsigned long long) path);
 	printf("DE return code is %d\n", error_code);
 	
 	printf("Quitting KOS ...\n");
 	kos_quit(&kos);
+	
+	return error_code;
 	
 }

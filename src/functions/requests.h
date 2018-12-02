@@ -5,6 +5,7 @@
 	int asprintf(char **strp, const char *fmt, ...);
 	
 	#include "../librequests/include/requests.h"
+	#define __OMIT_INCLUSION_OF_REQUESTS_HEADER__ 1
 	#include "../librequests/src/requests.c"
 	
 	static req_t         kos_current_request;
@@ -43,16 +44,16 @@
 			
 		}
 		
-		this->text_bytes = kos_current_request.size;
+		this->text_bytes = kos_current_request.size + 1;
 		this->text       = (unsigned long long) malloc(this->text_bytes);
 		
-		strcpy((char*) this->text, kos_current_request.text);
+		memcpy((char*) this->text, kos_current_request.text, this->text_bytes);
 		
 	}
 	
 	void kos_requests_free(kos_request_response_t* this) {
 		if (this->text) {
-			free((void*) this->text /* this->text_bytes */);
+			//~ free((void*) this->text /* this->text_bytes */);
 			
 		}
 		

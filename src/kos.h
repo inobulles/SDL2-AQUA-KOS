@@ -47,8 +47,6 @@
 		printf("Freeing requests and CURL ...\n");
 		request_global_free();
 		
-		exit(0);
-		
 	}
 	
 	int kos_init(kos_t* this) {
