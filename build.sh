@@ -10,6 +10,7 @@
 	# app:        Download and run a ROM file, the second argument being the identifier in the official AQUA Store ROM repository (sh build.sh app lasagna)
 	# xephyr:     Launch KOS in Xephyr
 	# xwm:        Launch KOS with its own WM
+	# debian:     Install all the packages for Debian
 
 echo "INFO    Parsing arguments ..."
 
@@ -31,6 +32,11 @@ while test $# -gt 0; do
 	if [ "$1" = "xephyr"     ]; then xephyr="true";     fi
 	if [ "$1" = "xwm"        ]; then xwm="true";        fi
 	if [ "$1" = "app"        ]; then rom="$2";          fi
+	
+	if [ "$1" = "debian" ]; then
+		sudo apt-get install -y libcurl4-openssl-dev
+		sudo apt-get install -y libsdl2-ttf-2.0-0 libsdl2-ttf-dev libsdl2-2.0-0 libsdl2-dev
+	fi
 	
 	shift
 done
