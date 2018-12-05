@@ -16,7 +16,25 @@
 	
 	static unsigned long long resize_count;
 	
+	static inline void surface_set_layer_float(surface_t* this, float layer) {
+		this->layer = (signed long long) layer;
+		
+		int i;
+		for (i = 0; i < 4; i++) {
+			this->vertices[i].z = (GLfloat) layer / 256.0f;
+			
+		}
+		
+	}
+	
+	void surface_set_layer(surface_t* this, signed long long layer) {
+		surface_set_layer_float(this, (float) layer);
+		
+	}
+	
 	static inline void surface_update_vertices(surface_t* this) {
+		surface_set_layer(this, this->layer);
+		
 		float width  = (float) this->width  / _UI64_MAX_MARGIN;
 		float height = (float) this->height / _UI64_MAX_MARGIN;
 		
@@ -25,8 +43,6 @@
 		
 		int i;
 		for (i = 0; i < 4; i++) {
-			this->vertices[i].z =           (GLfloat) this->layer / 256.0f;
-			
 			this->vertices[i].x =           (GLfloat) (width  * vertex_matrix[i * 3]     + x);
 			this->vertices[i].y =           (GLfloat) (height * vertex_matrix[i * 3 + 1] + y);
 			
@@ -80,7 +96,7 @@
 
 	static void surface_update(surface_t* this) {
 		surface_update_vertices(this);
-		surface_update_colours( this);
+		surface_update_colours (this);
 		
 	}
 
@@ -122,7 +138,17 @@
 		
 	}
 	
+	static float surface_layer_offset = 0.0f;
+	
 	int surface_draw(surface_t* this) {
+		surface_set_layer_float(this, (float) this->layer + surface_layer_offset);
+		surface_layer_offset += 0.01f;
+		
+		if (surface_layer_offset >= 0.5f) {
+			surface_layer_offset  = 0.0f;
+			
+		}
+		
 		switch (kos_best_gl_version_major) {
 			case 1: return 1;
 			case 2: return gl2_surface_draw(this);
@@ -187,12 +213,6 @@
 	
 	void surface_set_height(surface_t* this, unsigned long long height) {
 		this->height = height;
-		surface_update_vertices(this);
-		
-	}
-	
-	void surface_set_layer(surface_t* this, signed long long layer) {
-		this->layer = layer;
 		surface_update_vertices(this);
 		
 	}

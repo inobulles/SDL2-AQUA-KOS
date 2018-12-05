@@ -20,6 +20,7 @@
 	}
 	
 	void video_flip(void) {
+		surface_layer_offset = 0.0f;
 		SDL_GL_SwapWindow(current_kos->window);
 		
 		#if KOS_3D_VISUALIZATION
