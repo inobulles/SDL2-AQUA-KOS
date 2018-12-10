@@ -326,8 +326,8 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		//~ return __texture_create(font->surface->pixels, 32, font->surface->w, font->surface->h, 0);
-		return __texture_create(font->surface.pixels, 32, font->surface.w, font->surface.h, 0);
+		return __texture_create(font->surface->pixels, 32, font->surface->w, font->surface->h, 0);
+		//~ return __texture_create(font->surface.pixels, 32, font->surface.w, font->surface.h, 0);
 		
 	}
 	
@@ -337,8 +337,8 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		//~ return font->surface->w;
-		return font->surface.w;
+		return font->surface->w;
+		//~ return font->surface.w;
 		
 	}
 	
@@ -348,8 +348,8 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		//~ return font->surface->h;
-		return font->surface.h;
+		return font->surface->h;
+		//~ return font->surface.h;
 		
 	}
 	
