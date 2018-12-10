@@ -23,7 +23,7 @@ execute=""
 xephyr=""
 xwm=""
 rom=""
-use_sdl_ttf=""
+use_sdl_ttf="true"
 
 while test $# -gt 0; do
 	if [ "$1" = "no-note"     ]; then no_note="true";     fi
@@ -150,10 +150,17 @@ else
 	if [ ! -f "a.out" ] && [ "$execute" != "" ] || [ "$no_compile" = "" ]; then
 		echo "INFO    Compiling KOS ..."
 		
+		if [ "$use_sdl_ttf" = "" ]; then
+			font_library=""
+		else
+			font_library="-lSDL2_ttf -D__USE_SDL_TTF"
+		fi
+		
 		gcc glue.c -std=gnu99 -Wall \
 			-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
-			-lSDL2 -lGL -lGLU -lSDL2_ttf -lm \
-			$has_curl_args $has_discord_args $has_x11_args
+			-lSDL2 -lGL -lGLU -lm -llibfreetype \
+			$has_curl_args $has_discord_args $has_x11_args \
+			$font_library
 		
 		execute="true"
 	fi

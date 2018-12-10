@@ -3,7 +3,13 @@
 	#define __AQUA__SDL2_SRC_FUNCTIONS_FONT_H
 	
 	#include "../macros_and_inclusions.h"
-	#include <SDL2/SDL_ttf.h>
+	
+	#ifdef __USE_SDL_TTF
+		#include <SDL2/SDL_ttf.h>
+	#else
+		#include <ft2build.h>
+		#include FT_FREETYPE_H
+	#endif
 	
 	typedef struct {
 		unsigned char used;
@@ -12,8 +18,12 @@
 		char  path[MAX_PATH_LENGTH];
 		char* text;
 		
-		TTF_Font* font;
-		SDL_Surface* surface;
+		#ifdef __USE_SDL_TTF
+			TTF_Font* font;
+			SDL_Surface* surface;
+		#else
+			FT_Face font;
+		#endif
 		
 	} kos_font_t;
 	
@@ -22,7 +32,12 @@
 	#endif
 	
 	static kos_font_t kos_fonts[KOS_MAX_FONTS];
-	static SDL_Color kos_font_colour;
+	
+	#ifdef __USE_SDL_TTF
+		static SDL_Color kos_font_colour;
+	#else
+		static FT_Library kos_freetype_library;
+	#endif
 	
 	#ifndef KOS_CHECK_FONT
 		#define KOS_CHECK_FONT(return_value) { \
@@ -36,16 +51,22 @@
 	static void kos_unuse_font(kos_font_t* this) {
 		this->used    = 0;
 		this->text    = NULL;
-		this->font    = NULL;
-		this->surface = NULL;
+		
+		#ifdef __USE_SDL_TTF
+			this->font    = NULL;
+			this->surface = NULL;
+		#endif
 		
 	}
 	
 	void kos_init_fonts(void) { /// TO... IMPLEMENT?
-		kos_font_colour.r = 0xFF;
-		kos_font_colour.g = 0xFF;
-		kos_font_colour.b = 0xFF;
-		kos_font_colour.a = 0xFF;
+		#ifdef __USE_SDL_TTF
+			kos_font_colour.r = 0xFF;
+			kos_font_colour.g = 0xFF;
+			kos_font_colour.b = 0xFF;
+			kos_font_colour.a = 0xFF;
+		#else
+		#endif
 		
 		unsigned long long i;
 		for (i = 0; i < KOS_MAX_FONTS; i++) {
@@ -53,11 +74,19 @@
 			
 		}
 		
-		if (TTF_Init() == -1) {
-			printf("WARNING TTF could not initialize (%s)\n", TTF_GetError());
-			return;
-			
-		}
+		#ifdef __USE_SDL_TTF
+			if (TTF_Init() == -1) {
+				printf("WARNING SDL2 TTF could not initialize (%s)\n", TTF_GetError());
+				return;
+				
+			}
+		#else
+			if (FT_Init_FreeType(&kos_freetype_library)) {
+				printf("WARNING FreeType could not initialize\n");
+				return;
+				
+			}
+		#endif
 		
 	}
 	
@@ -78,9 +107,17 @@
 				memcpy(kos_fonts[i].path, path, MAX_PATH_LENGTH * sizeof(char));
 				
 				kos_fonts[i].size = (float) size / _UI64_MAX;
-				kos_fonts[i].font = TTF_OpenFont(kos_fonts[i].path, kos_fonts[i].size * video_width());
+				unsigned char font_loading_error = 0;
+				unsigned long long size = kos_fonts[i].size * video_width();
 				
-				if (!kos_fonts[i].font) {
+				#ifdef __USE_SDL_TTF
+					kos_fonts[i].font  = TTF_OpenFont(kos_fonts[i].path, size);
+					font_loading_error = !kos_fonts[i].font;
+				#else
+					font_loading_error = FT_New_Face(kos_freetype_library, kos_fonts[i].path, size * 64, 0, 100, 0);
+				#endif
+				
+				if (font_loading_error) {
 					printf("WARNING Font could not be loaded (possibly an incorrect path? `%s`)\n", path);
 					kos_fonts[i].used = 0;
 					
@@ -103,8 +140,14 @@
 		unsigned long long i;
 		for (i = 0; i < KOS_MAX_FONTS; i++) {
 			if (kos_fonts[i].used) {
-				TTF_CloseFont(kos_fonts[i].font);
-				kos_fonts[i].font = TTF_OpenFont(kos_fonts[i].path, kos_fonts[i].size * video_width());
+				unsigned char font_loading_error = 0;
+				unsigned long long size = kos_fonts[i].size * video_width();
+				
+				#ifdef __USE_SDL_TTF
+					TTF_CloseFont(kos_fonts[i].font);
+					kos_fonts[i].font = TTF_OpenFont(kos_fonts[i].path, size);
+				#else
+				#endif
 				
 			}
 			
