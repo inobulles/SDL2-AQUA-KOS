@@ -3,14 +3,15 @@
 
 # Here is a list of possible arguments and what they do:
 	# no-note:    Skips the note that waits for user input
-	# no-compile: Prevents the compilation of the KOS or the CW and prevents the running of the KOS at the end
-	# no-update:  Prevents the updation of any of the components (CW, KOS and assembler)
-	# remote:     DO NOT USE Connects to an external server that can freely modify your AQUA installation
-	# execute:    Forces the execution of the KOS, even if "no-compile" set and will ALWAYS compile the KOS if "a.out" is not found
-	# app:        Download and run a ROM file, the second argument being the identifier in the official AQUA Store ROM repository (sh build.sh app lasagna)
-	# xephyr:     Launch KOS in Xephyr
-	# xwm:        Launch KOS with its own WM
-	# debian:     Install all the packages for Debian
+	# no-compile:  Prevents the compilation of the KOS or the CW and prevents the running of the KOS at the end
+	# no-update:   Prevents the updation of any of the components (CW, KOS and assembler)
+	# remote:      DO NOT USE Connects to an external server that can freely modify your AQUA installation
+	# execute:     Forces the execution of the KOS, even if "no-compile" set and will ALWAYS compile the KOS if "a.out" is not found
+	# app:         Download and run a ROM file, the second argument being the identifier in the official AQUA Store ROM repository (sh build.sh app lasagna)
+	# xephyr:      Launch KOS in Xephyr
+	# xwm:         Launch KOS with its own WM
+	# debian:      Install all the packages for Debian
+	# use-sdl-ttf: Use deprecated SDL2 TTF library for rendering fonts
 
 echo "INFO    Parsing arguments ..."
 
@@ -22,20 +23,28 @@ execute=""
 xephyr=""
 xwm=""
 rom=""
+use_sdl_ttf=""
 
 while test $# -gt 0; do
-	if [ "$1" = "no-note"    ]; then no_note="true";    fi
-	if [ "$1" = "no-compile" ]; then no_compile="true"; fi
-	if [ "$1" = "no-update"  ]; then no_update="true";  fi
-	if [ "$1" = "remote"     ]; then remote="true";     fi
-	if [ "$1" = "execute"    ]; then execute="true";    fi
-	if [ "$1" = "xephyr"     ]; then xephyr="true";     fi
-	if [ "$1" = "xwm"        ]; then xwm="true";        fi
-	if [ "$1" = "app"        ]; then rom="$2";          fi
+	if [ "$1" = "no-note"     ]; then no_note="true";     fi
+	if [ "$1" = "no-compile"  ]; then no_compile="true";  fi
+	if [ "$1" = "no-update"   ]; then no_update="true";   fi
+	if [ "$1" = "remote"      ]; then remote="true";      fi
+	if [ "$1" = "execute"     ]; then execute="true";     fi
+	if [ "$1" = "xephyr"      ]; then xephyr="true";      fi
+	if [ "$1" = "xwm"         ]; then xwm="true";         fi
+	if [ "$1" = "app"         ]; then rom="$2";           fi
+	if [ "$1" = "use-sdl-ttf" ]; then use_sdl_ttf="true"; fi
 	
 	if [ "$1" = "debian" ]; then
 		sudo apt-get install -y libcurl4-openssl-dev
-		sudo apt-get install -y libsdl2-ttf-2.0-0 libsdl2-ttf-dev libsdl2-2.0-0 libsdl2-dev
+		sudo apt-get install -y libsdl2-2.0-0 libsdl2-dev
+		
+		if [ "$use_sdl_ttf" = "" ]; then
+			sudo apt-get install -y libfreetype6-dev
+		else
+			sudo apt-get install -y libsdl2-ttf-2.0-0 libsdl2-ttf-dev
+		fi
 	fi
 	
 	shift
