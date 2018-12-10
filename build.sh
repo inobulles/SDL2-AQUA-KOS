@@ -151,14 +151,14 @@ else
 		echo "INFO    Compiling KOS ..."
 		
 		if [ "$use_sdl_ttf" = "" ]; then
-			font_library=""
+			font_library="-lfreetype -I/usr/include/freetype2"
 		else
 			font_library="-lSDL2_ttf -D__USE_SDL_TTF"
 		fi
 		
 		gcc glue.c -std=gnu99 -Wall \
 			-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
-			-lSDL2 -lGL -lGLU -lm -llibfreetype \
+			-lSDL2 -lGL -lGLU -lm \
 			$has_curl_args $has_discord_args $has_x11_args \
 			$font_library
 		

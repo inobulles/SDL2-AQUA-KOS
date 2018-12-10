@@ -11,6 +11,18 @@
 		#include FT_FREETYPE_H
 	#endif
 	
+	#ifdef __USE_SDL_TTF
+		typedef SDL_Surface* kos_font_surface_t;
+	#else
+		typedef struct {
+			unsigned long long* pixels;
+			
+			unsigned long long  w;
+			unsigned long long  h;
+			
+		} kos_font_surface_t;
+	#endif
+	
 	typedef struct {
 		unsigned char used;
 		
@@ -18,9 +30,10 @@
 		char  path[MAX_PATH_LENGTH];
 		char* text;
 		
+		kos_font_surface_t surface;
+		
 		#ifdef __USE_SDL_TTF
 			TTF_Font* font;
-			SDL_Surface* surface;
 		#else
 			FT_Face font;
 		#endif
@@ -91,9 +104,25 @@
 	}
 	
 	void kos_destroy_fonts(void) {
-		TTF_Quit();
+		#ifdef __USE_SDL_TTF
+			TTF_Quit();
+		#else
+			FT_Done_FreeType(kos_freetype_library);
+		#endif
 		
 	}
+	
+	#ifndef __USE_SDL_TTF
+		unsigned long long kos_freetype_new_font(const char* path, unsigned long long size, FT_Face* font) {
+			unsigned long long font_loading_error = FT_New_Face(kos_freetype_library, path, 0, font);
+			
+			if (font_loading_error == FT_Err_Unknown_File_Format) printf("WARNING Font could not be loaded (unknown file format)\n");
+			if (FT_Set_Char_Size(*font, 0, size << 6, 300, 300))  printf("WARNING Failed to set font size\n");
+			
+			return font_loading_error;
+			
+		}
+	#endif
 	
 	unsigned long long video_width(void);
 	
@@ -114,7 +143,7 @@
 					kos_fonts[i].font  = TTF_OpenFont(kos_fonts[i].path, size);
 					font_loading_error = !kos_fonts[i].font;
 				#else
-					font_loading_error = FT_New_Face(kos_freetype_library, kos_fonts[i].path, size * 64, 0, 100, 0);
+					font_loading_error = kos_freetype_new_font(kos_fonts[i].path, size, &kos_fonts[i].font);
 				#endif
 				
 				if (font_loading_error) {
@@ -147,6 +176,8 @@
 					TTF_CloseFont(kos_fonts[i].font);
 					kos_fonts[i].font = TTF_OpenFont(kos_fonts[i].path, size);
 				#else
+					FT_Done_Face(kos_fonts[i].font);
+					kos_freetype_new_font(kos_fonts[i].path, size, &kos_fonts[i].font);
 				#endif
 				
 			}
@@ -156,12 +187,18 @@
 	}
 	
 	static void kos_font_create_text(kos_font_t* this, char* text) {
-		if (!this->surface || (this->text == NULL || strcmp(text, this->text) != 0)) {
-			if (this->surface) {
-				SDL_FreeSurface(this->surface);
-				this->surface = NULL;
-				
-			}
+		if (
+		#ifdef __USE_SDL_TTF
+			!this->surface ||
+		#endif
+			(this->text == NULL || strcmp(text, this->text) != 0)) {
+			#ifdef __USE_SDL_TTF
+				if (this->surface) {
+					SDL_FreeSurface(this->surface);
+					this->surface = NULL;
+					
+				}
+			#endif
 			
 			if      (this->text) {
 				free(this->text);
@@ -171,29 +208,89 @@
 			this->text = (char*) malloc(strlen(text) + 1);
 			strcpy(this->text,                 text);
 			
-			SDL_Surface* temp = TTF_RenderUTF8_Blended(this->font, text, kos_font_colour);
-			this->surface = SDL_CreateRGBSurface(0, temp->w, temp->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
-			
-			SDL_BlitSurface(temp, NULL, this->surface, NULL);
-			SDL_FreeSurface(temp);
-			
-			if (!this->surface) {
-				printf("WARNING Could not create the font surface (SDL `%s`, TTF `%s`)\n", SDL_GetError(), TTF_GetError());
-				this->used = 0;
+			#ifdef __USE_SDL_TTF
+				SDL_Surface* temp = TTF_RenderUTF8_Blended(this->font, text, kos_font_colour);
+				this->surface = SDL_CreateRGBSurface(0, temp->w, temp->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 				
-				return;
+				SDL_BlitSurface(temp, NULL, this->surface, NULL);
+				SDL_FreeSurface(temp);
 				
-			}
-			
-			SDL_LockSurface(this->surface);
-			uint64_t* pixels = (uint64_t*) this->surface->pixels;
-			
-			unsigned long long i;
-			for (i = 0; i < (this->surface->w * this->surface->h) / 2; i++) {
-				pixels[i] &= 0xFF000000FF000000;
-				pixels[i] += 0x00FFFFFF00FFFFFF;
+				if (!this->surface) {
+					printf("WARNING Could not create the font surface (SDL `%s`, TTF `%s`)\n", SDL_GetError(), TTF_GetError());
+					this->used = 0;
+					
+					return;
+					
+				}
 				
-			}
+				SDL_LockSurface(this->surface);
+				uint64_t* pixels = (uint64_t*) this->surface->pixels;
+				
+				unsigned long long i;
+				for (i = 0; i < (this->surface->w * this->surface->h) / 2; i++) {
+					pixels[i] &= 0xFF000000FF000000;
+					pixels[i] += 0x00FFFFFF00FFFFFF;
+					
+				}
+			#else
+				FT_Matrix matrix;
+				
+				matrix.xx = (FT_Fixed) (1 * 0x10000L);
+				matrix.xy = (FT_Fixed) (0 * 0x10000L);
+				matrix.yx = (FT_Fixed) (0 * 0x10000L);
+				matrix.yy = (FT_Fixed) (1 * 0x10000L);
+				
+				FT_Vector position;
+				
+				position.x = 0;
+				position.y = 0;
+				
+				FT_GlyphSlot slot = this->font->glyph;
+				
+				this->surface.w = 1000;
+				this->surface.h = 1000;
+				this->surface.pixels = (unsigned long long*) malloc(this->surface.w * this->surface.h * 4);
+				
+				unsigned long long i;
+				for (i = 0; i < strlen(text) - 1; i++) {
+					FT_Set_Transform(this->font, &matrix, &position);
+					
+					if (FT_Load_Char(this->font, text[i], FT_LOAD_RENDER)) {
+						printf("WARNING Failed to load \"%d\" (or %c) character\n", text[i], text[i]);
+						continue;
+						
+					}
+					
+					FT_Bitmap bitmap = slot->bitmap;
+					
+					unsigned long long ox = slot->bitmap_left;
+					unsigned long long oy = slot->bitmap_top;
+					
+					unsigned long long xmax = ox + bitmap.width;
+					unsigned long long ymax = oy + bitmap.rows;
+					
+					unsigned long long x;
+					unsigned long long y;
+					
+					unsigned long long p;
+					unsigned long long q;
+					
+					printf("%lld %lld\n", xmax, ymax);
+					
+					for (x = ox; x < xmax; x++, p++) {
+						for (y = oy; y < ymax; y++, q++) {
+							if (x < 0 || y < 0) continue;
+							((char*) this->surface.pixels)[q * bitmap.width + p] |= bitmap.buffer[q * bitmap.width + p];
+							
+						}
+						
+					}
+					
+					position.x += slot->advance.x;
+					position.y += slot->advance.y;
+					
+				}
+			#endif
 			
 		}
 		
@@ -207,14 +304,18 @@
 			
 		}
 		
-		if (kos_fonts[this].surface) {
-			SDL_FreeSurface(kos_fonts[this].surface);
+		#ifdef __USE_SDL_TTF
+			if (kos_fonts[this].surface) {
+				SDL_FreeSurface(kos_fonts[this].surface);
+				
+			}
 			
-		}
+			TTF_CloseFont(kos_fonts[this].font);
+		#else
+			FT_Done_Face(kos_fonts[this].font);
+		#endif
 		
-		TTF_CloseFont(  kos_fonts[this].font);
 		kos_unuse_font(&kos_fonts[this]);
-		
 		return 0;
 		
 	}
@@ -225,7 +326,8 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		return __texture_create(font->surface->pixels, 32, font->surface->w, font->surface->h, 0);
+		//~ return __texture_create(font->surface->pixels, 32, font->surface->w, font->surface->h, 0);
+		return __texture_create(font->surface.pixels, 32, font->surface.w, font->surface.h, 0);
 		
 	}
 	
@@ -235,7 +337,8 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		return font->surface->w;
+		//~ return font->surface->w;
+		return font->surface.w;
 		
 	}
 	
@@ -245,7 +348,8 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		return font->surface->h;
+		//~ return font->surface->h;
+		return font->surface.h;
 		
 	}
 	
