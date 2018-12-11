@@ -251,7 +251,22 @@
 			} case DEVICE_GL: {
 				const signed long long* gl_command = (const signed long long*) extra;
 				
-				if (gl_command[0] == 'f') { // frustum
+				if (gl_command[0] == 'e') { // draw elements
+					void*              indices = (void*)              gl_command[11];
+					unsigned long long count   = (unsigned long long) gl_command[12];
+					
+					uint32_t* int_indices = (uint32_t*) malloc(count * sizeof(uint32_t));
+					
+					int i;
+					for (i = 0; i < count >> 1; i++) {
+						int_indices[i] = (uint32_t) indices[i];
+						
+					}
+					
+					glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, int_indices);
+					free(int_indices);
+					
+				} else if (gl_command[0] == 'f') { // frustum
 					glMatrixMode(GL_PROJECTION);
 					glLoadIdentity();
 					
