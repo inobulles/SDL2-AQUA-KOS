@@ -35,6 +35,8 @@
 	typedef unsigned long long texture_t;
 	typedef unsigned long long font_t;
 	
+	#define COMPAT_SURFACE_VERTEX_COUNT 8
+	
 	typedef struct {
 		unsigned long long red;
 		unsigned long long green;
@@ -63,10 +65,10 @@
 		
 		// internal, do not touch
 		
-		Vertex3D vertices[SURFACE_VERTEX_COUNT];
-		Color3D colours[SURFACE_VERTEX_COUNT];
-		Coord2D texture_coords[SURFACE_VERTEX_COUNT];
-		GLubyte faces[SURFACE_VERTEX_COUNT];
+		Vertex3D vertices     [COMPAT_SURFACE_VERTEX_COUNT];
+		Color3D colours       [COMPAT_SURFACE_VERTEX_COUNT];
+		Coord2D texture_coords[COMPAT_SURFACE_VERTEX_COUNT];
+		GLubyte faces         [COMPAT_SURFACE_VERTEX_COUNT];
 		
 	} surface_t;
 	

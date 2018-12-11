@@ -2,7 +2,7 @@
 #ifndef __AQUA__STD_MACROS_H
 	#define __AQUA__STD_MACROS_H
 	
-	#define SURFACE_VERTEX_COUNT 8
+	#define SURFACE_VERTEX_COUNT 6
 	#define PATH ""
 	
 	#define _UI64_MAX 0xFFFFFFFFFFFFFFFF

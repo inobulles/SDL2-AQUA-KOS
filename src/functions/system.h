@@ -281,18 +281,32 @@
 				const signed long long* gl_command = (const signed long long*) extra;
 				
 				if (gl_command[0] == 'e') { // draw elements
-					unsigned long long* indices = (unsigned long long*) gl_command[17];
-					unsigned long long  count   = (unsigned long long)  gl_command[18];
+					kos_gl_device_vertex_line_face_t* faces = (kos_gl_device_vertex_line_face_t*) gl_command[17];
+					unsigned long long                count = (unsigned long long)                gl_command[18];
 					
-					uint32_t* int_indices = (uint32_t*) malloc(count * sizeof(uint32_t));
+					uint32_t* int_indices = (uint32_t*) malloc(count * 3 * sizeof(uint32_t));
 					
 					int i;
-					for (i = 0; i < count >> 1; i++) {
-						int_indices[i] = (uint32_t) indices[i];
+					for (i = 0; i < count; i++) {
+						int_indices[i * 3    ] = (double) faces[i].pair1[0] / FLOAT_ONE;
+						int_indices[i * 3 + 1] = (double) faces[i].pair2[0] / FLOAT_ONE;
+						int_indices[i * 3 + 2] = (double) faces[i].pair3[0] / FLOAT_ONE;
 						
 					}
 					
-					glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, int_indices);
+					uint32_t _faces[6];
+					
+					_faces[0] = 0;
+					_faces[1] = 1;
+					_faces[2] = 2;
+					
+					_faces[3] = 0; // 3;
+					_faces[4] = 2; // 4;
+					_faces[5] = 3; // 5;
+					
+					glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, _faces);
+					//~ glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, int_indices);
+					printf("%lld %lld\n", count, SURFACE_VERTEX_COUNT);
 					free(int_indices);
 					
 				} else if (gl_command[0] == 's') { // enable/disable client state
@@ -354,8 +368,8 @@
 					}
 					
 				} else if (gl_command[0] == 't') { // bind/activate texture
-					glActiveTexture(GL_TEXTURE0 + gl_command[23]);
-					glBindTexture  (GL_TEXTURE2D, gl_command[24]);
+					glActiveTexture(GL_TEXTURE0 +  gl_command[23]);
+					glBindTexture  (GL_TEXTURE_2D, gl_command[24]);
 					
 				} else if (gl_command[0] == 'f') { // frustum
 					glMatrixMode(GL_PROJECTION);
