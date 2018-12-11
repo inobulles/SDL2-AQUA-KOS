@@ -136,6 +136,35 @@
 		#include "discord.h"
 	#endif
 	
+	typedef struct {
+		signed long long x;
+		signed long long y;
+		signed long long z;
+		
+	} kos_gl_device_vertex_t;
+	
+	typedef struct { // quads
+		unsigned long long pair1[2];
+		unsigned long long pair2[2];
+		unsigned long long pair3[2];
+		unsigned long long pair4[2];
+		
+	} kos_gl_device_vertex_line_face_t;
+	
+	typedef struct {
+		unsigned long long red;
+		unsigned long long green;
+		unsigned long long blue;
+		unsigned long long alpha;
+		
+	} kos_gl_device_colour_t;
+	
+	typedef struct {
+		unsigned long long x;
+		unsigned long long y;
+		
+	} kos_gl_device_texture_coord_t;
+	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
 		unsigned long long* result = (unsigned long long*) 0;
 		
@@ -252,8 +281,8 @@
 				const signed long long* gl_command = (const signed long long*) extra;
 				
 				if (gl_command[0] == 'e') { // draw elements
-					unsigned long long* indices = (unsigned long long*) gl_command[11];
-					unsigned long long  count   = (unsigned long long)  gl_command[12];
+					unsigned long long* indices = (unsigned long long*) gl_command[17];
+					unsigned long long  count   = (unsigned long long)  gl_command[18];
 					
 					uint32_t* int_indices = (uint32_t*) malloc(count * sizeof(uint32_t));
 					
@@ -272,6 +301,57 @@
 					if (gl_command[7]) client_state_function(GL_VERTEX_ARRAY);
 					if (gl_command[8]) client_state_function(GL_COLOR_ARRAY);
 					if (gl_command[9]) client_state_function(GL_TEXTURE_COORD_ARRAY);
+					
+				} else if (gl_command[0] == 'p') { // set pointer
+					if (gl_command[7]) {
+						unsigned long long count = gl_command[12];
+						GLfloat* pointer = (GLfloat*) malloc(count * 3 * sizeof(GLfloat));
+						kos_gl_device_vertex_t* vertices = (kos_gl_device_vertex_t*) gl_command[11];
+						
+						int i;
+						for (i = 0; i < count; i++) {
+							pointer[i * 3    ] = (double) vertices[i].x / FLOAT_ONE;
+							pointer[i * 3 + 1] = (double) vertices[i].y / FLOAT_ONE;
+							pointer[i * 3 + 2] = (double) vertices[i].z / FLOAT_ONE;
+							
+						}
+						
+						glVertexPointer(3, GL_FLOAT, 0, pointer);
+						free(pointer);
+						
+					} if (gl_command[8]) {
+						unsigned long long count = gl_command[20];
+						GLfloat* pointer = (GLfloat*) malloc(count * 4 * sizeof(GLfloat));
+						kos_gl_device_colour_t* colours = (kos_gl_device_colour_t*) gl_command[19];
+						
+						int i;
+						for (i = 0; i < count; i++) {
+							pointer[i * 4    ] = (double) colours[i].red   / FLOAT_ONE;
+							pointer[i * 4 + 1] = (double) colours[i].green / FLOAT_ONE;
+							pointer[i * 4 + 2] = (double) colours[i].blue  / FLOAT_ONE;
+							pointer[i * 4 + 3] = (double) colours[i].alpha / FLOAT_ONE;
+							
+						}
+						
+						glColorPointer(4, GL_FLOAT, 0, pointer);
+						free(pointer);
+						
+					} if (gl_command[9]) {
+						unsigned long long count = gl_command[22];
+						GLfloat* pointer = (GLfloat*) malloc(count * 2 * sizeof(GLfloat));
+						kos_gl_device_texture_coord_t* texture_coords = (kos_gl_device_texture_coord_t*) gl_command[21];
+						
+						int i;
+						for (i = 0; i < count; i++) {
+							pointer[i * 2    ] = (double) texture_coords[i].x / FLOAT_ONE;
+							pointer[i * 2 + 1] = (double) texture_coords[i].y / FLOAT_ONE;
+							
+						}
+						
+						glTexCoordPointer(2, GL_FLOAT, 0, pointer);
+						free(pointer);
+						
+					}
 					
 				} else if (gl_command[0] == 'f') { // frustum
 					glMatrixMode(GL_PROJECTION);
@@ -322,21 +402,6 @@
 					);
 					
 				} else if (gl_command[0] == 'v') { // draw
-					typedef struct {
-						signed long long x;
-						signed long long y;
-						signed long long z;
-						
-					} vertex_t;
-					
-					typedef struct { // quads
-						unsigned long long pair1[2];
-						unsigned long long pair2[2];
-						unsigned long long pair3[2];
-						unsigned long long pair4[2];
-						
-					} vertex_line_face_t;
-					
 					surface_t test;
 					surface_new(&test, -_UI64_MAX_MARGIN, -_UI64_MAX_MARGIN, 0, 0);
 					surface_set_texture(&test, 0);
@@ -345,8 +410,8 @@
 					glPointSize(4.0f);
 					glBegin(GL_POINTS);
 					
-					vertex_t*           vertices = (vertex_t*)           gl_command[11];
-					vertex_line_face_t* faces    = (vertex_line_face_t*) gl_command[17];
+					kos_gl_device_vertex_t*           vertices = (kos_gl_device_vertex_t*)           gl_command[11];
+					kos_gl_device_vertex_line_face_t* faces    = (kos_gl_device_vertex_line_face_t*) gl_command[17];
 					
 					unsigned long long i;
 					for (i = 0; i < gl_command[12]; i++) {
