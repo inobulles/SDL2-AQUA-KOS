@@ -252,8 +252,8 @@
 				const signed long long* gl_command = (const signed long long*) extra;
 				
 				if (gl_command[0] == 'e') { // draw elements
-					void*              indices = (void*)              gl_command[11];
-					unsigned long long count   = (unsigned long long) gl_command[12];
+					unsigned long long* indices = (unsigned long long*) gl_command[11];
+					unsigned long long  count   = (unsigned long long)  gl_command[12];
 					
 					uint32_t* int_indices = (uint32_t*) malloc(count * sizeof(uint32_t));
 					
@@ -265,6 +265,13 @@
 					
 					glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, int_indices);
 					free(int_indices);
+					
+				} else if (gl_command[0] == 's') { // enable/disable client state
+					void (*client_state_function)(GLenum cap) = gl_command[10] ? glEnableClientState : glDisableClientState;
+					
+					if (gl_command[7]) client_state_function(GL_VERTEX_ARRAY);
+					if (gl_command[8]) client_state_function(GL_COLOR_ARRAY);
+					if (gl_command[9]) client_state_function(GL_TEXTURE_COORD_ARRAY);
 					
 				} else if (gl_command[0] == 'f') { // frustum
 					glMatrixMode(GL_PROJECTION);
