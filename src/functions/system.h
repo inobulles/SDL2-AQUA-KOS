@@ -353,6 +353,10 @@
 						
 					}
 					
+				} else if (gl_command[0] == 't') { // bind/activate texture
+					glActiveTexture(GL_TEXTURE0 + gl_command[23]);
+					glBindTexture  (GL_TEXTURE2D, gl_command[24]);
+					
 				} else if (gl_command[0] == 'f') { // frustum
 					glMatrixMode(GL_PROJECTION);
 					glLoadIdentity();
