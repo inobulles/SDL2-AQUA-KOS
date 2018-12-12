@@ -58,6 +58,7 @@
 		else if (strcmp(device, "fbo")      == 0) return DEVICE_FBO;
 		else if (strcmp(device, "shader")   == 0) return DEVICE_SHADER;
 		else if (strcmp(device, "gl")       == 0) return DEVICE_GL;
+		else if (strcmp(device, "gl batch") == 0) return DEVICE_GL_BATCH;
 		
 		// compute
 		
@@ -164,6 +165,10 @@
 		unsigned long long y;
 		
 	} kos_gl_device_texture_coord_t;
+	
+	typedef struct {
+		
+	} kos_gl_batch_device_batch_t;
 	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
 		unsigned long long* result = (unsigned long long*) 0;
@@ -277,97 +282,106 @@
 				
 				break;
 				
+			} case DEVICE_GL_BATCH: {
+				signed long long* batch_command     = (signed long long*)            extra;
+				kos_gl_batch_device_batch_t* object = (kos_gl_batch_device_batch_t*) batch_command[1];
+				
+				if (batch_command[0] == 'c') { // create
+					object = (kos_gl_batch_device_batch_t*) malloc(sizeof(kos_gl_batch_device_batch_t));
+					batch_command[1] = (signed long long) object;
+					
+				} else if (batch_command[0] == 'd') { // dispose
+					free(object);
+					
+				} else {
+					KOS_DEVICE_COMMAND_WARNING("gl batch");
+					
+				}
+				
+				break;
+				
 			} case DEVICE_GL: {
 				const signed long long* gl_command = (const signed long long*) extra;
 				
-				if (gl_command[0] == 'e') { // draw elements
-					kos_gl_device_vertex_line_face_t* faces = (kos_gl_device_vertex_line_face_t*) gl_command[17];
-					unsigned long long                count = (unsigned long long)                gl_command[18];
-					
-					uint32_t* int_indices = (uint32_t*) malloc(count * 3 * sizeof(uint32_t));
-					
-					int i;
-					for (i = 0; i < count; i++) {
-						int_indices[i * 3    ] = (double) faces[i].pair1[0] / FLOAT_ONE;
-						int_indices[i * 3 + 1] = (double) faces[i].pair2[0] / FLOAT_ONE;
-						int_indices[i * 3 + 2] = (double) faces[i].pair3[0] / FLOAT_ONE;
+				/*if (gl_command[0] == 'b') { // batch commands
+					if (gl_command[25] == 'e') { // draw elements
+						kos_gl_device_vertex_line_face_t* faces = (kos_gl_device_vertex_line_face_t*) gl_command[17];
+						unsigned long long                count = (unsigned long long)                gl_command[18];
+						
+						uint32_t* int_indices = (uint32_t*) malloc(count * 3 * sizeof(uint32_t));
+						
+						int i;
+						for (i = 0; i < count; i++) {
+							int_indices[i * 3    ] = faces[i].pair1[0];
+							int_indices[i * 3 + 1] = faces[i].pair2[0];
+							int_indices[i * 3 + 2] = faces[i].pair3[0];
+							
+						}
+						
+						glDrawElements(GL_TRIANGLES, count * 3, GL_UNSIGNED_INT, int_indices);
+						free(int_indices);
+						
+					} else if (gl_command[25] == 's') { // enable/disable client state
+						void (*client_state_function)(GLenum cap) = gl_command[10] ? glEnableClientState : glDisableClientState;
+						
+						if (gl_command[7]) client_state_function(GL_VERTEX_ARRAY);
+						if (gl_command[8]) client_state_function(GL_COLOR_ARRAY);
+						if (gl_command[9]) client_state_function(GL_TEXTURE_COORD_ARRAY);
+						
+					} else if (gl_command[25] == 'p') { // set pointer
+						if (gl_command[7]) {
+							unsigned long long count = gl_command[12];
+							GLfloat* pointer = (GLfloat*) malloc(count * 3 * sizeof(GLfloat));
+							kos_gl_device_vertex_t* vertices = (kos_gl_device_vertex_t*) gl_command[11];
+							
+							int i;
+							for (i = 0; i < count; i++) {
+								pointer[i * 3    ] = (double) vertices[i].x / FLOAT_ONE;
+								pointer[i * 3 + 1] = (double) vertices[i].y / FLOAT_ONE;
+								pointer[i * 3 + 2] = (double) vertices[i].z / FLOAT_ONE;
+								
+							}
+							
+							glVertexPointer(3, GL_FLOAT, 0, pointer);
+							free(pointer);
+							
+						} if (gl_command[8]) {
+							unsigned long long count = gl_command[20];
+							GLfloat* pointer = (GLfloat*) malloc(count * 4 * sizeof(GLfloat));
+							kos_gl_device_colour_t* colours = (kos_gl_device_colour_t*) gl_command[19];
+							
+							int i;
+							for (i = 0; i < count; i++) {
+								pointer[i * 4    ] = (double) colours[i].red   / FLOAT_ONE;
+								pointer[i * 4 + 1] = (double) colours[i].green / FLOAT_ONE;
+								pointer[i * 4 + 2] = (double) colours[i].blue  / FLOAT_ONE;
+								pointer[i * 4 + 3] = (double) colours[i].alpha / FLOAT_ONE;
+								
+							}
+							
+							glColorPointer(4, GL_FLOAT, 0, pointer);
+							free(pointer);
+							
+						} if (gl_command[9]) {
+							unsigned long long count = gl_command[22];
+							GLfloat* pointer = (GLfloat*) malloc(count * 2 * sizeof(GLfloat));
+							kos_gl_device_texture_coord_t* texture_coords = (kos_gl_device_texture_coord_t*) gl_command[21];
+							
+							int i;
+							for (i = 0; i < count; i++) {
+								pointer[i * 2    ] = (double) texture_coords[i].x / FLOAT_ONE;
+								pointer[i * 2 + 1] = (double) texture_coords[i].y / FLOAT_ONE;
+								
+							}
+							
+							glTexCoordPointer(2, GL_FLOAT, 0, pointer);
+							free(pointer);
+							
+						}
 						
 					}
 					
-					uint32_t _faces[6];
-					
-					_faces[0] = 0;
-					_faces[1] = 1;
-					_faces[2] = 2;
-					
-					_faces[3] = 0; // 3;
-					_faces[4] = 2; // 4;
-					_faces[5] = 3; // 5;
-					
-					glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, _faces);
-					//~ glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, int_indices);
-					printf("%lld %lld\n", count, SURFACE_VERTEX_COUNT);
-					free(int_indices);
-					
-				} else if (gl_command[0] == 's') { // enable/disable client state
-					void (*client_state_function)(GLenum cap) = gl_command[10] ? glEnableClientState : glDisableClientState;
-					
-					if (gl_command[7]) client_state_function(GL_VERTEX_ARRAY);
-					if (gl_command[8]) client_state_function(GL_COLOR_ARRAY);
-					if (gl_command[9]) client_state_function(GL_TEXTURE_COORD_ARRAY);
-					
-				} else if (gl_command[0] == 'p') { // set pointer
-					if (gl_command[7]) {
-						unsigned long long count = gl_command[12];
-						GLfloat* pointer = (GLfloat*) malloc(count * 3 * sizeof(GLfloat));
-						kos_gl_device_vertex_t* vertices = (kos_gl_device_vertex_t*) gl_command[11];
-						
-						int i;
-						for (i = 0; i < count; i++) {
-							pointer[i * 3    ] = (double) vertices[i].x / FLOAT_ONE;
-							pointer[i * 3 + 1] = (double) vertices[i].y / FLOAT_ONE;
-							pointer[i * 3 + 2] = (double) vertices[i].z / FLOAT_ONE;
-							
-						}
-						
-						glVertexPointer(3, GL_FLOAT, 0, pointer);
-						free(pointer);
-						
-					} if (gl_command[8]) {
-						unsigned long long count = gl_command[20];
-						GLfloat* pointer = (GLfloat*) malloc(count * 4 * sizeof(GLfloat));
-						kos_gl_device_colour_t* colours = (kos_gl_device_colour_t*) gl_command[19];
-						
-						int i;
-						for (i = 0; i < count; i++) {
-							pointer[i * 4    ] = (double) colours[i].red   / FLOAT_ONE;
-							pointer[i * 4 + 1] = (double) colours[i].green / FLOAT_ONE;
-							pointer[i * 4 + 2] = (double) colours[i].blue  / FLOAT_ONE;
-							pointer[i * 4 + 3] = (double) colours[i].alpha / FLOAT_ONE;
-							
-						}
-						
-						glColorPointer(4, GL_FLOAT, 0, pointer);
-						free(pointer);
-						
-					} if (gl_command[9]) {
-						unsigned long long count = gl_command[22];
-						GLfloat* pointer = (GLfloat*) malloc(count * 2 * sizeof(GLfloat));
-						kos_gl_device_texture_coord_t* texture_coords = (kos_gl_device_texture_coord_t*) gl_command[21];
-						
-						int i;
-						for (i = 0; i < count; i++) {
-							pointer[i * 2    ] = (double) texture_coords[i].x / FLOAT_ONE;
-							pointer[i * 2 + 1] = (double) texture_coords[i].y / FLOAT_ONE;
-							
-						}
-						
-						glTexCoordPointer(2, GL_FLOAT, 0, pointer);
-						free(pointer);
-						
-					}
-					
-				} else if (gl_command[0] == 't') { // bind/activate texture
+				} else */if (gl_command[0] == 't') { // bind/activate texture
 					glActiveTexture(GL_TEXTURE0 +  gl_command[23]);
 					glBindTexture  (GL_TEXTURE_2D, gl_command[24]);
 					

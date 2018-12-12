@@ -14,6 +14,7 @@
 	#define DEVICE_REQUESTS 9
 	#define DEVICE_DISCORD  10
 	#define DEVICE_GL       11
+	#define DEVICE_GL_BATCH 12
 	
 	// compute devices
 	
