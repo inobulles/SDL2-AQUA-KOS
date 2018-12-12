@@ -153,10 +153,10 @@
 	} kos_gl_device_vertex_line_face_t;
 	
 	typedef struct {
-		unsigned long long red;
-		unsigned long long green;
-		unsigned long long blue;
-		unsigned long long alpha;
+		unsigned long long r;
+		unsigned long long g;
+		unsigned long long b;
+		unsigned long long a;
 		
 	} kos_gl_device_colour_t;
 	
@@ -167,6 +167,17 @@
 	} kos_gl_device_texture_coord_t;
 	
 	typedef struct {
+		struct { double x; double y; double z;           } position;
+		struct { double r; double g; double b; double a; } colour;
+		struct { double x; double y;                     } texture_coord;
+		
+	} kos_gl_batch_device_batch_vertex_t;
+	
+	typedef struct {
+		unsigned char has_texture;
+		
+		unsigned long long                  vertex_count;
+		kos_gl_batch_device_batch_vertex_t* vertices;
 		
 	} kos_gl_batch_device_batch_t;
 	
@@ -290,7 +301,62 @@
 					object = (kos_gl_batch_device_batch_t*) malloc(sizeof(kos_gl_batch_device_batch_t));
 					batch_command[1] = (signed long long) object;
 					
+					object->vertex_count = 0;
+					object->has_texture  = 0;
+					
+				} else if (batch_command[0] == 'a') { // add
+					unsigned long long old_vertex_count = object->vertex_count;
+					
+					if (object->vertex_count == 0) {
+						object->vertex_count = batch_command[3];
+						object->vertices = (kos_gl_batch_device_batch_vertex_t*) malloc(object->vertex_count * sizeof(kos_gl_batch_device_batch_vertex_t));
+						
+					} else {
+						object->vertex_count += batch_command[3];
+						object->vertices = (kos_gl_batch_device_batch_vertex_t*) realloc(object->vertices, object->vertex_count * sizeof(kos_gl_batch_device_batch_vertex_t));
+						
+					}
+					
+					kos_gl_device_vertex_t*        positions      = (kos_gl_device_vertex_t*)        batch_command[2];
+					kos_gl_device_colour_t*        colours        = (kos_gl_device_colour_t*)        batch_command[4];
+					kos_gl_device_texture_coord_t* texture_coords = (kos_gl_device_texture_coord_t*) batch_command[6];
+					
+					unsigned long long i;
+					for (i = old_vertex_count; i < object->vertex_count; i++) {
+						unsigned long long absolute = i - old_vertex_count;
+						
+						object->vertices[i].position.x = (double) positions[absolute].x / FLOAT_ONE;
+						object->vertices[i].position.y = (double) positions[absolute].y / FLOAT_ONE;
+						object->vertices[i].position.z = (double) positions[absolute].z / FLOAT_ONE;
+						
+						if (batch_command[5]) {
+							object->vertices[i].colour.r = (double) colours[absolute].r / FLOAT_ONE;
+							object->vertices[i].colour.g = (double) colours[absolute].g / FLOAT_ONE;
+							object->vertices[i].colour.b = (double) colours[absolute].b / FLOAT_ONE;
+							object->vertices[i].colour.a = (double) colours[absolute].a / FLOAT_ONE;
+							
+						} else {
+							object->vertices[i].colour.r = 1.0f;
+							object->vertices[i].colour.g = 1.0f;
+							object->vertices[i].colour.b = 1.0f;
+							object->vertices[i].colour.a = 1.0f;
+							
+						} if (batch_command[7]) {
+							object->has_texture = 1;
+							
+							object->vertices[i].texture_coord.x = (double) texture_coords[absolute].x / FLOAT_ONE;
+							object->vertices[i].texture_coord.y = (double) texture_coords[absolute].y / FLOAT_ONE;
+							
+						} else {
+							object->vertices[i].texture_coord.x = 0.0f;
+							object->vertices[i].texture_coord.y = 0.0f;
+							
+						}
+						
+					}
+					
 				} else if (batch_command[0] == 'd') { // dispose
+					free(object->vertices);
 					free(object);
 					
 				} else {
