@@ -179,6 +179,9 @@
 		unsigned long long                  vertex_count;
 		kos_gl_batch_device_batch_vertex_t* vertices;
 		
+		unsigned long long index_count;
+		uint32_t*          indices;
+		
 	} kos_gl_batch_device_batch_t;
 	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
@@ -308,7 +311,7 @@
 					for (i = 0; i < object->vertex_count; i++) {
 						//~ glTexCoord2f(object->vertices[i].texture_coord.x, object->vertices[i].texture_coord.y);
 						glVertex3f  (object->vertices[i].position.x, object->vertices[i].position.y, object->vertices[i].position.z);
-						printf("%f %f %f\n", object->vertices[i].position.x, object->vertices[i].position.y, object->vertices[i].position.z);
+						//~ printf("%f %f %f\n", object->vertices[i].position.x, object->vertices[i].position.y, object->vertices[i].position.z);
 						
 					}
 					
@@ -316,14 +319,21 @@
 					
 				} else if (batch_command[0] == 'a') { // add
 					unsigned long long old_vertex_count = object->vertex_count;
+					unsigned long long old_index_count  = object->index_count;
 					
 					if (object->vertex_count == 0) {
 						object->vertex_count = batch_command[3];
+						object->index_count  = batch_command[9] * 3;
+						
 						object->vertices = (kos_gl_batch_device_batch_vertex_t*) malloc(object->vertex_count * sizeof(kos_gl_batch_device_batch_vertex_t));
+						object->indices  = (uint32_t*)                           malloc(object->index_count  * sizeof(uint32_t));
 						
 					} else {
 						object->vertex_count += batch_command[3];
+						object->index_count  += batch_command[9] * 3;
+						
 						object->vertices = (kos_gl_batch_device_batch_vertex_t*) realloc(object->vertices, object->vertex_count * sizeof(kos_gl_batch_device_batch_vertex_t));
+						object->indices  = (uint32_t*)                           realloc(object->indices,  object->index_count  * sizeof(uint32_t));
 						
 					}
 					
@@ -365,15 +375,30 @@
 						
 					}
 					
+					kos_gl_device_vertex_line_face_t* faces = (kos_gl_device_vertex_line_face_t*) batch_command[8];
+					
+					for (i = old_index_count / 3; i < object->index_count / 3; i++) {
+						unsigned long long absolute = i - old_index_count;
+						
+						printf("%lld %lld %lld\n", faces[i].pair1[0], faces[i].pair2[0], faces[i].pair3[0]);
+						
+						object->indices[i * 3    ] = faces[i].pair1[0];
+						object->indices[i * 3 + 1] = faces[i].pair2[0];
+						object->indices[i * 3 + 2] = faces[i].pair3[0];
+						
+					}
+					
 				} else if (batch_command[0] == 'c') { // create
 					object = (kos_gl_batch_device_batch_t*) malloc(sizeof(kos_gl_batch_device_batch_t));
 					batch_command[1] = (signed long long) object;
 					
 					object->vertex_count = 0;
+					object->index_count  = 0;
 					object->has_texture  = 0;
 					
 				} else if (batch_command[0] == 'd') { // dispose
 					free(object->vertices);
+					free(object->indices);
 					free(object);
 					
 				} else {
