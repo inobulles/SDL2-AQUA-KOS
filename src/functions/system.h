@@ -166,18 +166,17 @@
 		
 	} kos_gl_device_texture_coord_t;
 	
-	typedef struct {
-		struct { double x; double y; double z;           } position;
-		struct { double r; double g; double b; double a; } colour;
-		struct { double x; double y;                     } texture_coord;
-		
-	} kos_gl_batch_device_batch_vertex_t;
+	typedef struct { double x; double y; double z;           } kos_gl_batch_device_batch_position_t;
+	typedef struct { double r; double g; double b; double a; } kos_gl_batch_device_batch_colour_t;
+	typedef struct { double x; double y;                     } kos_gl_batch_device_batch_texture_coord_t;
 	
 	typedef struct {
-		unsigned char has_texture;
+		unsigned char      has_texture;
+		unsigned long long vertex_count;
 		
-		unsigned long long                  vertex_count;
-		kos_gl_batch_device_batch_vertex_t* vertices;
+		kos_gl_batch_device_batch_position_t*      positions;
+		kos_gl_batch_device_batch_colour_t*        colours;
+		kos_gl_batch_device_batch_texture_coord_t* texture_coords;
 		
 		unsigned long long index_count;
 		uint32_t*          indices;
@@ -302,20 +301,33 @@
 				
 				if (batch_command[0] == 'p') { // draw
 					glDisable(GL_CULL_FACE);
-					glTranslatef(0.0f, 0.0f, -3.0f);
+					//~ glTranslatef(0.0f, 0.0f, -3.0f);
 					
-					glPointSize(4.0f);
-					glBegin(GL_LINES);
+					glEnableClientState(GL_VERTEX_ARRAY);
+					glEnableClientState(GL_COLOR_ARRAY);
 					
-					unsigned long long i;
-					for (i = 0; i < object->vertex_count; i++) {
-						//~ glTexCoord2f(object->vertices[i].texture_coord.x, object->vertices[i].texture_coord.y);
-						glVertex3f  (object->vertices[i].position.x, object->vertices[i].position.y, object->vertices[i].position.z);
-						//~ printf("%f %f %f\n", object->vertices[i].position.x, object->vertices[i].position.y, object->vertices[i].position.z);
+					if (object->has_texture) {
+						glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 						
 					}
 					
-					glEnd();
+					glVertexPointer(3, GL_FLOAT, 0, object->positions);
+					glColorPointer (4, GL_FLOAT, 0, object->colours);
+					
+					if (object->has_texture) {
+						glTexCoordPointer(2, GL_FLOAT, 0, object->texture_coords);
+						
+					}
+					
+					glDrawElements(GL_TRIANGLES, object->index_count, GL_UNSIGNED_INT, object->indices);
+					
+					glDisableClientState(GL_VERTEX_ARRAY);
+					glDisableClientState(GL_COLOR_ARRAY);
+					
+					if (object->has_texture) {
+						glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+						
+					}
 					
 				} else if (batch_command[0] == 'a') { // add
 					unsigned long long old_vertex_count = object->vertex_count;
@@ -325,15 +337,21 @@
 						object->vertex_count = batch_command[3];
 						object->index_count  = batch_command[9] * 3;
 						
-						object->vertices = (kos_gl_batch_device_batch_vertex_t*) malloc(object->vertex_count * sizeof(kos_gl_batch_device_batch_vertex_t));
-						object->indices  = (uint32_t*)                           malloc(object->index_count  * sizeof(uint32_t));
+						object->positions      = (kos_gl_batch_device_batch_position_t*)      malloc(object->vertex_count * sizeof(kos_gl_batch_device_batch_position_t));
+						object->colours        = (kos_gl_batch_device_batch_colour_t*)        malloc(object->vertex_count * sizeof(kos_gl_batch_device_batch_colour_t));
+						object->texture_coords = (kos_gl_batch_device_batch_texture_coord_t*) malloc(object->vertex_count * sizeof(kos_gl_batch_device_batch_texture_coord_t));
+						
+						object->indices        = (uint32_t*)                                  malloc(object->index_count  * sizeof(uint32_t));
 						
 					} else {
 						object->vertex_count += batch_command[3];
 						object->index_count  += batch_command[9] * 3;
 						
-						object->vertices = (kos_gl_batch_device_batch_vertex_t*) realloc(object->vertices, object->vertex_count * sizeof(kos_gl_batch_device_batch_vertex_t));
-						object->indices  = (uint32_t*)                           realloc(object->indices,  object->index_count  * sizeof(uint32_t));
+						object->positions      = (kos_gl_batch_device_batch_position_t*)      realloc(object->positions,      object->vertex_count * sizeof(kos_gl_batch_device_batch_position_t));
+						object->colours        = (kos_gl_batch_device_batch_colour_t*)        realloc(object->colours,        object->vertex_count * sizeof(kos_gl_batch_device_batch_colour_t));
+						object->texture_coords = (kos_gl_batch_device_batch_texture_coord_t*) realloc(object->texture_coords, object->vertex_count * sizeof(kos_gl_batch_device_batch_texture_coord_t));
+						
+						object->indices        = (uint32_t*)                                  realloc(object->indices,        object->index_count  * sizeof(uint32_t));
 						
 					}
 					
@@ -345,31 +363,31 @@
 					for (i = old_vertex_count; i < object->vertex_count; i++) {
 						unsigned long long absolute = i - old_vertex_count;
 						
-						object->vertices[i].position.x = (double) positions[absolute].x / FLOAT_ONE;
-						object->vertices[i].position.y = (double) positions[absolute].y / FLOAT_ONE;
-						object->vertices[i].position.z = (double) positions[absolute].z / FLOAT_ONE;
+						object->positions[i].x = (double) positions[absolute].x / FLOAT_ONE;
+						object->positions[i].y = (double) positions[absolute].y / FLOAT_ONE;
+						object->positions[i].z = (double) positions[absolute].z / FLOAT_ONE;
 						
 						if (batch_command[5]) {
-							object->vertices[i].colour.r = (double) colours[absolute].r / FLOAT_ONE;
-							object->vertices[i].colour.g = (double) colours[absolute].g / FLOAT_ONE;
-							object->vertices[i].colour.b = (double) colours[absolute].b / FLOAT_ONE;
-							object->vertices[i].colour.a = (double) colours[absolute].a / FLOAT_ONE;
+							object->colours[i].r = (double) colours[absolute].r / FLOAT_ONE;
+							object->colours[i].g = (double) colours[absolute].g / FLOAT_ONE;
+							object->colours[i].b = (double) colours[absolute].b / FLOAT_ONE;
+							object->colours[i].a = (double) colours[absolute].a / FLOAT_ONE;
 							
 						} else {
-							object->vertices[i].colour.r = 1.0f;
-							object->vertices[i].colour.g = 1.0f;
-							object->vertices[i].colour.b = 1.0f;
-							object->vertices[i].colour.a = 1.0f;
+							object->colours[i].r = 1.0f;
+							object->colours[i].g = 1.0f;
+							object->colours[i].b = 1.0f;
+							object->colours[i].a = 1.0f;
 							
 						} if (batch_command[7]) {
 							object->has_texture = 1;
 							
-							object->vertices[i].texture_coord.x = (double) texture_coords[absolute].x / FLOAT_ONE;
-							object->vertices[i].texture_coord.y = (double) texture_coords[absolute].y / FLOAT_ONE;
+							object->texture_coords[i].x = (double) texture_coords[absolute].x / FLOAT_ONE;
+							object->texture_coords[i].y = (double) texture_coords[absolute].y / FLOAT_ONE;
 							
 						} else {
-							object->vertices[i].texture_coord.x = 0.0f;
-							object->vertices[i].texture_coord.y = 0.0f;
+							object->texture_coords[i].x = 0.0f;
+							object->texture_coords[i].y = 0.0f;
 							
 						}
 						
@@ -379,8 +397,6 @@
 					
 					for (i = old_index_count / 3; i < object->index_count / 3; i++) {
 						unsigned long long absolute = i - old_index_count;
-						
-						printf("%lld %lld %lld\n", faces[i].pair1[0], faces[i].pair2[0], faces[i].pair3[0]);
 						
 						object->indices[i * 3    ] = faces[i].pair1[0];
 						object->indices[i * 3 + 1] = faces[i].pair2[0];
@@ -397,8 +413,16 @@
 					object->has_texture  = 0;
 					
 				} else if (batch_command[0] == 'd') { // dispose
-					free(object->vertices);
-					free(object->indices);
+					if (object->vertex_count) {
+						free(object->positions);
+						free(object->colours);
+						free(object->texture_coords);
+						
+					} if (object->index_count) {
+						free(object->indices);
+						
+					}
+					
 					free(object);
 					
 				} else {
