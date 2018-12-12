@@ -297,12 +297,22 @@
 				signed long long* batch_command     = (signed long long*)            extra;
 				kos_gl_batch_device_batch_t* object = (kos_gl_batch_device_batch_t*) batch_command[1];
 				
-				if (batch_command[0] == 'c') { // create
-					object = (kos_gl_batch_device_batch_t*) malloc(sizeof(kos_gl_batch_device_batch_t));
-					batch_command[1] = (signed long long) object;
+				if (batch_command[0] == 'p') { // draw
+					glDisable(GL_CULL_FACE);
+					glTranslatef(0.0f, 0.0f, -3.0f);
 					
-					object->vertex_count = 0;
-					object->has_texture  = 0;
+					glPointSize(4.0f);
+					glBegin(GL_LINES);
+					
+					unsigned long long i;
+					for (i = 0; i < object->vertex_count; i++) {
+						//~ glTexCoord2f(object->vertices[i].texture_coord.x, object->vertices[i].texture_coord.y);
+						glVertex3f  (object->vertices[i].position.x, object->vertices[i].position.y, object->vertices[i].position.z);
+						printf("%f %f %f\n", object->vertices[i].position.x, object->vertices[i].position.y, object->vertices[i].position.z);
+						
+					}
+					
+					glEnd();
 					
 				} else if (batch_command[0] == 'a') { // add
 					unsigned long long old_vertex_count = object->vertex_count;
@@ -354,6 +364,13 @@
 						}
 						
 					}
+					
+				} else if (batch_command[0] == 'c') { // create
+					object = (kos_gl_batch_device_batch_t*) malloc(sizeof(kos_gl_batch_device_batch_t));
+					batch_command[1] = (signed long long) object;
+					
+					object->vertex_count = 0;
+					object->has_texture  = 0;
 					
 				} else if (batch_command[0] == 'd') { // dispose
 					free(object->vertices);

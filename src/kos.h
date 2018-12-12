@@ -162,8 +162,8 @@
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.0f);
 		
-		glHint(GL_POINT_SMOOTH, GL_NICEST);
-		glHint(GL_LINE_SMOOTH, GL_NICEST);
+		glHint(GL_POINT_SMOOTH,   GL_NICEST);
+		glHint(GL_LINE_SMOOTH,    GL_NICEST);
 		//~ glHint(GL_POLYGON_SMOOTH, GL_NICEST);
 		
 		glEnable(GL_POINT_SMOOTH);

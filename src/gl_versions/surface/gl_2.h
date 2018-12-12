@@ -39,7 +39,7 @@
 			
 		}
 		
-		glDrawElements(GL_TRIANGLES, SURFACE_VERTEX_COUNT, GL_UNSIGNED_BYTE, this->faces);
+		glDrawElements(GL_TRIANGLES, 2 * 3, GL_UNSIGNED_BYTE, this->faces);
 		
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_COLOR_ARRAY);
