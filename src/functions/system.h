@@ -166,9 +166,9 @@
 		
 	} kos_gl_device_texture_coord_t;
 	
-	typedef struct { double x; double y; double z;           } kos_gl_batch_device_batch_position_t;
-	typedef struct { double r; double g; double b; double a; } kos_gl_batch_device_batch_colour_t;
-	typedef struct { double x; double y;                     } kos_gl_batch_device_batch_texture_coord_t;
+	typedef struct { GLfloat x; GLfloat y; GLfloat z;            } __attribute__((packed)) kos_gl_batch_device_batch_position_t;
+	typedef struct { GLfloat r; GLfloat g; GLfloat b; GLfloat a; } __attribute__((packed)) kos_gl_batch_device_batch_colour_t;
+	typedef struct { GLfloat x; GLfloat y;                       } __attribute__((packed)) kos_gl_batch_device_batch_texture_coord_t;
 	
 	typedef struct {
 		unsigned char      has_texture;
@@ -301,7 +301,6 @@
 				
 				if (batch_command[0] == 'p') { // draw
 					glDisable(GL_CULL_FACE);
-					//~ glTranslatef(0.0f, 0.0f, -3.0f);
 					
 					glEnableClientState(GL_VERTEX_ARRAY);
 					glEnableClientState(GL_COLOR_ARRAY);
@@ -355,6 +354,8 @@
 						
 					}
 					
+					kos_gl_device_vertex_line_face_t* faces = (kos_gl_device_vertex_line_face_t*) batch_command[8];
+					
 					kos_gl_device_vertex_t*        positions      = (kos_gl_device_vertex_t*)        batch_command[2];
 					kos_gl_device_colour_t*        colours        = (kos_gl_device_colour_t*)        batch_command[4];
 					kos_gl_device_texture_coord_t* texture_coords = (kos_gl_device_texture_coord_t*) batch_command[6];
@@ -363,15 +364,15 @@
 					for (i = old_vertex_count; i < object->vertex_count; i++) {
 						unsigned long long absolute = i - old_vertex_count;
 						
-						object->positions[i].x = (double) positions[absolute].x / FLOAT_ONE;
-						object->positions[i].y = (double) positions[absolute].y / FLOAT_ONE;
-						object->positions[i].z = (double) positions[absolute].z / FLOAT_ONE;
+						object->positions[i].x = (GLfloat) positions[absolute].x / FLOAT_ONE;
+						object->positions[i].y = (GLfloat) positions[absolute].y / FLOAT_ONE;
+						object->positions[i].z = (GLfloat) positions[absolute].z / FLOAT_ONE;
 						
 						if (batch_command[5]) {
-							object->colours[i].r = (double) colours[absolute].r / FLOAT_ONE;
-							object->colours[i].g = (double) colours[absolute].g / FLOAT_ONE;
-							object->colours[i].b = (double) colours[absolute].b / FLOAT_ONE;
-							object->colours[i].a = (double) colours[absolute].a / FLOAT_ONE;
+							object->colours[i].r = (GLfloat) colours[absolute].r / FLOAT_ONE;
+							object->colours[i].g = (GLfloat) colours[absolute].g / FLOAT_ONE;
+							object->colours[i].b = (GLfloat) colours[absolute].b / FLOAT_ONE;
+							object->colours[i].a = (GLfloat) colours[absolute].a / FLOAT_ONE;
 							
 						} else {
 							object->colours[i].r = 1.0f;
@@ -380,10 +381,15 @@
 							object->colours[i].a = 1.0f;
 							
 						} if (batch_command[7]) {
-							object->has_texture = 1;
+							object->has_texture      = 1;
+							unsigned long long index = absolute;
 							
-							object->texture_coords[i].x = (double) texture_coords[absolute].x / FLOAT_ONE;
-							object->texture_coords[i].y = (double) texture_coords[absolute].y / FLOAT_ONE;
+							if      (absolute % 3 == 0) index = faces[absolute / 3].pair1[1];
+							else if (absolute % 3 == 1) index = faces[absolute / 3].pair2[1];
+							else                        index = faces[absolute / 3].pair3[1];
+							
+							object->texture_coords[i].x = (GLfloat) texture_coords[index].x / FLOAT_ONE;
+							object->texture_coords[i].y = (GLfloat) texture_coords[index].y / FLOAT_ONE;
 							
 						} else {
 							object->texture_coords[i].x = 0.0f;
@@ -392,8 +398,6 @@
 						}
 						
 					}
-					
-					kos_gl_device_vertex_line_face_t* faces = (kos_gl_device_vertex_line_face_t*) batch_command[8];
 					
 					for (i = old_index_count / 3; i < object->index_count / 3; i++) {
 						unsigned long long absolute = i - old_index_count;
@@ -530,7 +534,7 @@
 						(double) gl_command[6] / FLOAT_ONE  \
 					);
 					
-					glTranslatef(0.0f, 0.0f, -3.0f);
+					glTranslatef(0.0f, 0.0f, -10.0f);
 					
 					glMatrixMode(GL_MODELVIEW);
 					glLoadIdentity();

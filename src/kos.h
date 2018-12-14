@@ -191,7 +191,7 @@
 				near * ( fov         + center_y), \
 				near, far);
 			
-			glTranslatef(0.0f, 0.0f, -3.0f);
+			glTranslatef(0.0f, 0.0f, -10.0f);
 		#else
 			glEnable(GL_CULL_FACE);
 			glCullFace(GL_BACK);
