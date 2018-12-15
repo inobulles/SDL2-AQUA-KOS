@@ -6,12 +6,17 @@
 	
 	#ifdef __USE_SDL_TTF
 		#include <SDL2/SDL_ttf.h>
+		#warning "WARNING Using the SDL_ttf library may cause problems on some platforms"
 	#else
 		#include <ft2build.h>
 		#include FT_FREETYPE_H
+		
+		#include "SDL_ttf/SDL_ttf.c"
 	#endif
 	
-	#ifdef __USE_SDL_TTF
+	#define __USE_SDL_TTF_PROVIDED
+	
+	#ifdef __USE_SDL_TTF_PROVIDED
 		typedef SDL_Surface* kos_font_surface_t;
 	#else
 		typedef struct {
@@ -32,7 +37,7 @@
 		
 		kos_font_surface_t surface;
 		
-		#ifdef __USE_SDL_TTF
+		#ifdef __USE_SDL_TTF_PROVIDED
 			TTF_Font* font;
 		#else
 			FT_Face font;
@@ -46,7 +51,7 @@
 	
 	static kos_font_t kos_fonts[KOS_MAX_FONTS];
 	
-	#ifdef __USE_SDL_TTF
+	#ifdef __USE_SDL_TTF_PROVIDED
 		static SDL_Color kos_font_colour;
 	#else
 		static FT_Library kos_freetype_library;
@@ -65,7 +70,7 @@
 		this->used    = 0;
 		this->text    = NULL;
 		
-		#ifdef __USE_SDL_TTF
+		#ifdef __USE_SDL_TTF_PROVIDED
 			this->font    = NULL;
 			this->surface = NULL;
 		#endif
@@ -73,7 +78,7 @@
 	}
 	
 	void kos_init_fonts(void) { /// TO... IMPLEMENT?
-		#ifdef __USE_SDL_TTF
+		#ifdef __USE_SDL_TTF_PROVIDED
 			kos_font_colour.r = 0xFF;
 			kos_font_colour.g = 0xFF;
 			kos_font_colour.b = 0xFF;
@@ -87,7 +92,7 @@
 			
 		}
 		
-		#ifdef __USE_SDL_TTF
+		#ifdef __USE_SDL_TTF_PROVIDED
 			if (TTF_Init() == -1) {
 				printf("WARNING SDL2 TTF could not initialize (%s)\n", TTF_GetError());
 				return;
@@ -104,7 +109,7 @@
 	}
 	
 	void kos_destroy_fonts(void) {
-		#ifdef __USE_SDL_TTF
+		#ifdef __USE_SDL_TTF_PROVIDED
 			TTF_Quit();
 		#else
 			FT_Done_FreeType(kos_freetype_library);
@@ -112,7 +117,7 @@
 		
 	}
 	
-	#ifndef __USE_SDL_TTF
+	#ifndef __USE_SDL_TTF_PROVIDED
 		unsigned long long kos_freetype_new_font(const char* path, unsigned long long size, FT_Face* font) {
 			unsigned long long font_loading_error = FT_New_Face(kos_freetype_library, path, 0, font);
 			
@@ -139,7 +144,7 @@
 				unsigned char font_loading_error = 0;
 				unsigned long long size = kos_fonts[i].size * video_width();
 				
-				#ifdef __USE_SDL_TTF
+				#ifdef __USE_SDL_TTF_PROVIDED
 					kos_fonts[i].font  = TTF_OpenFont(kos_fonts[i].path, size);
 					font_loading_error = !kos_fonts[i].font;
 				#else
@@ -172,7 +177,7 @@
 				unsigned char font_loading_error = 0;
 				unsigned long long size = kos_fonts[i].size * video_width();
 				
-				#ifdef __USE_SDL_TTF
+				#ifdef __USE_SDL_TTF_PROVIDED
 					TTF_CloseFont(kos_fonts[i].font);
 					kos_fonts[i].font = TTF_OpenFont(kos_fonts[i].path, size);
 				#else
@@ -188,11 +193,11 @@
 	
 	static void kos_font_create_text(kos_font_t* this, char* text) {
 		if (
-		#ifdef __USE_SDL_TTF
+		#ifdef __USE_SDL_TTF_PROVIDED
 			!this->surface ||
 		#endif
 			(this->text == NULL || strcmp(text, this->text) != 0)) {
-			#ifdef __USE_SDL_TTF
+			#ifdef __USE_SDL_TTF_PROVIDED
 				if (this->surface) {
 					SDL_FreeSurface(this->surface);
 					this->surface = NULL;
@@ -208,7 +213,7 @@
 			this->text = (char*) malloc(strlen(text) + 1);
 			strcpy(this->text,                 text);
 			
-			#ifdef __USE_SDL_TTF
+			#ifdef __USE_SDL_TTF_PROVIDED
 				SDL_Surface* temp = TTF_RenderUTF8_Blended(this->font, text, kos_font_colour);
 				this->surface = SDL_CreateRGBSurface(0, temp->w, temp->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 				
@@ -304,7 +309,7 @@
 			
 		}
 		
-		#ifdef __USE_SDL_TTF
+		#ifdef __USE_SDL_TTF_PROVIDED
 			if (kos_fonts[this].surface) {
 				SDL_FreeSurface(kos_fonts[this].surface);
 				
@@ -326,8 +331,11 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		return __texture_create(font->surface->pixels, 32, font->surface->w, font->surface->h, 0);
-		//~ return __texture_create(font->surface.pixels, 32, font->surface.w, font->surface.h, 0);
+		#ifdef __USE_SDL_TTF_PROVIDED
+			return __texture_create(font->surface->pixels, 32, font->surface->w, font->surface->h, 0);
+		#else
+			return __texture_create(font->surface.pixels, 32, font->surface.w, font->surface.h, 0);
+		#endif
 		
 	}
 	
@@ -337,8 +345,11 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		return font->surface->w;
-		//~ return font->surface.w;
+		#ifdef __USE_SDL_TTF_PROVIDED
+			return font->surface->w;
+		#else
+			return font->surface.w;
+		#endif
 		
 	}
 	
@@ -348,8 +359,11 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		return font->surface->h;
-		//~ return font->surface.h;
+		#ifdef __USE_SDL_TTF_PROVIDED
+			return font->surface->h;
+		#else
+			return font->surface.h;
+		#endif
 		
 	}
 	

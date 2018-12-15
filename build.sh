@@ -23,7 +23,7 @@ execute=""
 xephyr=""
 xwm=""
 rom=""
-use_sdl_ttf="true"
+use_sdl_ttf=""
 
 while test $# -gt 0; do
 	if [ "$1" = "no-note"     ]; then no_note="true";     fi
