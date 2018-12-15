@@ -12,6 +12,7 @@
 	# xwm:         Launch KOS with its own WM
 	# debian:      Install all the packages for Debian
 	# use-sdl-ttf: Use deprecated SDL2 TTF library for rendering fonts
+	# softpipe:    Use GALLIUM_DRIVER softpipe (fix for VMWare)
 
 echo "INFO    Parsing arguments ..."
 
@@ -26,15 +27,16 @@ rom=""
 use_sdl_ttf=""
 
 while test $# -gt 0; do
-	if [ "$1" = "no-note"     ]; then no_note="true";     fi
-	if [ "$1" = "no-compile"  ]; then no_compile="true";  fi
-	if [ "$1" = "no-update"   ]; then no_update="true";   fi
-	if [ "$1" = "remote"      ]; then remote="true";      fi
-	if [ "$1" = "execute"     ]; then execute="true";     fi
-	if [ "$1" = "xephyr"      ]; then xephyr="true";      fi
-	if [ "$1" = "xwm"         ]; then xwm="true";         fi
-	if [ "$1" = "app"         ]; then rom="$2";           fi
-	if [ "$1" = "use-sdl-ttf" ]; then use_sdl_ttf="true"; fi
+	if [ "$1" = "no-note"     ]; then no_note="true";                 fi
+	if [ "$1" = "no-compile"  ]; then no_compile="true";              fi
+	if [ "$1" = "no-update"   ]; then no_update="true";               fi
+	if [ "$1" = "remote"      ]; then remote="true";                  fi
+	if [ "$1" = "execute"     ]; then execute="true";                 fi
+	if [ "$1" = "xephyr"      ]; then xephyr="true";                  fi
+	if [ "$1" = "xwm"         ]; then xwm="true";                     fi
+	if [ "$1" = "app"         ]; then rom="$2";                       fi
+	if [ "$1" = "use-sdl-ttf" ]; then use_sdl_ttf="true";             fi
+	if [ "$1" = "softpipe"    ]; then export GALLIUM_DRIVER=softpipe; fi
 	
 	if [ "$1" = "debian" ]; then
 		sudo apt-get install -y libcurl4-openssl-dev
