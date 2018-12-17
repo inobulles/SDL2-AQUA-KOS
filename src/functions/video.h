@@ -80,6 +80,7 @@
 		SDL_PumpEvents();
 		
 		this->quit = 0;
+		this->resize = 0;
 		this->pointer_click_type = kos_is_mouse_pressed;
 		
 		while (SDL_PollEvent(&event)) {
