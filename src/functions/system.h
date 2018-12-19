@@ -59,6 +59,7 @@
 		else if (strcmp(device, "shader")   == 0) return DEVICE_SHADER;
 		else if (strcmp(device, "gl")       == 0) return DEVICE_GL;
 		else if (strcmp(device, "gl batch") == 0) return DEVICE_GL_BATCH;
+		else if (strcmp(device, "fs")       == 0) return DEVICE_FS;
 		
 		// compute
 		
@@ -106,23 +107,6 @@
 		
 	} math_device_generic_t;
 	
-	typedef struct {
-		time_device_t previous_time_device;
-		
-		unsigned long long previous_fbo_device_create_result;
-		unsigned long long previous_shader_device_create_result;
-		
-		unsigned long long previous_math_device_sqrt_result;
-		unsigned long long previous_math_device_sin_result;
-		
-		unsigned long long get_device_keyboard_key_packet;
-		unsigned long long get_device_keyboard_keycode_packet;
-		
-	} kos_bda_extension_t;
-
-	#define KOS_BDA_EXTENSION
-	kos_bda_extension_t kos_bda_implementation;
-
 	#define FLOAT_ONE 1000000
 	
 	#include <math.h>
@@ -182,6 +166,28 @@
 		uint32_t*          indices;
 		
 	} kos_gl_batch_device_batch_t;
+	
+	typedef struct {
+		time_device_t previous_time_device;
+		
+		unsigned long long previous_fbo_device_create_result;
+		unsigned long long previous_shader_device_create_result;
+		
+		unsigned long long previous_math_device_sqrt_result;
+		unsigned long long previous_math_device_sin_result;
+		
+		unsigned long long get_device_keyboard_key_packet;
+		unsigned long long get_device_keyboard_keycode_packet;
+		
+		unsigned long long fs_device_result;
+		
+	} kos_bda_extension_t;
+
+	#define KOS_BDA_EXTENSION
+	kos_bda_extension_t kos_bda_implementation;
+	
+	#include <sys/types.h>
+	#include <sys/stat.h>
 	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
 		unsigned long long* result = (unsigned long long*) 0;
@@ -253,7 +259,23 @@
 			case DEVICE_COMPUTE_CUDA_COMPILER: cuda_compile_bytecode(&result, extra); break;
 			case DEVICE_COMPUTE_CUDA_EXECUTOR: cuda_execute_bytecode(&result, extra); break;
 			
-			case DEVICE_FBO: {
+			case DEVICE_FS: {
+				const unsigned long long* fs_command = (const unsigned long long*) extra;
+				
+				if (fs_command[0] == 'm') { // mkdir
+					GET_PATH((char*) fs_command[1]);
+					
+					kos_bda_implementation.fs_device_result = mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+					result = (unsigned long long*) &kos_bda_implementation.fs_device_result;
+					
+				} else {
+					KOS_DEVICE_COMMAND_WARNING("fs")
+					
+				}
+				
+				break;
+				
+			} case DEVICE_FBO: {
 				const unsigned long long* fbo_command = (const unsigned long long*) extra;
 				
 				if (fbo_command[0] == 'c') { // create
