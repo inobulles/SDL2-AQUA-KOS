@@ -188,6 +188,44 @@
 	
 	#include <sys/types.h>
 	#include <sys/stat.h>
+	#include <dirent.h>
+	
+	int remove_directory_recursive(const char* name) {
+		DIR* directory = opendir(name);
+		
+		if (directory == NULL) {
+			printf("WARNING opendir failed\n");
+			return 1;
+			
+		}
+		
+		int errors = 0;
+		
+		struct dirent* entry;
+		char path[PATH_MAX];
+		
+		while ((entry = readdir(directory)) != NULL) {
+			if (strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) {
+				snprintf(path, (size_t) PATH_MAX, "%s/%s", name, entry->d_name);
+				
+				if (entry->d_type == DT_DIR) {
+					errors += remove_directory_recursive(path);
+					
+				} else {
+					remove(path);
+					
+				}
+				
+			}
+			
+		}
+		
+		closedir(directory);
+		remove(name);
+		
+		return errors;
+		
+	}
 	
 	unsigned long long* get_device(unsigned long long device, const char* extra) {
 		unsigned long long* result = (unsigned long long*) 0;
@@ -261,11 +299,14 @@
 			
 			case DEVICE_FS: {
 				const unsigned long long* fs_command = (const unsigned long long*) extra;
+				GET_PATH((char*) fs_command[1]);
 				
 				if (fs_command[0] == 'm') { // mkdir
-					GET_PATH((char*) fs_command[1]);
-					
 					kos_bda_implementation.fs_device_result = mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+					result = (unsigned long long*) &kos_bda_implementation.fs_device_result;
+					
+				} else if (fs_command[0] == 'r') { // remove
+					kos_bda_implementation.fs_device_result = remove_directory_recursive(path);
 					result = (unsigned long long*) &kos_bda_implementation.fs_device_result;
 					
 				} else {
