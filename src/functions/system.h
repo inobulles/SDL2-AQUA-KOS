@@ -309,6 +309,12 @@
 					kos_bda_implementation.fs_device_result = remove_directory_recursive(path);
 					result = (unsigned long long*) &kos_bda_implementation.fs_device_result;
 					
+				} else if (fs_command[0] == 'c') { // move
+					GET_PATH_NAME(destination, (char*) fs_command[2]);
+					
+					kos_bda_implementation.fs_device_result = rename(path, destination);
+					result = (unsigned long long*) &kos_bda_implementation.fs_device_result;
+					
 				} else {
 					KOS_DEVICE_COMMAND_WARNING("fs")
 					
