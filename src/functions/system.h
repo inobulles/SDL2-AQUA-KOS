@@ -194,8 +194,7 @@
 		DIR* directory = opendir(name);
 		
 		if (directory == NULL) {
-			printf("WARNING opendir failed\n");
-			return 1;
+			return remove(name);
 			
 		}
 		
@@ -208,13 +207,8 @@
 			if (strcmp(entry->d_name, ".") && strcmp(entry->d_name, "..")) {
 				snprintf(path, (size_t) PATH_MAX, "%s/%s", name, entry->d_name);
 				
-				if (entry->d_type == DT_DIR) {
-					errors += remove_directory_recursive(path);
-					
-				} else {
-					remove(path);
-					
-				}
+				if (entry->d_type == DT_DIR) errors += remove_directory_recursive(path);
+				else                         errors += remove                    (path);
 				
 			}
 			
