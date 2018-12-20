@@ -26,6 +26,10 @@
 			SDL_GL_SwapWindow(current_kos->window);
 		#endif
 		
+		#if KOS_USES_BCM && KOS_USES_OPENGLES
+			eglSwapBuffers(current_kos->display, current_kos->surface);
+		#endif
+		
 		#if KOS_3D_VISUALIZATION
 			glRotatef(1.0f, 0.0f, 1.0f, 0.0f);
 		#endif

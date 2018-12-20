@@ -6,6 +6,10 @@
 	
 	#include "macros_and_inclusions.h"
 	
+	#if KOS_USES_BCM
+		#include "bcm/bcm.h"
+	#endif
+	
 	#include "gl_common/surface.h"
 	#include "gl_common/shaders.h"
 	#include "gl_common/texture.h"
@@ -32,16 +36,20 @@
 			}
 		#endif
 		
+		kos_free_predefined_textures(this);
+		kos_destroy_fonts();
+		
 		#if KOS_USES_SDL2
 			#if KOS_USES_OPENGL
 				SDL_GL_DeleteContext(this->context);
 			#endif
-			SDL_DestroyWindow   (this->window);
+			SDL_DestroyWindow(this->window);
 			SDL_Quit();
 		#endif
 		
-		kos_free_predefined_textures(this);
-		kos_destroy_fonts();
+		#if KOS_USES_BCM && KOS_USES_OPENGLES
+			bcm_ogles_exit(this);
+		#endif
 		
 		printf("Destroyed all SDL subsystems\n");
 		
@@ -88,6 +96,15 @@
 				KOS_ERROR
 				
 			}
+		#endif
+		
+		#if KOS_USES_BCM
+			printf("Initializing the BCM host ...\n");
+			bcm_host_init();
+			
+			#if KOS_USES_OPENGLES
+				bcm_ogles_init(this);
+			#endif
 		#endif
 		
 		#ifdef __HAS_X11

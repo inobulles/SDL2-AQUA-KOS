@@ -17,6 +17,18 @@
 		#include <GL/glu.h>
 	#endif
 	
+	#if KOS_USES_OPENGLES && KOS_USES_BCM
+		#include "GLES/gl.h"
+		#include "GLES/glext.h"
+		
+		#include "EGL/egl.h"
+		#include "EGL/eglext.h"
+	#endif
+	
+	#if KOS_USES_BCM
+		#include "bcm_host.h"
+	#endif
+	
 	#include "../lib/structs.h"
 	#include "../lib/macros.h"
 	

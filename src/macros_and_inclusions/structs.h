@@ -19,6 +19,12 @@
 			GLuint shader_program;
 		#endif
 		
+		#if KOS_USES_BCM && KOS_USES_OPENGLES
+			EGLDisplay display;
+			EGLSurface surface;
+			EGLContext context;
+		#endif
+		
 	} kos_t;
 	
 #endif
