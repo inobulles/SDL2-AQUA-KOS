@@ -603,7 +603,7 @@
 						(double) gl_command[6] / FLOAT_ONE  \
 					);
 					
-					glTranslatef(0.0f, 0.0f, -10.0f);
+					glTranslatef(0.0f, 0.0f, -3.0f);
 					
 					glMatrixMode(GL_MODELVIEW);
 					glLoadIdentity();
