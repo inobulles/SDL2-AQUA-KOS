@@ -32,9 +32,13 @@
 			}
 		#endif
 		
-		SDL_GL_DeleteContext(this->context);
-		SDL_DestroyWindow   (this->window);
-		SDL_Quit();
+		#if KOS_USES_SDL2
+			#if KOS_USES_OPENGL
+				SDL_GL_DeleteContext(this->context);
+			#endif
+			SDL_DestroyWindow   (this->window);
+			SDL_Quit();
+		#endif
 		
 		kos_free_predefined_textures(this);
 		kos_destroy_fonts();
@@ -70,17 +74,21 @@
 		
 		current_kos = this;
 		
-		this->window  = NULL;
-		this->context = NULL;
+		#if KOS_USES_SDL2
+			this->window  = NULL;
+			this->context = NULL;
+		#endif
 		
 		this->width  = KOS_ORIGINAL_WIDTH;
 		this->height = KOS_ORIGINAL_HEIGHT;
 		
-		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-			printf("ERROR SDL2 could not initizalize (%s)\n", SDL_GetError());
-			KOS_ERROR
-			
-		}
+		#if KOS_USES_SDL2
+			if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+				printf("ERROR SDL2 could not initizalize (%s)\n", SDL_GetError());
+				KOS_ERROR
+				
+			}
+		#endif
 		
 		#ifdef __HAS_X11
 			printf("INFO Getting X11 display size ...\n");
@@ -106,106 +114,121 @@
 			}
 		#endif
 		
-		this->window = SDL_CreateWindow("AQUA 3.X SDL2 KOS", \
-			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, \
-			this->width, this->height, \
-			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-		
-		printf("INFO Creating cursor ...\n");
-		SDL_Cursor*   cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-		SDL_SetCursor(cursor);
-		
-		if (this->window == NULL) {
-			printf("ERROR SDL2 window could not be created (%s)\n", SDL_GetError());
-			KOS_ERROR
-			
-		}
-		
-		kos_init_fonts();
-		this->context = SDL_GL_CreateContext(this->window);
-		
-		if (this->context == NULL) {
-			printf("ERROR SDL2 GL context could not be created (%s)\n", SDL_GetError());
-			KOS_ERROR
-			
-		}
-		
-		SDL_GL_SetAttribute(SDL_GL_RED_SIZE,      5);
-		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,    6);
-		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,     5);
-		
-		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,   16);
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,  1);
-		
-		printf("OpenGL info\n");
-		printf("\tVendor:                   %s\n", glGetString(GL_VENDOR));
-		printf("\tRenderer:                 %s\n", glGetString(GL_RENDERER));
-		printf("\tVersion:                  %s\n", glGetString(GL_VERSION));
-		printf("\tShading language version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-		//~ printf("\tExtensions:               %s\n", glGetString(GL_EXTENSIONS));
-		
-		KOS_BEST_GL_VERSION
-		printf("Using OpenGL version %d.%d\n", kos_best_gl_version_major, kos_best_gl_version_minor);
-		
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, kos_best_gl_version_major);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, kos_best_gl_version_minor);
-		
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-		glEnable(GL_TEXTURE_2D);
-		glEnable(GL_DEPTH_TEST);
-		
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, 0.0f);
-		
-		glHint(GL_POINT_SMOOTH,   GL_NICEST);
-		glHint(GL_LINE_SMOOTH,    GL_NICEST);
-		//~ glHint(GL_POLYGON_SMOOTH, GL_NICEST);
-		
-		glEnable(GL_POINT_SMOOTH);
-		glEnable(GL_LINE_SMOOTH);
-		//~ glEnable(GL_POLYGON_SMOOTH);
-		
-		glMatrixMode(GL_PROJECTION);
-		glViewport(0, 0, this->width, this->height);
-		glLoadIdentity();
-		
-		#if KOS_3D_VISUALIZATION
-			float fov   = tan(65.0f / 4);
-			float ratio = 1.0f;
-			
-			float near = 0.1f;
-			float far  = 500.0f;
-			
-			float center_x = 0.0f;
-			float center_y = 0.0f;
-			
-			glFrustum( \
-				near * (-fov * ratio + center_x), \
-				near * ( fov * ratio + center_x), \
-				near * (-fov         + center_y), \
-				near * ( fov         + center_y), \
-				near, far);
-			
-			glTranslatef(0.0f, 0.0f, -10.0f);
-		#else
-			glEnable(GL_CULL_FACE);
-			glCullFace(GL_BACK);
-			glFrontFace(GL_CCW);
-			
-			glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -100.0f, 500.0f);
-			glTranslatef(0.0f, 0.0f, -100.0f);
+		#if KOS_USES_SDL2
+			this->window = SDL_CreateWindow("AQUA 3.X SDL2 KOS", \
+				SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, \
+				this->width, this->height, \
+				SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 		#endif
 		
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		
-		if (SDL_GL_SetSwapInterval(1) < 0) {
-			printf("WARNING Failed to enable VSync (this may cause problems down the line)\n");
-			this->warning_count++;
+		#if KOS_USES_SDL2
+			printf("INFO Creating cursor ...\n");
+			SDL_Cursor*   cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+			SDL_SetCursor(cursor);
 			
-		}
+			if (this->window == NULL) {
+				printf("ERROR SDL2 window could not be created (%s)\n", SDL_GetError());
+				KOS_ERROR
+				
+			}
+		#endif
+		
+		kos_init_fonts();
+		
+		#if KOS_USES_SDL2 && KOS_USES_OPENGL
+			this->context = SDL_GL_CreateContext(this->window);
+			
+			if (this->context == NULL) {
+				printf("ERROR SDL2 GL context could not be created (%s)\n", SDL_GetError());
+				KOS_ERROR
+				
+			}
+			
+			SDL_GL_SetAttribute(SDL_GL_RED_SIZE,      5);
+			SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,    6);
+			SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,     5);
+			
+			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,   16);
+			SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,  1);
+		#endif
+		
+		#if KOS_USES_OPENGL
+			printf("OpenGL info\n");
+			printf("\tVendor:                   %s\n", glGetString(GL_VENDOR));
+			printf("\tRenderer:                 %s\n", glGetString(GL_RENDERER));
+			printf("\tVersion:                  %s\n", glGetString(GL_VERSION));
+			printf("\tShading language version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+			//~ printf("\tExtensions:               %s\n", glGetString(GL_EXTENSIONS));
+			
+			KOS_BEST_GL_VERSION
+			printf("Using OpenGL version %d.%d\n", kos_best_gl_version_major, kos_best_gl_version_minor);
+		#endif
+		
+		#if KOS_USES_SDL2
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, kos_best_gl_version_major);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, kos_best_gl_version_minor);
+		#endif
+		
+		#if KOS_USES_OPENGL
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			
+			glEnable(GL_TEXTURE_2D);
+			glEnable(GL_DEPTH_TEST);
+			
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GREATER, 0.0f);
+			
+			glHint(GL_POINT_SMOOTH,   GL_NICEST);
+			glHint(GL_LINE_SMOOTH,    GL_NICEST);
+			//~ glHint(GL_POLYGON_SMOOTH, GL_NICEST);
+			
+			glEnable(GL_POINT_SMOOTH);
+			glEnable(GL_LINE_SMOOTH);
+			//~ glEnable(GL_POLYGON_SMOOTH);
+			
+			glMatrixMode(GL_PROJECTION);
+			glViewport(0, 0, this->width, this->height);
+			glLoadIdentity();
+			
+			#if KOS_3D_VISUALIZATION
+				float fov   = tan(65.0f / 4);
+				float ratio = 1.0f;
+				
+				float near = 0.1f;
+				float far  = 500.0f;
+				
+				float center_x = 0.0f;
+				float center_y = 0.0f;
+				
+				glFrustum( \
+					near * (-fov * ratio + center_x), \
+					near * ( fov * ratio + center_x), \
+					near * (-fov         + center_y), \
+					near * ( fov         + center_y), \
+					near, far);
+				
+				glTranslatef(0.0f, 0.0f, -10.0f);
+			#else
+				glEnable(GL_CULL_FACE);
+				glCullFace(GL_BACK);
+				glFrontFace(GL_CCW);
+				
+				glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -100.0f, 500.0f);
+				glTranslatef(0.0f, 0.0f, -100.0f);
+			#endif
+			
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+		#endif
+		
+		#if KOS_USES_SDL2
+			if (SDL_GL_SetSwapInterval(1) < 0) {
+				printf("WARNING Failed to enable VSync (this may cause problems down the line)\n");
+				this->warning_count++;
+				
+			}
+		#endif
 		
 		printf("Setting up predefined textures ...\n");
 		
@@ -223,9 +246,11 @@
 		
 		//~ glUseProgram(this->shader_program);
 		
-		GLint                                   default_fbo;
-		glGetIntegerv(GL_FRAMEBUFFER_BINDING,  &default_fbo);
-		printf("INFO Default OpenGL FBO: %d\n", default_fbo);
+		#if KOS_USES_OPENGL
+			GLint                                   default_fbo;
+			glGetIntegerv(GL_FRAMEBUFFER_BINDING,  &default_fbo);
+			printf("INFO Default OpenGL FBO: %d\n", default_fbo);
+		#endif
 		
 		printf("Finished KOS initialization with %d errors\n", this->warning_count);
 		return 0;

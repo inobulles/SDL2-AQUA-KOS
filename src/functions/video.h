@@ -21,7 +21,10 @@
 	
 	void video_flip(void) {
 		surface_layer_offset = 0.0f;
-		SDL_GL_SwapWindow(current_kos->window);
+		
+		#if KOS_USES_SDL2 && KOS_USES_OPENGL
+			SDL_GL_SwapWindow(current_kos->window);
+		#endif
 		
 		#if KOS_3D_VISUALIZATION
 			glRotatef(1.0f, 0.0f, 1.0f, 0.0f);
@@ -36,7 +39,12 @@
 	static unsigned long long kos_last_time;
 	
 	unsigned long long video_fps(void) {
-		unsigned long long tick_time = SDL_GetTicks();
+		unsigned long long tick_time = 0;
+		
+		#if KOS_USES_SDL2
+			tick_time = SDL_GetTicks();
+		#endif
+			
 		float fps = 1000.0f / (float) (tick_time - kos_last_time);
 		kos_last_time = tick_time;
 		
@@ -48,7 +56,9 @@
 		KOS_DEPRECATED
 		
 		if (state == HIDDEN) {
-			SDL_MinimizeWindow(current_kos->window);
+			#if KOS_USES_SDL2
+				SDL_MinimizeWindow(current_kos->window);
+			#endif
 			
 		}
 		
@@ -76,72 +86,74 @@
 			
 		}
 		
-		SDL_Event event;
-		SDL_PumpEvents();
-		
 		this->quit = 0;
 		this->resize = 0;
 		this->pointer_click_type = kos_is_mouse_pressed;
 		
-		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_QUIT) {
-				this->quit = 1;
-				break;
-				
-			} else if (event.type == SDL_WINDOWEVENT) {
-				switch (event.window.event) {
-					case SDL_WINDOWEVENT_SIZE_CHANGED: {
-						resize_count++;
-						this->resize = 1;
-						
-						current_kos->width  = event.window.data1;
-						current_kos->height = event.window.data2;
-						
-						glViewport(0, 0, current_kos->width, current_kos->height);
-						update_all_font_sizes();
-						
-						break;
-						
-					} default: {
-						break;
+		#if KOS_USES_SDL2
+			SDL_Event event;
+			SDL_PumpEvents();
+			
+			while (SDL_PollEvent(&event)) {
+				if (event.type == SDL_QUIT) {
+					this->quit = 1;
+					break;
+					
+				} else if (event.type == SDL_WINDOWEVENT) {
+					switch (event.window.event) {
+						case SDL_WINDOWEVENT_SIZE_CHANGED: {
+							resize_count++;
+							this->resize = 1;
+							
+							current_kos->width  = event.window.data1;
+							current_kos->height = event.window.data2;
+							
+							glViewport(0, 0, current_kos->width, current_kos->height);
+							update_all_font_sizes();
+							
+							break;
+							
+						} default: {
+							break;
+							
+						}
 						
 					}
 					
+					break;
+					
+				} else if (event.type == SDL_MOUSEMOTION) {
+					this->pointer_x = event.motion.x;
+					this->pointer_y = event.motion.y;
+					
+				} else if (event.type == SDL_MOUSEBUTTONDOWN) {
+					this->pointer_x = event.button.x;
+					this->pointer_y = event.button.y;
+					
+					kos_has_clicked = 1;
+					kos_is_mouse_pressed = 1;
+					
+					break;
+					
+				} else if (event.type == SDL_MOUSEBUTTONUP) {
+					this->pointer_x = event.button.x;
+					this->pointer_y = event.button.y;
+					
+					kos_is_mouse_pressed = 0;
+					break;
+					
+				} else if (event.type == SDL_KEYDOWN) {
+					get_device_keyboard_key = event.key.keysym.scancode;
+					break;
+					
+				} else if (event.type == SDL_TEXTINPUT) {
+					get_device_keyboard_keycode = *event.text.text;
+					break;
+					
 				}
 				
-				break;
-				
-			} else if (event.type == SDL_MOUSEMOTION) {
-				this->pointer_x = event.motion.x;
-				this->pointer_y = event.motion.y;
-				
-			} else if (event.type == SDL_MOUSEBUTTONDOWN) {
-				this->pointer_x = event.button.x;
-				this->pointer_y = event.button.y;
-				
-				kos_has_clicked = 1;
-				kos_is_mouse_pressed = 1;
-				
-				break;
-				
-			} else if (event.type == SDL_MOUSEBUTTONUP) {
-				this->pointer_x = event.button.x;
-				this->pointer_y = event.button.y;
-				
-				kos_is_mouse_pressed = 0;
-				break;
-				
-			} else if (event.type == SDL_KEYDOWN) {
-				get_device_keyboard_key = event.key.keysym.scancode;
-				break;
-				
-			} else if (event.type == SDL_TEXTINPUT) {
-				get_device_keyboard_keycode = *event.text.text;
-				break;
-				
 			}
-			
-		}
+		#endif
 		
 		this->pointer_x = this->pointer_x < 0 && this->pointer_x >= video_width()  ? half_width  : this->pointer_x;
 		this->pointer_y = this->pointer_y < 0 && this->pointer_y >= video_height() ? half_height : this->pointer_y;

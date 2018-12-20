@@ -4,19 +4,21 @@
 	
 	#include "../macros_and_inclusions.h"
 	
-	#ifdef __USE_SDL_TTF
-		#include <SDL2/SDL_ttf.h>
-		#warning "WARNING Using the SDL_ttf library may cause problems on some platforms"
-	#else
-		#include <ft2build.h>
-		#include FT_FREETYPE_H
-		
-		#include "SDL_ttf/SDL_ttf.c"
+	#if KOS_USES_SDL2
+		#ifdef __USE_SDL_TTF
+			#include <SDL2/SDL_ttf.h>
+			#warning "WARNING Using the SDL_ttf library may cause problems on some platforms"
+		#else
+			#include <ft2build.h>
+			#include FT_FREETYPE_H
+			
+			#include "SDL_ttf/SDL_ttf.c"
+		#endif
 	#endif
 	
-	#define __USE_SDL_TTF_PROVIDED
+	#define __USE_SDL_TTF_PROVIDED 1
 	
-	#ifdef __USE_SDL_TTF_PROVIDED
+	#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 		typedef SDL_Surface* kos_font_surface_t;
 	#else
 		typedef struct {
@@ -37,10 +39,12 @@
 		
 		kos_font_surface_t surface;
 		
-		#ifdef __USE_SDL_TTF_PROVIDED
-			TTF_Font* font;
-		#else
-			FT_Face font;
+		#if KOS_USES_SDL2
+			#ifdef __USE_SDL_TTF_PROVIDED
+				TTF_Font* font;
+			#else
+				FT_Face font;
+			#endif
 		#endif
 		
 	} kos_font_t;
@@ -51,9 +55,9 @@
 	
 	static kos_font_t kos_fonts[KOS_MAX_FONTS];
 	
-	#ifdef __USE_SDL_TTF_PROVIDED
+	#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 		static SDL_Color kos_font_colour;
-	#else
+	#elif KOS_USES_SDL2
 		static FT_Library kos_freetype_library;
 	#endif
 	
@@ -70,7 +74,7 @@
 		this->used    = 0;
 		this->text    = NULL;
 		
-		#ifdef __USE_SDL_TTF_PROVIDED
+		#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 			this->font    = NULL;
 			this->surface = NULL;
 		#endif
@@ -78,7 +82,7 @@
 	}
 	
 	void kos_init_fonts(void) { /// TO... IMPLEMENT?
-		#ifdef __USE_SDL_TTF_PROVIDED
+		#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 			kos_font_colour.r = 0xFF;
 			kos_font_colour.g = 0xFF;
 			kos_font_colour.b = 0xFF;
@@ -92,13 +96,13 @@
 			
 		}
 		
-		#ifdef __USE_SDL_TTF_PROVIDED
+		#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 			if (TTF_Init() == -1) {
 				printf("WARNING SDL2 TTF could not initialize (%s)\n", TTF_GetError());
 				return;
 				
 			}
-		#else
+		#elif KOS_USES_SDL2
 			if (FT_Init_FreeType(&kos_freetype_library)) {
 				printf("WARNING FreeType could not initialize\n");
 				return;
@@ -109,15 +113,15 @@
 	}
 	
 	void kos_destroy_fonts(void) {
-		#ifdef __USE_SDL_TTF_PROVIDED
+		#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 			TTF_Quit();
-		#else
+		#elif KOS_USES_SDL2
 			FT_Done_FreeType(kos_freetype_library);
 		#endif
 		
 	}
 	
-	#ifndef __USE_SDL_TTF_PROVIDED
+	#if !(__USE_SDL_TTF_PROVIDED) && KOS_USES_SDL2
 		unsigned long long kos_freetype_new_font(const char* path, unsigned long long size, FT_Face* font) {
 			unsigned long long font_loading_error = FT_New_Face(kos_freetype_library, path, 0, font);
 			
@@ -144,10 +148,10 @@
 				unsigned char font_loading_error = 0;
 				unsigned long long size = kos_fonts[i].size * video_width();
 				
-				#ifdef __USE_SDL_TTF_PROVIDED
+				#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 					kos_fonts[i].font  = TTF_OpenFont(kos_fonts[i].path, size);
 					font_loading_error = !kos_fonts[i].font;
-				#else
+				#elif KOS_USES_SDL2
 					font_loading_error = kos_freetype_new_font(kos_fonts[i].path, size, &kos_fonts[i].font);
 				#endif
 				
@@ -177,10 +181,10 @@
 				unsigned char font_loading_error = 0;
 				unsigned long long size = kos_fonts[i].size * video_width();
 				
-				#ifdef __USE_SDL_TTF_PROVIDED
+				#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 					TTF_CloseFont(kos_fonts[i].font);
 					kos_fonts[i].font = TTF_OpenFont(kos_fonts[i].path, size);
-				#else
+				#elif KOS_USES_SDL2
 					FT_Done_Face(kos_fonts[i].font);
 					kos_freetype_new_font(kos_fonts[i].path, size, &kos_fonts[i].font);
 				#endif
@@ -193,11 +197,11 @@
 	
 	static void kos_font_create_text(kos_font_t* this, char* text) {
 		if (
-		#ifdef __USE_SDL_TTF_PROVIDED
+		#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 			!this->surface ||
 		#endif
 			(this->text == NULL || strcmp(text, this->text) != 0)) {
-			#ifdef __USE_SDL_TTF_PROVIDED
+			#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 				if (this->surface) {
 					SDL_FreeSurface(this->surface);
 					this->surface = NULL;
@@ -213,7 +217,7 @@
 			this->text = (char*) malloc(strlen(text) + 1);
 			strcpy(this->text,                 text);
 			
-			#ifdef __USE_SDL_TTF_PROVIDED
+			#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 				SDL_Surface* temp = TTF_RenderUTF8_Blended(this->font, text, kos_font_colour);
 				this->surface = SDL_CreateRGBSurface(0, temp->w, temp->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 				
@@ -237,7 +241,7 @@
 					pixels[i] += 0x00FFFFFF00FFFFFF;
 					
 				}
-			#else
+			#elif KOS_USES_SDL2
 				FT_Matrix matrix;
 				
 				matrix.xx = (FT_Fixed) (1 * 0x10000L);
@@ -309,14 +313,14 @@
 			
 		}
 		
-		#ifdef __USE_SDL_TTF_PROVIDED
+		#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 			if (kos_fonts[this].surface) {
 				SDL_FreeSurface(kos_fonts[this].surface);
 				
 			}
 			
 			TTF_CloseFont(kos_fonts[this].font);
-		#else
+		#elif KOS_USES_SDL2
 			FT_Done_Face(kos_fonts[this].font);
 		#endif
 		
@@ -331,10 +335,12 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		#ifdef __USE_SDL_TTF_PROVIDED
+		#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 			return __texture_create(font->surface->pixels, 32, font->surface->w, font->surface->h, 0);
-		#else
+		#elif KOS_USES_SDL2
 			return __texture_create(font->surface.pixels, 32, font->surface.w, font->surface.h, 0);
+		#else
+			return 0;
 		#endif
 		
 	}
@@ -345,10 +351,12 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		#ifdef __USE_SDL_TTF_PROVIDED
+		#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 			return font->surface->w;
-		#else
+		#elif KOS_USES_SDL2
 			return font->surface.w;
+		#else
+			return 100;
 		#endif
 		
 	}
@@ -359,10 +367,12 @@
 		kos_font_t* font = &kos_fonts[this];
 		kos_font_create_text(font, text);
 		
-		#ifdef __USE_SDL_TTF_PROVIDED
+		#if __USE_SDL_TTF_PROVIDED && KOS_USES_SDL2
 			return font->surface->h;
-		#else
+		#elif KOS_USES_SDL2
 			return font->surface.h;
+		#else
+			return 100;
 		#endif
 		
 	}

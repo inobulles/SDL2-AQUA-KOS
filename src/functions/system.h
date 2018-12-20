@@ -729,8 +729,15 @@
 				break;
 				
 			} case DEVICE_WM: {
-				if (strcmp(extra, "visible") == 0 && *data == HIDDEN) SDL_MinimizeWindow(current_kos->window);
-				else KOS_DEVICE_COMMAND_WARNING("wm")
+				if (strcmp(extra, "visible") == 0 && *data == HIDDEN) {
+					#if KOS_USES_SDL2
+						SDL_MinimizeWindow(current_kos->window);
+					#endif
+					
+				} else {
+					KOS_DEVICE_COMMAND_WARNING("wm")
+					
+				}
 				
 				break;
 				

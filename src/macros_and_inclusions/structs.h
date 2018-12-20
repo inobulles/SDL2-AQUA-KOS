@@ -10,10 +10,14 @@
 		
 		int bpp;
 		
-		SDL_Window*   window;
-		SDL_GLContext context;
+		#if KOS_USES_SDL2
+			SDL_Window*   window;
+			SDL_GLContext context;
+		#endif
 		
-		GLuint shader_program;
+		#if KOS_USES_OPENGL
+			GLuint shader_program;
+		#endif
 		
 	} kos_t;
 	
