@@ -40,7 +40,7 @@
 		kos->context = eglCreateContext(kos->display, config, EGL_NO_CONTEXT, NULL);
 		assert(kos->context != EGL_NO_CONTEXT);
 		
-		success = graphics_get_display_size(0 /*LCD*/, &kos->width, &kos->height);
+		success = graphics_get_display_size(0, &kos->width, &kos->height);
 		printf("BCM OpenGL ES detected display (width = %d, height = %d)\n", kos->width, kos->height);
 		assert(success >= 0);
 		
@@ -56,10 +56,10 @@
 		src_rect.width  = kos->width  << 16;
 		src_rect.height = kos->height << 16;
 		
-		dispman_display = vc_dispmanx_display_open(0 /*LCD*/);
+		dispman_display = vc_dispmanx_display_open(0);
 		dispman_update  = vc_dispmanx_update_start(0);
 		
-		dispman_element = vc_dispmanx_element_add(dispman_update, dispman_display, 0 /*layer*/, &dst_rect, 0 /*src*/, &src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0 /*clamp*/, 0 /*transform*/);
+		dispman_element = vc_dispmanx_element_add(dispman_update, dispman_display, 0, &dst_rect, 0, &src_rect, DISPMANX_PROTECTION_NONE, 0, 0, 0);
 		native_window.element = dispman_element;
 		
 		native_window.width  = kos->width;
