@@ -253,8 +253,8 @@
 					
 				} else if (strcmp(extra, "sigmoid") == 0) {
 					math_device_generic_t* data = (math_device_generic_t*) extra;
-					double exp = exponential((double) data->x / FLOAT_ONE);
-					kos_bda_implementation.previous_math_device_sigmoid_result = (unsigned long long) ((exp / (exp + 1.0f)) * FLOAT_ONE);
+					double exp = exponential((double) ((int64_t) data->x) / FLOAT_ONE);
+					kos_bda_implementation.previous_math_device_sigmoid_result = (unsigned long long) (((exp / (exp + 1.0f)) * 4.0f - 2.0f) * FLOAT_ONE);
 					result = &kos_bda_implementation.previous_math_device_sigmoid_result;
 					
 				} else {
