@@ -70,6 +70,12 @@ if [ "$remote" != "" ]; then
 	rm a.out
 	
 else
+	if [ "$no_update" = "" ]; then
+		if [ ! -d "kos/" ]; then
+			git submodule update --init --recursive
+		fi
+	fi
+	
 	if [ "$no_compile" = "" ]; then
 		echo "INFO    Testing for libraries ..."
 		
@@ -96,18 +102,19 @@ else
 		cd ../../../../
 	fi
 
-	if [ ! -d "asm/" ]; then
+	if [ ! -d "kos/asm/" ]; then
 		echo "INFO    Installing the CW ..."
 		set -e
 		
 		git clone https://github.com/inobulles/AQUA-CW
-		mv AQUA-CW asm
+		mv AQUA-CW kos/asm
 	elif [ "$no_update" = "" ]; then
 		echo "INFO    Updating the CW ..."
 		
-		cd asm/
+		cd kos/asm/
 		git pull origin master
-		cd ../
+		
+		cd ../../
 		set -e
 	fi
 	
