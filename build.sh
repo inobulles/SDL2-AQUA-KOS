@@ -158,7 +158,7 @@ else
 		echo "INFO    Compiling KOS ..."
 		
 		if [ "$use_sdl_ttf" = "" ]; then
-			font_library="-lfreetype -Iinclude/freetype2" # "-I/usr/include/freetype2"
+			font_library="-lfreetype" # "-I/usr/include/freetype2"
 		else
 			font_library="-lSDL2_ttf -D__USE_SDL_TTF"
 		fi
