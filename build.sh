@@ -71,9 +71,7 @@ if [ "$remote" != "" ]; then
 	
 else
 	if [ "$no_update" = "" ]; then
-		if [ ! -d "kos/" ]; then
-			git submodule update --init --recursive
-		fi
+		git submodule update --init --recursive
 	fi
 	
 	if [ "$no_compile" = "" ]; then
