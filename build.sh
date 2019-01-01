@@ -55,7 +55,7 @@ done
 if [ "$remote" != "" ]; then
 	set -e
 	
-	echo "WARNING This argument (remote) is extremely dangerous and should NEVER be used. That said, if your high, feel free to press enter to continue ..."
+	echo "WARNING This argument (remote) is extremely dangerous and should NEVER be used. That said, if you're high, feel free to press enter to continue ..."
 	read a
 	
 	echo "INFO    Compiling client ..."
@@ -71,6 +71,7 @@ if [ "$remote" != "" ]; then
 	
 else
 	if [ "$no_update" = "" ]; then
+		echo "WHAT THE FUCK"
 		git submodule update --init --recursive
 	fi
 	
