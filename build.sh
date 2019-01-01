@@ -71,7 +71,6 @@ if [ "$remote" != "" ]; then
 	
 else
 	if [ "$no_update" = "" ]; then
-		echo "WHAT THE FUCK"
 		git submodule update --init --recursive
 	fi
 	
