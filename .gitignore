@@ -16,3 +16,4 @@ dynamic/
 .*
 root/aqua-ide/
 benchmark*
+temproot/
