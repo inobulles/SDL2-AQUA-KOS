@@ -52,6 +52,10 @@ while test $# -gt 0; do
 	shift
 done
 
+if [ "$no_update" = "" ]; then
+	git pull origin master --recurse-submodules
+fi
+
 if [ "$remote" != "" ]; then
 	set -e
 	
@@ -68,12 +72,11 @@ if [ "$remote" != "" ]; then
 	echo "INFO    Executing client ..."
 	./a.out
 	rm a.out
-	
 else
-	if [ "$no_update" = "" ]; then
-		git submodule update --init --recursive
-		git submodule foreach git pull origin master
-	fi
+	#~ if [ "$no_update" = "" ]; then
+		#~ git submodule update --init --recursive
+		#~ git submodule foreach git pull origin masters
+	#~ fi
 	
 	if [ "$no_compile" = "" ]; then
 		echo "INFO    Testing for libraries ..."
