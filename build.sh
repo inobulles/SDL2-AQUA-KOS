@@ -13,6 +13,7 @@
 	# debian:      Install all the packages for Debian
 	# use-sdl-ttf: Use deprecated SDL2 TTF library for rendering fonts
 	# softpipe:    Use GALLIUM_DRIVER softpipe (fix for VMWare)
+	# rom:         Just execute the ROM. Nothing more
 
 echo "INFO    Parsing arguments ..."
 
@@ -37,6 +38,12 @@ while test $# -gt 0; do
 	if [ "$1" = "app"         ]; then rom="$2";                       fi
 	if [ "$1" = "use-sdl-ttf" ]; then use_sdl_ttf="true";             fi
 	if [ "$1" = "softpipe"    ]; then export GALLIUM_DRIVER=softpipe; fi
+	
+	if [ "$1" = "rom" ]; then
+		no_update="true"
+		no_compile="true"
+		execute="true"
+	fi
 	
 	if [ "$1" = "debian" ]; then
 		sudo apt-get install -y libcurl4-openssl-dev
