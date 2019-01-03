@@ -72,6 +72,7 @@ if [ "$remote" != "" ]; then
 else
 	if [ "$no_update" = "" ]; then
 		git submodule update --init --recursive
+		git submodule foreach git pull origin master
 	fi
 	
 	if [ "$no_compile" = "" ]; then
