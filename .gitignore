@@ -5,16 +5,11 @@ ROM (temp)
 assembler/
 quick_roms/
 
-root/theme.thm
-root/user.uda
-root/widgets.wps
-root/desktop_category_entries.cge
 xinitrc
 
-root/REMME/
 dynamic/
 .*
-root/aqua-ide/
 benchmark*
 temproot/
 kos/
+root/
