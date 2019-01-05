@@ -1,6 +1,0 @@
-[submodule "kos"]
-	path = kos
-	url = https://github.com/inobulles/AQUA-KOS
-[submodule "root"]
-	path = root
-	url = https://github.com/inobulles/AQUA-root

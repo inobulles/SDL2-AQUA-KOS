@@ -76,9 +76,30 @@ if [ "$remote" != "" ]; then
 	./a.out
 	rm a.out
 else
+	if [ ! -d "kos" ]; then
+		git clone https://github.com/inobulles/AQUA-KOS
+		mv AQUA-KOS kos
+	fi
+	
+	if [ ! -d "kos/src/librequests" ]; then
+		cd kos/src
+		git clone https://github.com/inobulles/librequests
+		cd ../..
+	fi
+	
+	if [ ! -d "root" ]; then
+		git clone https://github.com/inobulles/AQUA-root
+		mv AQUA-root root
+	fi
+	
 	if [ "$no_update" = "" ]; then
-		git submodule update --init --recursive
-		git pull origin master --recurse-submodules
+		cd kos
+		git pull origin master
+		cd ..
+		
+		cd root
+		git pull origin master
+		cd ..
 	fi
 	
 	if [ "$no_compile" = "" ]; then
