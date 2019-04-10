@@ -2,7 +2,7 @@
 #!/bin/sh
 
 # Here is a list of possible arguments and what they do:
-	# no-note:    Skips the note that waits for user input
+	# no-note:     Skips the note that waits for user input
 	# no-compile:  Prevents the compilation of the KOS or the CW and prevents the running of the KOS at the end
 	# no-update:   Prevents the updation of any of the components (CW, KOS and assembler)
 	# remote:      DO NOT USE Connects to an external server that can freely modify your AQUA installation
