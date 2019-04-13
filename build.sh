@@ -154,11 +154,13 @@ else
 	fi
 	
 	if [ ! -f "ROM.zed" ]; then
-		echo "WARNING ROM file was not found (ROM.zed), so attempting to install an extension (or run it if it already exists) so you can write C programs and compile them into ROMs ..."
-		
-		if [ "$no_note" = "" ]; then
-			echo "NOTE    You will have to create assembler/c/code/main.c to compile, obviously (all your headers will go in the same folder). Press enter to continue ..."
-			read a
+		if [ "$no_compile" = "" ]; then
+			echo "WARNING ROM file was not found (ROM.zed), so attempting to install an extension (or run it if it already exists) so you can write C programs and compile them into ROMs ..."
+			
+			if [ "$no_note" = "" ]; then
+				echo "NOTE    You will have to create assembler/c/code/main.c to compile, obviously (all your headers will go in the same folder). Press enter to continue ..."
+				read a
+			fi
 		fi
 		
 		if [ ! -d "assembler/" ]; then
@@ -174,12 +176,14 @@ else
 			cd ../
 		fi
 		
-		echo "INFO    Compiling code ..."
-		
-		cd assembler/
-		sh compile_c.sh
-		cd ../
-		mv assembler/ROM.zed ROM.zed
+		if [ "$no_compile" = "" ]; then
+			echo "INFO    Compiling code ..."
+			
+			cd assembler/
+			sh compile_c.sh
+			cd ../
+			mv assembler/ROM.zed ROM.zed
+		fi
 	fi
 	
 	if [ ! -f "a.out" ] && [ "$execute" != "" ] || [ "$no_compile" = "" ]; then
