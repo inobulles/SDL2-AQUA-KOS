@@ -5,6 +5,7 @@
 	# no-note:     Skips the note that waits for user input
 	# no-compile:  Prevents the compilation of the KOS or the CW and prevents the running of the KOS at the end
 	# no-update:   Prevents the updation of any of the components (CW, KOS and assembler)
+	# no-run:      Prevents the running of the generated ROM file at the end, overrides execute flag
 	# remote:      DO NOT USE Connects to an external server that can freely modify your AQUA installation
 	# execute:     Forces the execution of the KOS, even if "no-compile" set and will ALWAYS compile the KOS if "a.out" is not found
 	# app:         Download and run a ROM file, the second argument being the identifier in the official AQUA Store ROM repository (sh build.sh app lasagna)
@@ -20,6 +21,7 @@ echo "INFO    Parsing arguments ..."
 no_note=""
 no_compile=""
 no_update=""
+no_run=""
 remote=""
 execute=""
 xephyr=""
@@ -31,6 +33,7 @@ while test $# -gt 0; do
 	if [ "$1" = "no-note"     ]; then no_note="true";                 fi
 	if [ "$1" = "no-compile"  ]; then no_compile="true";              fi
 	if [ "$1" = "no-update"   ]; then no_update="true";               fi
+	if [ "$1" = "no-run"      ]; then no_run="true";                  fi
 	if [ "$1" = "remote"      ]; then remote="true";                  fi
 	if [ "$1" = "execute"     ]; then execute="true";                 fi
 	if [ "$1" = "xephyr"      ]; then xephyr="true";                  fi
@@ -229,7 +232,7 @@ else
 		rm             xinitrc
 	fi
 	
-	if [ "$execute" != "" ]; then
+	if [ "$execute" != "" ] && [ "$no_run" == "" ]; then
 		echo "INFO    Executing KOS ..."
 		./a.out
 	fi
