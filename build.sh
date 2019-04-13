@@ -232,7 +232,7 @@ else
 		rm             xinitrc
 	fi
 	
-	if [ "$execute" != "" ] && [ "$no_run" == "" ]; then
+	if [ "$execute" != "" ] && [ "$no_run" = "" ]; then
 		echo "INFO    Executing KOS ..."
 		./a.out
 	fi
