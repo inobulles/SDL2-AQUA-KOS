@@ -80,18 +80,18 @@ if [ "$remote" != "" ]; then
 	rm a.out
 else
 	if [ ! -d "kos" ]; then
-		git clone https://github.com/inobulles/AQUA-KOS
+		git clone https://github.com/inobulles/AQUA-KOS --depth 1 -b master
 		mv AQUA-KOS kos
 	fi
 	
 	if [ ! -d "kos/src/librequests" ]; then
 		cd kos/src
-		git clone https://github.com/inobulles/librequests
+		git clone https://github.com/inobulles/librequests --depth 1 -b master
 		cd ../..
 	fi
 	
 	if [ ! -d "root" ]; then
-		git clone https://github.com/inobulles/AQUA-root
+		git clone https://github.com/inobulles/AQUA-root --depth 1 -b master
 		mv AQUA-root root
 	fi
 	
@@ -135,7 +135,7 @@ else
 		echo "INFO    Installing the CW ..."
 		set -e
 		
-		git clone https://github.com/inobulles/AQUA-CW
+		git clone https://github.com/inobulles/AQUA-CW --depth 1 -b master
 		mv AQUA-CW kos/asm
 	elif [ "$no_update" = "" ]; then
 		echo "INFO    Updating the CW ..."
@@ -169,7 +169,7 @@ else
 		if [ ! -d "assembler/" ]; then
 			echo "INFO    Installing the assembler ..."
 			
-			git clone https://github.com/inobulles/AQUA-assembler
+			git clone https://github.com/inobulles/AQUA-assembler --depth 1 -b master
 			mv AQUA-assembler assembler
 		elif [ "$no_update" = "" ]; then
 			echo "INFO    Updating the assembler ..."
