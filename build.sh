@@ -193,7 +193,7 @@ else
 		echo "INFO    Compiling KOS ..."
 		
 		if [ "$use_sdl_ttf" = "" ]; then
-			font_library="-lfreetype" # "-I/usr/include/freetype2"
+			font_library="-lfreetype -Ikos/src/functions/freetype2" # "-I/usr/include/freetype2"
 		else
 			font_library="-lSDL2_ttf -D__USE_SDL_TTF"
 		fi
@@ -227,9 +227,9 @@ else
 		echo "INFO    Opening xinit ..."
 		execute=""
 		
-		cp src/xwm/env/xinitrc xinitrc
-		xinit        ./xinitrc $xephyr_args
-		rm             xinitrc
+		cp kos/src/xwm/env/xinitrc xinitrc
+		xinit            ./xinitrc $xephyr_args
+		rm                 xinitrc
 	fi
 	
 	if [ "$execute" != "" ] && [ "$no_run" = "" ]; then
