@@ -198,7 +198,16 @@ else
 			font_library="-lSDL2_ttf -D__USE_SDL_TTF"
 		fi
 		
+		original_width=800
+		original_height=600
+		
+		if [ "$xwm" != "" ]; then
+			original_width=`xdpyinfo | grep -o dimensions:.*\ pixels | sed s/dimensions://g | sed s/pixels//g | tr -d '[:space:]' | grep -o .*x | sed s/x//g`
+			original_height=`xdpyinfo | grep -o dimensions:.*\ pixels | sed s/dimensions://g | sed s/pixels//g | tr -d '[:space:]' | grep -o x.* | sed s/x//g`
+		fi
+		
 		gcc kos/glue.c -o a.out -std=gnu99 -Wall \
+			-DKOS_ORIGINAL_WIDTH=$original_width -DKOS_ORIGINAL_HEIGHT=$original_height \
 			-DKOS_CURRENT=KOS_DESKTOP \
 			-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
 			-lSDL2 -lGL -lGLU -lm \
@@ -216,7 +225,7 @@ else
 			echo "INFO    Opening Xephyr ..."
 			execute=""
 			xwm="true"
-			xephyr_args="-- $xephyr_bin :1024 -ac -screen 800x600 -host-cursor"
+			xephyr_args="-- $xephyr_bin :1024 -ac -screen 640x480 -host-cursor"
 			
 		else
 			echo "WARNING Xephyr was not found"
