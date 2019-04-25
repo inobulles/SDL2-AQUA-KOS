@@ -232,7 +232,7 @@ else
 		execute=""
 		
 		cp kos/src/xwm/env/xinitrc xinitrc
-		xinit            ./xinitrc $xephyr_args
+		sudo xinit       ./xinitrc $xephyr_args
 		rm                 xinitrc
 	fi
 	
