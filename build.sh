@@ -2,19 +2,20 @@
 #!/bin/sh
 
 # Here is a list of possible arguments and what they do:
-	# no-note:     Skips the note that waits for user input
-	# no-compile:  Prevents the compilation of the KOS or the CW and prevents the running of the KOS at the end
-	# no-update:   Prevents the updation of any of the components (CW, KOS and assembler)
-	# no-run:      Prevents the running of the generated ROM file at the end, overrides execute flag
-	# remote:      DO NOT USE Connects to an external server that can freely modify your AQUA installation
-	# execute:     Forces the execution of the KOS, even if "no-compile" set and will ALWAYS compile the KOS if "a.out" is not found
-	# app:         Download and run a ROM file, the second argument being the identifier in the official AQUA Store ROM repository (sh build.sh app lasagna)
-	# xephyr:      Launch KOS in Xephyr
-	# xwm:         Launch KOS with its own WM
-	# debian:      Install all the packages for Debian
-	# use-sdl-ttf: Use deprecated SDL2 TTF library for rendering fonts
-	# softpipe:    Use GALLIUM_DRIVER softpipe (fix for VMWare)
-	# rom:         Just execute the ROM. Nothing more
+	# no-note:               Skips the note that waits for user input
+	# no-compile:            Prevents the compilation of the KOS or the CW and prevents the running of the KOS at the end
+	# no-update:             Prevents the updation of any of the components (CW, KOS and assembler)
+	# no-run:                Prevents the running of the generated ROM file at the end, overrides execute flag
+	# remote:                DO NOT USE Connects to an external server that can freely modify your AQUA installation
+	# execute:               Forces the execution of the KOS, even if "no-compile" set and will ALWAYS compile the KOS if "a.out" is not found
+	# app:                   Download and run a ROM file, the second argument being the identifier in the official AQUA Store ROM repository (sh build.sh app lasagna)
+	# xephyr:                Launch KOS in Xephyr
+	# xwm:                   Launch KOS with its own WM
+	# debian:                Install all the packages for Debian
+	# use-sdl-ttf:           Use deprecated SDL2 TTF library for rendering fonts
+	# softpipe:              Use GALLIUM_DRIVER softpipe (fix for VMWare)
+	# rom:                   Just execute the ROM. Nothing more
+	# no-vertex-pixel-align: Compile surface structure without the vertex_pixel_align field (for ROMs compiled before this was added)
 
 echo "INFO    Parsing arguments ..."
 
@@ -28,19 +29,21 @@ xephyr=""
 xwm=""
 rom=""
 use_sdl_ttf=""
+no_vertex_pixel_align=""
 
 while test $# -gt 0; do
-	if [ "$1" = "no-note"     ]; then no_note="true";                 fi
-	if [ "$1" = "no-compile"  ]; then no_compile="true";              fi
-	if [ "$1" = "no-update"   ]; then no_update="true";               fi
-	if [ "$1" = "no-run"      ]; then no_run="true";                  fi
-	if [ "$1" = "remote"      ]; then remote="true";                  fi
-	if [ "$1" = "execute"     ]; then execute="true";                 fi
-	if [ "$1" = "xephyr"      ]; then xephyr="true";                  fi
-	if [ "$1" = "xwm"         ]; then xwm="true";                     fi
-	if [ "$1" = "app"         ]; then rom="$2";                       fi
-	if [ "$1" = "use-sdl-ttf" ]; then use_sdl_ttf="true";             fi
-	if [ "$1" = "softpipe"    ]; then export GALLIUM_DRIVER=softpipe; fi
+	if [ "$1" = "no-note"               ]; then no_note="true";                 fi
+	if [ "$1" = "no-compile"            ]; then no_compile="true";              fi
+	if [ "$1" = "no-update"             ]; then no_update="true";               fi
+	if [ "$1" = "no-run"                ]; then no_run="true";                  fi
+	if [ "$1" = "remote"                ]; then remote="true";                  fi
+	if [ "$1" = "execute"               ]; then execute="true";                 fi
+	if [ "$1" = "xephyr"                ]; then xephyr="true";                  fi
+	if [ "$1" = "xwm"                   ]; then xwm="true";                     fi
+	if [ "$1" = "app"                   ]; then rom="$2";                       fi
+	if [ "$1" = "use-sdl-ttf"           ]; then use_sdl_ttf="true";             fi
+	if [ "$1" = "softpipe"              ]; then export GALLIUM_DRIVER=softpipe; fi
+	if [ "$1" = "no-vertex-pixel-align" ]; then no_vertex_pixel_align="true";   fi
 	
 	if [ "$1" = "rom" ]; then
 		no_update="true"
@@ -201,13 +204,19 @@ else
 		original_width=800
 		original_height=600
 		
+		vertex_pixel_align=-DSURFACE_VERTEX_PIXEL_ALIGN=1
+		
+		if [ "$no_vertex_pixel_align" != "" ]; then
+			vertex_pixel_align=-DSURFACE_VERTEX_PIXEL_ALIGN=0
+		fi
+		
 		gcc kos/glue.c -o a.out -std=gnu99 -Wall \
 			-DKOS_ORIGINAL_WIDTH=$original_width -DKOS_ORIGINAL_HEIGHT=$original_height \
 			-DKOS_CURRENT=KOS_DESKTOP \
 			-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
 			-lSDL2 -lGL -lGLU -lm \
 			$has_curl_args $has_discord_args $has_x11_args \
-			$font_library
+			$font_library $vertex_pixel_align
 		
 		execute="true"
 	fi
