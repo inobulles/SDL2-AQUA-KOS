@@ -16,6 +16,7 @@
 	# softpipe:              Use GALLIUM_DRIVER softpipe (fix for VMWare)
 	# rom:                   Just execute the ROM. Nothing more
 	# no-vertex-pixel-align: Compile surface structure without the vertex_pixel_align field (for ROMs compiled before this was added)
+	# no-vsync:              Disable VSync
 
 echo "INFO    Parsing arguments ..."
 
@@ -30,6 +31,7 @@ xwm=""
 rom=""
 use_sdl_ttf=""
 no_vertex_pixel_align=""
+no_vsync=""
 
 while test $# -gt 0; do
 	if [ "$1" = "no-note"               ]; then no_note="true";                 fi
@@ -44,6 +46,7 @@ while test $# -gt 0; do
 	if [ "$1" = "use-sdl-ttf"           ]; then use_sdl_ttf="true";             fi
 	if [ "$1" = "softpipe"              ]; then export GALLIUM_DRIVER=softpipe; fi
 	if [ "$1" = "no-vertex-pixel-align" ]; then no_vertex_pixel_align="true";   fi
+	if [ "$1" = "no-vsync"              ]; then no_vsync="true";                fi
 	
 	if [ "$1" = "rom" ]; then
 		no_update="true"
@@ -205,9 +208,14 @@ else
 		original_height=600
 		
 		vertex_pixel_align=-DSURFACE_VERTEX_PIXEL_ALIGN=1
+		enable_vsync=-DKOS_DISABLE_VSYNC=0
 		
 		if [ "$no_vertex_pixel_align" != "" ]; then
 			vertex_pixel_align=-DSURFACE_VERTEX_PIXEL_ALIGN=0
+		fi
+		
+		if [ "$no_vsync" = "" ]; then
+			enable_vsync=-DKOS_DISABLE_VSYNC=1
 		fi
 		
 		gcc kos/glue.c -o a.out -std=gnu99 -Wall \
@@ -216,7 +224,7 @@ else
 			-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
 			-lSDL2 -lGL -lGLU -lm \
 			$has_curl_args $has_discord_args $has_x11_args \
-			$font_library $vertex_pixel_align
+			$font_library $vertex_pixel_align $enable_vsync
 		
 		execute="true"
 	fi
