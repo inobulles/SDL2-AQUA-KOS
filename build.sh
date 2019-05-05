@@ -249,7 +249,7 @@ else
 		execute=""
 		
 		cp kos/src/xwm/env/xinitrc xinitrc
-		sudo xinit       ./xinitrc $xephyr_args
+		sudo xinit       ./xinitrc $xephyr_args -nocursor
 		rm                 xinitrc
 	fi
 	
