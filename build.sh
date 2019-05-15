@@ -208,14 +208,14 @@ else
 		original_height=600
 		
 		vertex_pixel_align=-DSURFACE_VERTEX_PIXEL_ALIGN=1
-		enable_vsync=-DKOS_DISABLE_VSYNC=0
+		enable_vsync=-DKOS_ENABLE_VSYNC=1
 		
 		if [ "$no_vertex_pixel_align" != "" ]; then
 			vertex_pixel_align=-DSURFACE_VERTEX_PIXEL_ALIGN=0
 		fi
 		
-		if [ "$no_vsync" = "" ]; then
-			enable_vsync=-DKOS_DISABLE_VSYNC=1
+		if [ "$no_vsync" != "" ]; then
+			enable_vsync=-DKOS_ENABLE_VSYNC=0
 		fi
 		
 		gcc kos/glue.c -o a.out -std=gnu99 -Wall \
