@@ -195,6 +195,9 @@ else
 		fi
 	fi
 	
+	original_width=800
+	original_height=600
+	
 	if [ ! -f "a.out" ] && [ "$execute" != "" ] || [ "$no_compile" = "" ]; then
 		echo "INFO    Compiling KOS ..."
 		
@@ -203,9 +206,6 @@ else
 		else
 			font_library="-lSDL2_ttf -D__USE_SDL_TTF"
 		fi
-		
-		original_width=800
-		original_height=600
 		
 		vertex_pixel_align=-DSURFACE_VERTEX_PIXEL_ALIGN=1
 		enable_vsync=-DKOS_ENABLE_VSYNC=1
@@ -237,7 +237,7 @@ else
 			echo "INFO    Opening Xephyr ..."
 			execute=""
 			xwm="true"
-			xephyr_args="-- $xephyr_bin :1024 -ac -screen 640x480 -host-cursor"
+			xephyr_args="-- $xephyr_bin :1024 -ac -screen ${original_width}x${original_height} -host-cursor"
 			
 		else
 			echo "WARNING Xephyr was not found"
