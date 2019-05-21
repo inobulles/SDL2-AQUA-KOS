@@ -90,10 +90,10 @@ else
 		mv AQUA-KOS kos
 	fi
 	
-	if [ ! -d "kos/src/librequests" ]; then
-		cd kos/src
+	if [ ! -d "kos/src/functions/librequests" ]; then
+		cd kos/src/functions
 		git clone https://github.com/inobulles/librequests --depth 1 -b master
-		cd ../..
+		cd ../../..
 	fi
 	
 	if [ ! -d "root" ]; then
