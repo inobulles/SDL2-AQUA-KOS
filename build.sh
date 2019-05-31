@@ -90,7 +90,7 @@ else
 		mv AQUA-KOS kos
 	fi
 	
-	if [ ! -d "kos/src/functions/librequests" ]; then
+	if [ ! -d "kos/src/external/librequests" ]; then
 		cd kos/src/external
 		git clone https://github.com/inobulles/librequests --depth 1 -b master
 		cd ../../..
