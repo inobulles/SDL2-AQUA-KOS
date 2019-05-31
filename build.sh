@@ -91,7 +91,7 @@ else
 	fi
 	
 	if [ ! -d "kos/src/functions/librequests" ]; then
-		cd kos/src/functions
+		cd kos/src/external
 		git clone https://github.com/inobulles/librequests --depth 1 -b master
 		cd ../../..
 	fi
@@ -202,7 +202,7 @@ else
 		echo "INFO    Compiling KOS ..."
 		
 		if [ "$use_sdl_ttf" = "" ]; then
-			font_library="-lfreetype -Ikos/src/functions/freetype2" # "-I/usr/include/freetype2"
+			font_library="-lfreetype -Ikos/src/external/freetype2" # "-I/usr/include/freetype2"
 		else
 			font_library="-lSDL2_ttf -D__USE_SDL_TTF"
 		fi
