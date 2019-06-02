@@ -13,3 +13,4 @@ benchmark*
 temproot/
 kos/
 root/
+ash-default-rom-builder.sh

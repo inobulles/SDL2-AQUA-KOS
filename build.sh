@@ -19,6 +19,7 @@
 	# no-vsync:              Disable VSync
 	# verbose-mode:          Enable verbose mode for compilation
 	# debugging-mode:        Enable debugging mode for compilation
+	# no-compile-kos:        Prevent the compilation of the KOS specifically
 
 echo "INFO    Parsing arguments ..."
 
@@ -36,6 +37,7 @@ no_vertex_pixel_align=""
 no_vsync=""
 verbose_mode="0"
 debugging_mode="0"
+no_compile_kos=""
 
 while test $# -gt 0; do
 	if [ "$1" = "no-note"               ]; then no_note="true";                 fi
@@ -53,6 +55,7 @@ while test $# -gt 0; do
 	if [ "$1" = "no-vsync"              ]; then no_vsync="true";                fi
 	if [ "$1" = "verbose-mode"          ]; then verbose_mode="1";               fi
 	if [ "$1" = "debugging-mode"        ]; then debugging_mode="1";             fi
+	if [ "$1" = "no-compile-kos"        ]; then no_compile_kos="true";          fi
 	
 	if [ "$1" = "rom" ]; then
 		no_update="true"
@@ -204,35 +207,37 @@ else
 	original_width=800
 	original_height=600
 	
-	if [ ! -f "a.out" ] && [ "$execute" != "" ] || [ "$no_compile" = "" ]; then
-		echo "INFO    Compiling KOS ..."
-		
-		if [ "$use_sdl_ttf" = "" ]; then
-			font_library="-lfreetype -Ikos/src/external/freetype2" # "-I/usr/include/freetype2"
-		else
-			font_library="-lSDL2_ttf -D__USE_SDL_TTF"
+	if [ "$no_compile_kos" = "" ]; then
+		if [ ! -f "a.out" ] && [ "$execute" != "" ] || [ "$no_compile" = "" ]; then
+			echo "INFO    Compiling KOS ..."
+			
+			if [ "$use_sdl_ttf" = "" ]; then
+				font_library="-lfreetype -Ikos/src/external/freetype2" # "-I/usr/include/freetype2"
+			else
+				font_library="-lSDL2_ttf -D__USE_SDL_TTF"
+			fi
+			
+			vertex_pixel_align=-DSURFACE_VERTEX_PIXEL_ALIGN=1
+			enable_vsync=-DKOS_ENABLE_VSYNC=1
+			
+			if [ "$no_vertex_pixel_align" != "" ]; then
+				vertex_pixel_align=-DSURFACE_VERTEX_PIXEL_ALIGN=0
+			fi
+			
+			if [ "$no_vsync" != "" ]; then
+				enable_vsync=-DKOS_ENABLE_VSYNC=0
+			fi
+			
+			gcc kos/glue.c -o a.out -std=gnu99 -Wall \
+				-DKOS_ORIGINAL_WIDTH=$original_width -DKOS_ORIGINAL_HEIGHT=$original_height \
+				-DKOS_CURRENT=KOS_DESKTOP \
+				-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
+				-lSDL2 -lGL -lGLU -lm \
+				$has_curl_args $has_discord_args $has_x11_args \
+				$font_library $vertex_pixel_align $enable_vsync
+			
+			execute="true"
 		fi
-		
-		vertex_pixel_align=-DSURFACE_VERTEX_PIXEL_ALIGN=1
-		enable_vsync=-DKOS_ENABLE_VSYNC=1
-		
-		if [ "$no_vertex_pixel_align" != "" ]; then
-			vertex_pixel_align=-DSURFACE_VERTEX_PIXEL_ALIGN=0
-		fi
-		
-		if [ "$no_vsync" != "" ]; then
-			enable_vsync=-DKOS_ENABLE_VSYNC=0
-		fi
-		
-		gcc kos/glue.c -o a.out -std=gnu99 -Wall \
-			-DKOS_ORIGINAL_WIDTH=$original_width -DKOS_ORIGINAL_HEIGHT=$original_height \
-			-DKOS_CURRENT=KOS_DESKTOP \
-			-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
-			-lSDL2 -lGL -lGLU -lm \
-			$has_curl_args $has_discord_args $has_x11_args \
-			$font_library $vertex_pixel_align $enable_vsync
-		
-		execute="true"
 	fi
 	
 	xephyr_args=""
