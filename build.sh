@@ -2,12 +2,12 @@
 #!/bin/sh
 
 # Here is a list of possible arguments and what they do:
-	# no-note:               Skips the note that waits for user input
-	# no-compile:            Prevents the compilation of the KOS or the CW and prevents the running of the KOS at the end
-	# no-update:             Prevents the updation of any of the components (CW, KOS and assembler)
-	# no-run:                Prevents the running of the generated ROM file at the end, overrides execute flag
-	# remote:                DO NOT USE Connects to an external server that can freely modify your AQUA installation
-	# execute:               Forces the execution of the KOS, even if "no-compile" set and will ALWAYS compile the KOS if "a.out" is not found
+	# no-note:               Skip the note that waits for user input
+	# no-compile:            Prevent the compilation of the KOS or the CW and prevents the running of the KOS at the end
+	# no-update:             Prevent the updation of any of the components (CW, KOS and assembler)
+	# no-run:                Prevent the running of the generated ROM file at the end, overrides execute flag
+	# remote:                DO NOT USE Connect to an external server that can freely modify your AQUA installation
+	# execute:               Force the execution of the KOS, even if "no-compile" set and ALWAYS compile the KOS if "a.out" is not found
 	# app:                   Download and run a ROM file, the second argument being the identifier in the official AQUA Store ROM repository (sh build.sh app lasagna)
 	# xephyr:                Launch KOS in Xephyr
 	# xwm:                   Launch KOS with its own WM
@@ -17,6 +17,8 @@
 	# rom:                   Just execute the ROM. Nothing more
 	# no-vertex-pixel-align: Compile surface structure without the vertex_pixel_align field (for ROMs compiled before this was added)
 	# no-vsync:              Disable VSync
+	# verbose-mode:          Enable verbose mode for compilation
+	# debugging-mode:        Enable debugging mode for compilation
 
 echo "INFO    Parsing arguments ..."
 
@@ -32,6 +34,8 @@ rom=""
 use_sdl_ttf=""
 no_vertex_pixel_align=""
 no_vsync=""
+verbose_mode="0"
+debugging_mode="0"
 
 while test $# -gt 0; do
 	if [ "$1" = "no-note"               ]; then no_note="true";                 fi
@@ -47,6 +51,8 @@ while test $# -gt 0; do
 	if [ "$1" = "softpipe"              ]; then export GALLIUM_DRIVER=softpipe; fi
 	if [ "$1" = "no-vertex-pixel-align" ]; then no_vertex_pixel_align="true";   fi
 	if [ "$1" = "no-vsync"              ]; then no_vsync="true";                fi
+	if [ "$1" = "verbose-mode"          ]; then verbose_mode="1";               fi
+	if [ "$1" = "debugging-mode"        ]; then debugging_mode="1";             fi
 	
 	if [ "$1" = "rom" ]; then
 		no_update="true"
@@ -189,7 +195,7 @@ else
 			echo "INFO    Compiling code ..."
 			
 			cd assembler/
-			sh compile_c.sh
+			sh compile_c.sh $verbose_mode $debugging_mode
 			cd ../
 			mv assembler/ROM.zed ROM.zed
 		fi
