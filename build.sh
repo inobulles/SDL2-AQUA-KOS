@@ -95,8 +95,8 @@ if [ "$remote" != "" ]; then
 	rm a.out
 else
 	if [ ! -d "kos" ]; then
-		git clone https://github.com/inobulles/AQUA-KOS --depth 1 -b master
-		mv AQUA-KOS kos
+		git clone https://github.com/inobulles/aqua-kos --depth 1 -b master
+		mv aqua-kos kos
 	fi
 	
 	if [ ! -d "kos/src/external/librequests" ]; then
