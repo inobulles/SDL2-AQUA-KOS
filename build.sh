@@ -106,8 +106,8 @@ else
 	fi
 	
 	if [ ! -d "root" ]; then
-		git clone https://github.com/inobulles/AQUA-root --depth 1 -b master
-		mv AQUA-root root
+		git clone https://github.com/inobulles/aqua-root --depth 1 -b master
+		mv aqua-root root
 	fi
 	
 	if [ "$no_update" = "" ]; then
@@ -146,16 +146,16 @@ else
 		cd ../../../../
 	fi
 
-	if [ ! -d "kos/asm/" ]; then
-		echo "INFO    Installing the CW ..."
+	if [ ! -d "kos/zvm/" ]; then
+		echo "INFO    Installing the ZVM ..."
 		set -e
 		
-		git clone https://github.com/inobulles/AQUA-CW --depth 1 -b master
-		mv AQUA-CW kos/asm
+		git clone https://github.com/inobulles/aqua-zvm --depth 1 -b master
+		mv aqua-zvm kos/zvm
 	elif [ "$no_update" = "" ]; then
-		echo "INFO    Updating the CW ..."
+		echo "INFO    Updating the ZVM ..."
 		
-		cd kos/asm/
+		cd kos/zvm/
 		git pull origin master
 		
 		cd ../../
