@@ -184,8 +184,8 @@ else
 		if [ ! -d "assembler/" ]; then
 			echo "INFO    Installing the assembler ..."
 			
-			git clone https://github.com/inobulles/AQUA-assembler --depth 1 -b master
-			mv AQUA-assembler assembler
+			git clone https://github.com/inobulles/assembler --depth 1 -b master
+			mv assembler assembler
 		elif [ "$no_update" = "" ]; then
 			echo "INFO    Updating the assembler ..."
 			
