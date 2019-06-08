@@ -1,6 +1,13 @@
 
 #!/bin/sh
 
+
+
+rm -rf kos root librequests # REMME
+
+
+
+
 # Here is a list of possible arguments and what they do:
 	# no-note:               Skip the note that waits for user input
 	# no-compile:            Prevent the compilation of the KOS or the CW and prevents the running of the KOS at the end
