@@ -1,13 +1,6 @@
 
 #!/bin/sh
-
-
-
-rm -rf kos root librequests # REMME
-
-
-
-
+rm -rf kos librequests root
 # Here is a list of possible arguments and what they do:
 	# no-note:               Skip the note that waits for user input
 	# no-compile:            Prevent the compilation of the KOS or the CW and prevents the running of the KOS at the end
@@ -266,9 +259,9 @@ else
 		echo "INFO    Opening xinit ..."
 		execute=""
 		
-		cp kos/src/xwm/env/xinitrc xinitrc
-		sudo xinit       ./xinitrc $xephyr_args -nocursor
-		rm                 xinitrc
+		cp kos/src/platforms/xwm/env/xinitrc xinitrc
+		sudo xinit                 ./xinitrc $xephyr_args -nocursor
+		rm                           xinitrc
 	fi
 	
 	if [ "$execute" != "" ] && [ "$no_run" = "" ]; then
