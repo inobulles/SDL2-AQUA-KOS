@@ -184,12 +184,13 @@ else
 		if [ ! -d "assembler/" ]; then
 			echo "INFO    Installing the assembler ..."
 			
-			git clone https://github.com/inobulles/assembler --depth 1 -b master
-			mv assembler assembler
+			git clone https://github.com/inobulles/aqua-assembler --depth 1 -b master
+			mv aqua-assembler assembler
+
 		elif [ "$no_update" = "" ]; then
 			echo "INFO    Updating the assembler ..."
 			
-			cd assembler/
+			cd assembler
 			git pull origin master
 			cd ../
 		fi
@@ -197,7 +198,7 @@ else
 		if [ "$no_compile" = "" ]; then
 			echo "INFO    Compiling code ..."
 			
-			cd assembler/
+			cd assembler
 			sh compile_c.sh $verbose_mode $debugging_mode
 			cd ../
 			mv assembler/ROM.zed ROM.zed
