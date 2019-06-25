@@ -99,12 +99,6 @@ else
 		mv aqua-kos kos
 	fi
 	
-	if [ ! -d "kos/src/external/librequests" ]; then
-		cd kos/src/external
-		git clone https://github.com/inobulles/librequests --depth 1 -b master
-		cd ../../..
-	fi
-	
 	if [ ! -d "root" ]; then
 		git clone https://github.com/inobulles/aqua-root --depth 1 -b master
 		mv aqua-root root
