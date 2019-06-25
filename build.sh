@@ -226,7 +226,7 @@ else
 				-DKOS_ORIGINAL_WIDTH=$original_width -DKOS_ORIGINAL_HEIGHT=$original_height \
 				-DKOS_CURRENT=KOS_DESKTOP \
 				-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
-				-lSDL2 -lGL -lGLU -lm \
+				-lSDL2 -lGL -lGLU -lm -lpthread \
 				$has_curl_args $has_discord_args $has_x11_args \
 				$font_library $vertex_pixel_align $enable_vsync
 			
