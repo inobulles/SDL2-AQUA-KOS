@@ -66,6 +66,7 @@ while test $# -gt 0; do
 	if [ "$1" = "debian" ]; then
 		sudo apt-get install -y libcurl4-openssl-dev
 		sudo apt-get install -y libsdl2-2.0-0 libsdl2-dev
+		sudo apt-get install -y libmad0 libmad0-dev libpulse0 libpulse-dev
 		
 		if [ "$use_sdl_ttf" = "" ]; then
 			sudo apt-get install -y libfreetype6-dev
@@ -119,9 +120,11 @@ else
 		
 		has_curl_args=""
 		has_discord_args=""
+		has_audio_args=""
 		
 		x11_link="-lX11"
 		curl_link="-lcurl"
+		audio_link="-lmad -lpulse -lpulse-simple"
 		discord_link="-L. -l:dynamic/libdiscord-rpc.so"
 		
 		if [ "$xwm" != "" ] || [ "$xephyr" != "" ]; then
@@ -130,6 +133,7 @@ else
 		
 		ld $curl_link    && has_curl_args="-D__HAS_CURL $curl_link";
 		ld $discord_link && has_discord_args="-D__HAS_DISCORD $discord_link"
+		ld $audio_link   && has_audio_args="-D__HAS_AUDIO $audio_link"
 	fi
 
 	if [ -d "assembler/c/.hidden/lib" ] && [ "$no_update" = "" ]; then
@@ -227,7 +231,7 @@ else
 				-DKOS_CURRENT=KOS_DESKTOP \
 				-Wno-unused-variable -Wno-unused-but-set-variable -Wno-main \
 				-lSDL2 -lGL -lGLU -lm -lpthread \
-				$has_curl_args $has_discord_args $has_x11_args \
+				$has_curl_args $has_discord_args $has_x11_args $has_audio_args \
 				$font_library $vertex_pixel_align $enable_vsync
 			
 			execute="true"
